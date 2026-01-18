@@ -3,6 +3,12 @@ import { AlertCircle, CheckCircle, Clock, FileText, Shield, Users, BarChart3, Al
 import { createClient } from '@supabase/supabase-js';
 import './App.css';
 
+// Strategic Upgrade Components
+import ImpactScoreCard from './components/ImpactScoreCard';
+import ControlDriftBadge from './components/ControlDriftBadge';
+import AttestationConfidenceWidget from './components/AttestationConfidenceWidget';
+import ControlDriftHeatmap from './components/ControlDriftHeatmap';
+
 // ============================================================================
 // SUPABASE CONFIGURATION
 // ============================================================================
@@ -1363,6 +1369,46 @@ function DataTable({ headers, rows }) {
 // ============================================================================
 function ChangeFeedPage({ tenantId, isReadOnly }) {
   const { data: changes, loading, refetch } = useRegChanges(tenantId);
+  const [impactScores, setImpactScores] = useState([]);
+  const [loadingScores, setLoadingScores] = useState(true);
+
+  // Fetch Impact Scores from strategic view
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchImpactScores = async (signal) => {
+      setLoadingScores(true);
+      try {
+        const scores = await supabase.query('v_regulatory_impact_score', {
+          tenantId: tenantId
+        }, signal);
+
+        if (!signal?.aborted) {
+          setImpactScores(scores || []);
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error loading impact scores:', error);
+        }
+      } finally {
+        if (!signal?.aborted) {
+          setLoadingScores(false);
+        }
+      }
+    };
+
+    if (tenantId) {
+      fetchImpactScores(controller.signal);
+    }
+
+    return () => controller.abort('Component unmounted');
+  }, [tenantId]);
+
+  // Merge impact scores with changes
+  const changesWithScores = changes?.map(change => {
+    const score = impactScores.find(s => s.change_id === change.id);
+    return { ...change, impactScore: score };
+  }) || [];
 
   if (loading) return <LoadingSpinner />;
 
@@ -1370,7 +1416,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
     <div>
       <div className="page-header">
         <h1>Change Feed</h1>
-        <p className="page-subtitle">Regulatory updates and change items for your firm</p>
+        <p className="page-subtitle">Regulatory updates with quantified impact scoring</p>
       </div>
 
       {!isReadOnly && (
@@ -1380,16 +1426,40 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
       )}
 
       <div className="card-grid">
-        {changes?.map(change => (
+        {changesWithScores.map(change => (
           <div key={change.id} className="card">
             <div className="card-badges">
               <span className="source-badge">{change.source}</span>
               <span className="date-badge">{change.published_at}</span>
               <StatusBadge status={change.status} />
-              <ImpactBadge impact={change.impact_rating} />
+              {/* Replace old impact badge with strategic Impact Score */}
+              {change.impactScore && !loadingScores ? (
+                <ImpactScoreCard
+                  score={change.impactScore.total_impact_score}
+                  riskBand={change.impactScore.risk_band}
+                  primaryDriver={change.impactScore.primary_driver}
+                  compact={true}
+                />
+              ) : (
+                <ImpactBadge impact={change.impact_rating} />
+              )}
             </div>
             <h3 className="card-title">{change.title}</h3>
             <p className="card-text">{change.summary}</p>
+
+            {/* Show detailed impact score if available */}
+            {change.impactScore && !loadingScores && (
+              <div style={{ marginTop: '12px' }}>
+                <ImpactScoreCard
+                  score={change.impactScore.total_impact_score}
+                  riskBand={change.impactScore.risk_band}
+                  primaryDriver={change.impactScore.primary_driver}
+                  changeTitle={null}
+                  compact={false}
+                />
+              </div>
+            )}
+
             {!isReadOnly && (
               <div className="card-actions">
                 <button className="btn-secondary">Review</button>
@@ -1436,6 +1506,46 @@ function ChangeRegisterPage({ tenantId }) {
 function ControlLibraryPage({ tenantId, isReadOnly }) {
   const { data: controls, loading, refetch } = useControls(tenantId);
   const [showModal, setShowModal] = useState(false);
+  const [controlDrift, setControlDrift] = useState([]);
+  const [loadingDrift, setLoadingDrift] = useState(true);
+
+  // Fetch Control Drift data from strategic view
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchControlDrift = async (signal) => {
+      setLoadingDrift(true);
+      try {
+        const drift = await supabase.query('v_control_drift_index', {
+          tenantId: tenantId
+        }, signal);
+
+        if (!signal?.aborted) {
+          setControlDrift(drift || []);
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error loading control drift:', error);
+        }
+      } finally {
+        if (!signal?.aborted) {
+          setLoadingDrift(false);
+        }
+      }
+    };
+
+    if (tenantId) {
+      fetchControlDrift(controller.signal);
+    }
+
+    return () => controller.abort('Component unmounted');
+  }, [tenantId]);
+
+  // Merge drift data with controls
+  const controlsWithDrift = controls?.map(control => {
+    const drift = controlDrift.find(d => d.control_id === control.id);
+    return { ...control, driftData: drift };
+  }) || [];
 
   if (loading) return <LoadingSpinner />;
 
@@ -1443,8 +1553,18 @@ function ControlLibraryPage({ tenantId, isReadOnly }) {
     <div>
       <div className="page-header">
         <h1>Control Library</h1>
-        <p className="page-subtitle">Manage your control framework</p>
+        <p className="page-subtitle">Control framework with drift monitoring</p>
       </div>
+
+      {/* Control Drift Heatmap */}
+      {!loadingDrift && controlDrift.length > 0 && (
+        <div style={{ marginBottom: '24px' }}>
+          <ControlDriftHeatmap
+            driftData={controlDrift}
+            onControlClick={(control) => console.log('Control clicked:', control)}
+          />
+        </div>
+      )}
 
       {!isReadOnly && (
         <button onClick={() => setShowModal(true)} className="btn-primary">
@@ -1454,7 +1574,7 @@ function ControlLibraryPage({ tenantId, isReadOnly }) {
       )}
 
       {showModal && (
-        <CreateControlModal 
+        <CreateControlModal
           tenantId={tenantId}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
@@ -1465,18 +1585,38 @@ function ControlLibraryPage({ tenantId, isReadOnly }) {
       )}
 
       <div className="card-grid">
-        {controls?.map(control => (
+        {controlsWithDrift.map(control => (
           <div key={control.id} className="card">
             <div className="card-badges">
               <span className="control-code">{control.control_code}</span>
               <span className="frequency-badge">• {control.frequency}</span>
               <StatusBadge status={control.status} />
+              {/* Add Control Drift Badge */}
+              {control.driftData && !loadingDrift && (
+                <ControlDriftBadge
+                  driftStatus={control.driftData.drift_status}
+                  driftScore={control.driftData.drift_score}
+                  compact={true}
+                />
+              )}
             </div>
             <h3 className="card-title">{control.title}</h3>
             <p className="card-text">{control.description}</p>
             <div className="card-meta">
               Test Method: {control.test_method}
             </div>
+            {/* Show detailed drift info if critical */}
+            {control.driftData && !loadingDrift && control.driftData.drift_status === 'CRITICAL_DRIFT' && (
+              <div style={{ marginTop: '12px' }}>
+                <ControlDriftBadge
+                  driftStatus={control.driftData.drift_status}
+                  driftScore={control.driftData.drift_score}
+                  driftDriver={control.driftData.drift_driver}
+                  showScore={true}
+                  compact={false}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -1576,35 +1716,157 @@ function RegMappingPage({ tenantId }) {
 );
 }
 function AttestationsPage({ tenantId, isReadOnly }) {
-const attestations = [
-{ id: 1, control_code: 'AML-001', period: 'Q4 2024', owner: 'Mike Chen', status: 'pending', due_date: '2025-01-20' },
-{ id: 2, control_code: 'COI-001', period: 'Q4 2024', owner: 'Sarah Johnson', status: 'submitted', due_date: '2025-01-15' }
-];
-return (
-<div>
-<div className="page-header">
-<h1>Attestations</h1>
-<p className="page-subtitle">Scheduled attestations by owner, SMF, and department</p>
-</div>
-  {!isReadOnly && (
-    <button className="btn-primary">
-      + Request Attestation
-    </button>
-  )}
+  const [attestationConfidence, setAttestationConfidence] = useState([]);
+  const [loadingConfidence, setLoadingConfidence] = useState(true);
 
-  <DataTable 
-    headers={['Control', 'Period', 'Owner', 'Due Date', 'Status', 'Actions']}
-    rows={attestations.map(a => [
-      a.control_code,
-      a.period,
-      a.owner,
-      a.due_date,
-      <StatusBadge key={a.id} status={a.status} />,
-      !isReadOnly ? <button key={a.id} className="btn-primary-small">Submit</button> : '-'
-    ])}
-  />
-</div>
-);
+  // Fetch Attestation Confidence data from strategic view
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchAttestationConfidence = async (signal) => {
+      setLoadingConfidence(true);
+      try {
+        const confidence = await supabase.query('v_attestation_confidence_index', {
+          tenantId: tenantId
+        }, signal);
+
+        if (!signal?.aborted) {
+          setAttestationConfidence(confidence || []);
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error loading attestation confidence:', error);
+        }
+      } finally {
+        if (!signal?.aborted) {
+          setLoadingConfidence(false);
+        }
+      }
+    };
+
+    if (tenantId) {
+      fetchAttestationConfidence(controller.signal);
+    }
+
+    return () => controller.abort('Component unmounted');
+  }, [tenantId]);
+
+  // Sample data - replace with actual query when available
+  const attestations = [
+    { id: 1, control_code: 'AML-001', period: 'Q4 2024', owner: 'Mike Chen', status: 'pending', due_date: '2025-01-20', role: 'SMF' },
+    { id: 2, control_code: 'COI-001', period: 'Q4 2024', owner: 'Sarah Johnson', status: 'submitted', due_date: '2025-01-15', role: 'Owner' }
+  ];
+
+  // Merge confidence data with attestations
+  const attestationsWithConfidence = attestations.map(att => {
+    const confidence = attestationConfidence.find(c => c.attestation_id === att.id);
+    return { ...att, confidenceData: confidence };
+  });
+
+  // Calculate average confidence
+  const avgConfidence = attestationConfidence.length > 0
+    ? Math.round(attestationConfidence.reduce((sum, c) => sum + c.confidence_score, 0) / attestationConfidence.length)
+    : 0;
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Attestations</h1>
+        <p className="page-subtitle">Attestations with confidence scoring</p>
+      </div>
+
+      {/* Overall Confidence Widget */}
+      {!loadingConfidence && attestationConfidence.length > 0 && (
+        <div style={{ marginBottom: '24px', maxWidth: '400px' }}>
+          <AttestationConfidenceWidget
+            confidenceScore={avgConfidence}
+            confidenceBand={
+              avgConfidence >= 70 ? 'HIGH_CONFIDENCE' :
+              avgConfidence >= 40 ? 'MEDIUM_CONFIDENCE' :
+              'LOW_CONFIDENCE'
+            }
+            confidenceDriver="Overall attestation health"
+            attestorRole="Various"
+            compact={false}
+          />
+        </div>
+      )}
+
+      {!isReadOnly && (
+        <button className="btn-primary">
+          + Request Attestation
+        </button>
+      )}
+
+      {/* Attestation Cards with Confidence */}
+      <div className="card-grid" style={{ marginTop: '20px' }}>
+        {attestationsWithConfidence.map(att => (
+          <div key={att.id} className="card">
+            <div className="card-badges">
+              <span className="control-code">{att.control_code}</span>
+              <StatusBadge status={att.status} />
+              {/* Add Confidence Badge */}
+              {att.confidenceData && !loadingConfidence && (
+                <AttestationConfidenceWidget
+                  confidenceScore={att.confidenceData.confidence_score}
+                  confidenceBand={att.confidenceData.confidence_band}
+                  compact={true}
+                />
+              )}
+            </div>
+            <h3 className="card-title">Period: {att.period}</h3>
+            <p className="card-text">Owner: {att.owner} ({att.role})</p>
+            <div className="card-meta">
+              Due Date: {att.due_date}
+            </div>
+
+            {/* Show detailed confidence if available */}
+            {att.confidenceData && !loadingConfidence && (
+              <div style={{ marginTop: '12px' }}>
+                <AttestationConfidenceWidget
+                  confidenceScore={att.confidenceData.confidence_score}
+                  confidenceBand={att.confidenceData.confidence_band}
+                  confidenceDriver={att.confidenceData.confidence_driver}
+                  attestorRole={att.confidenceData.attestor_role}
+                  compact={false}
+                />
+              </div>
+            )}
+
+            {!isReadOnly && (
+              <div className="card-actions" style={{ marginTop: '12px' }}>
+                <button className="btn-primary-small">Submit</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Table view option */}
+      <div style={{ marginTop: '24px' }}>
+        <h3>Attestation Summary Table</h3>
+        <DataTable
+          headers={['Control', 'Period', 'Owner', 'Due Date', 'Status', 'Confidence', 'Actions']}
+          rows={attestationsWithConfidence.map(a => [
+            a.control_code,
+            a.period,
+            a.owner,
+            a.due_date,
+            <StatusBadge key={a.id} status={a.status} />,
+            a.confidenceData && !loadingConfidence ? (
+              <AttestationConfidenceWidget
+                key={`conf-${a.id}`}
+                confidenceScore={a.confidenceData.confidence_score}
+                confidenceBand={a.confidenceData.confidence_band}
+                compact={true}
+              />
+            ) : '-',
+            !isReadOnly ? <button key={a.id} className="btn-primary-small">Submit</button> : '-'
+          ])}
+        />
+      </div>
+    </div>
+  );
 }
 function ExceptionsLightPage({ tenantId }) {
 const { data: exceptions, loading } = useExceptions(tenantId);
