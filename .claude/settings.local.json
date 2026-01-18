@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git log:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(npm install:*)",
+      "Bash(supabase --version:*)",
+      "Bash(supabase login:*)",
+      "Bash(curl:*)",
+      "Bash(npm start)"
+    ]
+  }
+}

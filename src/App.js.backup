@@ -1,0 +1,2024 @@
+import React, { useState, useEffect } from 'react';
+import { AlertCircle, CheckCircle, Clock, FileText, Shield, Users, BarChart3, AlertTriangle, FileCheck, Settings, Menu, X, Bell, Database, Loader, Plus, Download, Upload } from 'lucide-react';
+import './App.css';
+
+// ============================================================================
+// SUPABASE CONFIGURATION
+// ============================================================================
+let SUPABASE_CONFIG = { url: '', anonKey: '' };
+
+// Try to load from localStorage first
+if (typeof window !== 'undefined') {
+  const stored = localStorage.getItem('supabaseConfig');
+  if (stored) {
+    SUPABASE_CONFIG = JSON.parse(stored);
+  } else if (window.supabaseConfig) {
+    SUPABASE_CONFIG = window.supabaseConfig;
+  }
+}
+
+class SupabaseClient {
+  constructor() {
+    this.config = SUPABASE_CONFIG;
+    this.isConfigured = this.config.url && this.config.anonKey;
+    this.useMockData = !this.isConfigured;
+  }
+
+ updateConfig(url, anonKey) {
+    this.config = { url, anonKey };
+    this.isConfigured = true;
+    this.useMockData = false;
+    SUPABASE_CONFIG = this.config;
+    if (typeof window !== 'undefined') {
+      window.supabaseConfig = this.config;
+      // Store in localStorage so it persists across refreshes
+      localStorage.setItem('supabaseConfig', JSON.stringify(this.config));
+    }
+  }
+
+  async query(table, options = {}) {
+    if (this.useMockData) {
+      return this.getMockData(table, options);
+    }
+
+    try {
+      const { tenantId, filters, select, single } = options;
+      let url = `${this.config.url}/rest/v1/${table}?select=${select || '*'}`;
+      
+      if (tenantId) {
+        url += `&tenant_id=eq.${tenantId}`;
+      }
+      
+      if (filters) {
+        Object.entries(filters).forEach(([key, value]) => {
+          url += `&${key}=eq.${value}`;
+        });
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'apikey': this.config.anonKey,
+          'Authorization': `Bearer ${this.config.anonKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) throw new Error(`Query failed: ${response.statusText}`);
+      
+      const data = await response.json();
+      return single ? data[0] : data;
+    } catch (error) {
+      console.error('Supabase query error:', error);
+      return this.getMockData(table, options);
+    }
+  }
+
+  async insert(table, data, tenantId) {
+    if (this.useMockData) {
+      console.log('Mock insert:', table, data);
+      return { ...data, id: Date.now(), tenant_id: tenantId, created_at: new Date().toISOString() };
+    }
+
+    try {
+      // Add tenant_id to the data
+      const dataWithTenant = { ...data, tenant_id: tenantId };
+      const payload = Array.isArray(data) ? data.map(d => ({ ...d, tenant_id: tenantId })) : dataWithTenant;
+      
+      console.log('Inserting to Supabase:', table, payload); // Debug log
+      
+      const response = await fetch(`${this.config.url}/rest/v1/${table}`, {
+        method: 'POST',
+        headers: {
+          'apikey': this.config.anonKey,
+          'Authorization': `Bearer ${this.config.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(Array.isArray(payload) ? payload : [payload])
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Supabase insert error:', errorText);
+        throw new Error(`Insert failed: ${response.statusText} - ${errorText}`);
+      }
+      
+      const result = await response.json();
+      console.log('Insert successful:', result); // Debug log
+      return Array.isArray(data) ? result : result[0];
+    } catch (error) {
+      console.error('Supabase insert error:', error);
+      alert('Failed to save: ' + error.message); // Show error to user
+      throw error;
+    }
+  }
+
+
+
+  async update(table, id, data, tenantId) {
+    if (this.useMockData) {
+      console.log('Mock update:', table, id, data);
+      return { ...data, id, tenant_id: tenantId, updated_at: new Date().toISOString() };
+    }
+
+    try {
+      const response = await fetch(`${this.config.url}/rest/v1/${table}?id=eq.${id}&tenant_id=eq.${tenantId}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': this.config.anonKey,
+          'Authorization': `Bearer ${this.config.anonKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) throw new Error(`Update failed: ${response.statusText}`);
+      
+      const result = await response.json();
+      return result[0];
+    } catch (error) {
+      console.error('Supabase update error:', error);
+      throw error;
+    }
+  }
+
+  getMockData(table, options = {}) {
+    const { tenantId } = options;
+    let data = mockDatabase[table] || [];
+    
+    if (tenantId) {
+      data = data.filter(item => item.tenant_id === tenantId);
+    }
+    
+    return options.single ? data[0] : data;
+  }
+}
+
+const supabase = new SupabaseClient();
+
+// ============================================================================
+// MOCK DATABASE
+// ============================================================================
+const mockDatabase = {
+  tenants: [
+    { id: '5925873a-2119-444c-93b5-e0cd6ed1bdad', name: 'Fintech Solutions Ltd', regime: 'API', frn: 'FRN123456', status: 'active', created_at: '2024-01-01' }
+  ],
+  user_profiles: [
+    { id: 1, user_id: 'user1', tenant_id: 1, email: 'admin@fintech.com', display_name: 'Sarah Johnson', role: 'Admin', department: 'Compliance', smf_designation: 'SMF16' },
+    { id: 2, user_id: 'user2', tenant_id: 1, email: 'compliance@fintech.com', display_name: 'Mike Chen', role: 'Compliance', department: 'Compliance', smf_designation: null },
+    { id: 3, user_id: 'user3', tenant_id: 1, email: 'board@fintech.com', display_name: 'Emma Williams', role: 'Board', department: 'Board', smf_designation: 'SMF1' }
+  ],
+  policies: [
+    { id: 1, tenant_id: 1, title: 'Anti-Money Laundering Policy', version: '2.1', status: 'active', owner_user_id: 1, regulator_regime: 'API', created_at: '2024-01-15' },
+    { id: 2, tenant_id: 1, title: 'Conflicts of Interest Policy', version: '1.5', status: 'active', owner_user_id: 2, regulator_regime: 'API', created_at: '2024-02-01' },
+    { id: 3, tenant_id: 1, title: 'Data Protection & Privacy Policy', version: '3.0', status: 'active', owner_user_id: 1, regulator_regime: 'API', created_at: '2024-03-10' }
+  ],
+  reg_changes: [
+    { id: 1, tenant_id: 1, source: 'FCA', title: 'Consumer Duty - Outcomes Testing', summary: 'New requirements for evidencing consumer outcomes', published_at: '2025-01-10', status: 'in_review', impact_rating: 'high' },
+    { id: 2, tenant_id: 1, source: 'FCA', title: 'PS24/3 - Operational Resilience', summary: 'Updated operational resilience requirements', published_at: '2025-01-08', status: 'actioned', impact_rating: 'medium' }
+  ],
+  controls: [
+    { id: 1, tenant_id: 1, control_code: 'AML-001', title: 'Customer Due Diligence Review', description: 'Monthly review of CDD completeness', owner_user_id: 2, frequency: 'Monthly', status: 'active', test_method: 'Sample testing', evidence_required: 'CDD completion report' },
+    { id: 2, tenant_id: 1, control_code: 'COI-001', title: 'Conflicts Register Review', description: 'Quarterly review of conflicts register', owner_user_id: 1, frequency: 'Quarterly', status: 'active', test_method: 'Full review', evidence_required: 'Conflicts register' },
+    { id: 3, tenant_id: 1, control_code: 'DATA-001', title: 'DSAR Response Time', description: 'Monitor DSAR response within 30 days', owner_user_id: 2, frequency: 'Monthly', status: 'active', test_method: 'Report review', evidence_required: 'DSAR log' }
+  ],
+  exceptions: [
+    { id: 1, tenant_id: 1, source_type: 'control', source_id: 1, title: 'Late CDD completion for 3 customers', description: 'CDD not completed within required timeframe', severity: 'medium', status: 'open', opened_at: '2025-01-12' },
+    { id: 2, tenant_id: 1, source_type: 'incident', source_id: null, title: 'DSAR breach - 35 day response', description: 'DSAR responded to in 35 days instead of 30', severity: 'high', status: 'remediation', opened_at: '2025-01-09' }
+  ],
+  risks: [
+    { id: 1, tenant_id: 1, name: 'AML/CTF Risk', category: 'Financial Crime', inherent_score: 9, residual_score: 4, owner_user_id: 1, status: 'active' },
+    { id: 2, tenant_id: 1, name: 'Data Protection Risk', category: 'Information Security', inherent_score: 6, residual_score: 3, owner_user_id: 2, status: 'active' }
+  ]
+};
+
+// ============================================================================
+// DATA HOOKS
+// ============================================================================
+function useSupabaseQuery(table, options = {}) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const result = await supabase.query(table, options);
+      setData(result);
+      setError(null);
+    } catch (err) {
+      setError(err);
+      console.error(`Error fetching ${table}:`, err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [table, JSON.stringify(options)]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+function usePolicies(tenantId) {
+  return useSupabaseQuery('policies', { tenantId });
+}
+
+function useControls(tenantId) {
+  return useSupabaseQuery('controls', { tenantId });
+}
+
+function useRegChanges(tenantId) {
+  return useSupabaseQuery('reg_changes', { tenantId });
+}
+
+function useExceptions(tenantId) {
+  return useSupabaseQuery('exceptions', { tenantId });
+}
+
+function useRisks(tenantId) {
+  return useSupabaseQuery('risks', { tenantId });
+}
+
+// ============================================================================
+// CRUD OPERATIONS
+// ============================================================================
+async function createPolicy(tenantId, policyData) {
+  return await supabase.insert('policies', {
+    title: policyData.title,
+    version: policyData.version || '1.0',
+    status: policyData.status || 'draft',
+    // owner_user_id: null, // Remove for now - will add when user management is ready
+    regulator_regime: policyData.regulator_regime,
+    created_at: new Date().toISOString()
+  }, tenantId);
+}
+
+async function createControl(tenantId, controlData) {
+  return await supabase.insert('controls', {
+    control_code: controlData.control_code,
+    title: controlData.title,
+    description: controlData.description,
+    // owner_user_id: null, // Remove for now
+    frequency: controlData.frequency,
+    test_method: controlData.test_method,
+    evidence_required: controlData.evidence_required,
+    status: controlData.status || 'active',
+    created_at: new Date().toISOString()
+  }, tenantId);
+}
+
+async function createException(tenantId, exceptionData) {
+  return await supabase.insert('exceptions', {
+    source_type: exceptionData.source_type,
+    source_id: exceptionData.source_id,
+    title: exceptionData.title,
+    description: exceptionData.description,
+    severity: exceptionData.severity,
+    status: 'open',
+    opened_at: new Date().toISOString()
+  }, tenantId);
+}
+
+async function closeException(tenantId, exceptionId) {
+  return await supabase.update('exceptions', exceptionId, {
+    status: 'closed',
+    closed_at: new Date().toISOString()
+  }, tenantId);
+}
+
+// ============================================================================
+// MAIN APP COMPONENT
+// ============================================================================
+export default function RegIntels() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentTenant, setCurrentTenant] = useState(null);
+  const [activeSolution, setActiveSolution] = useState('Solution 1');
+  const [activePage, setActivePage] = useState('Change Feed');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showSetup, setShowSetup] = useState(false);
+  const [setupComplete, setSetupComplete] = useState(supabase.isConfigured);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(false);
+
+  // Check if user is onboarded on mount
+  useEffect(() => {
+    const onboarded = localStorage.getItem('tenant_onboarded');
+    if (onboarded) {
+      setIsOnboarded(true);
+      // Load mock user and tenant
+      setCurrentUser(mockDatabase.user_profiles[0]);
+      setCurrentTenant(mockDatabase.tenants[0]);
+    } else {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+const handleOnboardingComplete = (tenantData, userData) => {
+    setCurrentTenant(tenantData);
+    setCurrentUser(userData);
+    setIsOnboarded(true);
+    setShowOnboarding(false);
+    localStorage.setItem('tenant_onboarded', 'true');
+  };
+
+  const solutions = {
+    'Solution 1': {
+      name: 'Regulatory Change Intelligence',
+      icon: Bell,
+      pages: ['Change Feed', 'Change Register'],
+      accessRoles: ['Admin', 'Compliance']
+    },
+    // ... rest of solutions
+  };
+
+  const hasAccess = (solution) => currentUser && solutions[solution].accessRoles.includes(currentUser.role);
+  const accessibleSolutions = currentUser ? Object.keys(solutions).filter(hasAccess) : [];
+
+  useEffect(() => {
+    if (currentUser && activeSolution && !hasAccess(activeSolution)) {
+      const firstSolution = accessibleSolutions[0];
+      if (firstSolution) {
+        setActiveSolution(firstSolution);
+        setActivePage(solutions[firstSolution].pages[0]);
+      }
+    }
+  }, [currentUser?.id]);
+
+  // If not onboarded, show onboarding wizard
+  if (showOnboarding || !isOnboarded) {
+    return <TenantOnboardingWizard onComplete={handleOnboardingComplete} />;
+  }
+
+  return (
+    <div className="app">
+
+  const solutions = {
+    'Solution 1': {
+      name: 'Regulatory Change Intelligence',
+      icon: Bell,
+      pages: ['Change Feed', 'Change Register'],
+      accessRoles: ['Admin', 'Compliance']
+    },
+    'Solution 2': {
+      name: 'Control Framework Core',
+      icon: Shield,
+      pages: ['Control Library'],
+      accessRoles: ['Admin', 'Compliance']
+    },
+    'Solution 3': {
+      name: 'Control Execution & Monitoring',
+      icon: FileCheck,
+      pages: ['Policy Library', 'Reg Mapping', 'Attestations', 'Exceptions'],
+      accessRoles: ['Admin', 'Compliance']
+    },
+    'Solution 4': {
+      name: 'Exceptions & Remediation',
+      icon: AlertTriangle,
+      pages: ['Unified Exceptions', 'Evidence & Audit'],
+      accessRoles: ['Admin', 'Compliance']
+    },
+    'Solution 5': {
+      name: 'Board View',
+      icon: BarChart3,
+      pages: ['Management Summary', 'Risk Posture', 'Control Effectiveness', 'Exceptions Overview', 'Regulatory Readiness', 'Attestations', 'Audit Trail', 'Decision Register', 'Approvals', 'Regulator Pack', 'Regulatory Notifications', 'Governance Evidence Library', 'KPI Schema', 'API Health'],
+      accessRoles: ['Admin', 'Compliance', 'Board'],
+      readOnly: true
+    }
+  };
+
+  return (
+    <div className="app">
+      {/* Connection Status Banner */}
+      <div className={`status-banner ${supabase.useMockData ? 'warning' : 'success'}`}>
+        <div className="status-content">
+          {supabase.useMockData ? <AlertCircle size={18} /> : <Database size={18} />}
+          <span>
+            {supabase.useMockData 
+              ? '⚠️ Using Mock Data - Click "Configure Database" to connect Supabase'
+              : '✓ Connected to Supabase'
+            }
+          </span>
+        </div>
+      </div>
+
+      {/* Top Navigation */}
+      <nav className="top-nav">
+        <div className="nav-left">
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="nav-button">
+            {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <div className="logo">
+            <Shield size={28} strokeWidth={2.5} />
+            <div>
+              <div className="logo-title">RegIntels</div>
+              <div className="logo-subtitle">{currentTenant?.name}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="nav-right">
+          <div className="user-info">
+            <div className="user-name">{currentUser?.display_name}</div>
+            <div className="user-role">{currentUser?.role} • {currentUser?.department}</div>
+          </div>
+          
+          <select 
+            value={currentUser?.id}
+            onChange={(e) => setCurrentUser(mockDatabase.user_profiles.find(u => u.id === parseInt(e.target.value)))}
+            className="user-select"
+          >
+            {mockDatabase.user_profiles.map(u => (
+              <option key={u.id} value={u.id}>{u.display_name} ({u.role})</option>
+            ))}
+          </select>
+
+          <button 
+            onClick={() => setShowSetup(true)}
+            className="nav-button-secondary"
+          >
+            <Database size={16} />
+            {setupComplete ? 'Database Setup' : 'Configure Database'}
+          </button>
+        </div>
+      </nav>
+
+      <div className="main-container">
+        {/* Sidebar */}
+        {sidebarOpen && (
+          <aside className="sidebar">
+            <div className="sidebar-content">
+              {accessibleSolutions.map(solutionKey => {
+                const solution = solutions[solutionKey];
+                const Icon = solution.icon;
+                const isActive = activeSolution === solutionKey;
+                
+                return (
+                  <div key={solutionKey} className="solution-group">
+                    <button
+                      onClick={() => {
+                        setActiveSolution(solutionKey);
+                        setActivePage(solution.pages[0]);
+                      }}
+                      className={`solution-button ${isActive ? 'active' : ''}`}
+                    >
+                      <Icon size={18} />
+                      <span className="solution-name">{solutionKey}</span>
+                      {solution.readOnly && <span className="readonly-badge">RO</span>}
+                    </button>
+                    
+                    {isActive && (
+                      <div className="page-list">
+                        {solution.pages.map(page => (
+                          <button
+                            key={page}
+                            onClick={() => setActivePage(page)}
+                            className={`page-button ${activePage === page ? 'active' : ''}`}
+                          >
+                            {page}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </aside>
+        )}
+
+        {/* Main Content */}
+        <main className="content">
+          {showSetup ? (
+            <SetupPage 
+              onClose={() => setShowSetup(false)} 
+              onComplete={() => { 
+                setSetupComplete(true); 
+                setShowSetup(false);
+                window.location.reload();
+              }} 
+            />
+          ) : (
+            <PageContent 
+              solution={activeSolution} 
+              page={activePage} 
+              tenantId={currentTenant?.id}
+              currentUser={currentUser}
+              isReadOnly={solutions[activeSolution].readOnly}
+            />
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// PAGE CONTENT ROUTER
+// ============================================================================
+function PageContent({ solution, page, tenantId, isReadOnly }) {
+  if (solution === 'Solution 1' && page === 'Change Feed') return <ChangeFeedPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 1' && page === 'Change Register') return <ChangeRegisterPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 2' && page === 'Control Library') return <ControlLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 3' && page === 'Policy Library') return <PolicyLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 3' && page === 'Reg Mapping') return <RegMappingPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 3' && page === 'Attestations') return <AttestationsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 3' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 4' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 4' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 5' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
+  if (solution === 'Solution 5' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
+  if (solution === 'Solution 5' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
+  if (solution === 'Solution 5' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
+  if (solution === 'Solution 5') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
+  
+  return <div>Page: {page}</div>;
+}
+
+// ============================================================================
+// UTILITY COMPONENTS
+// ============================================================================
+function StatusBadge({ status }) {
+  const colorMap = {
+    active: 'success',
+    in_review: 'warning',
+    actioned: 'info',
+    open: 'danger',
+    remediation: 'warning',
+    closed: 'success',
+    draft: 'muted',
+    pending: 'warning',
+    submitted: 'info'
+  };
+  
+  return (
+    <span className={`status-badge ${colorMap[status] || 'muted'}`}>
+      {status ? status.replace('_', ' ') : 'unknown'}
+    </span>
+  );
+}
+
+function ImpactBadge({ impact }) {
+  const colorMap = {
+    high: 'danger',
+    medium: 'warning',
+    low: 'info'
+  };
+  
+  return (
+    <span className={`impact-badge ${colorMap[impact]}`}>
+      {impact} impact
+    </span>
+  );
+}
+
+function LoadingSpinner() {
+  return (
+    <div className="loading-container">
+      <Loader size={32} className="spinner" />
+    </div>
+  );
+}
+
+function DataTable({ headers, rows }) {
+  return (
+    <div className="data-table-container">
+      <table className="data-table">
+        <thead>
+          <tr>
+            {headers.map((h, i) => (
+              <th key={i}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => (
+                <td key={j}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ============================================================================
+// SOLUTION 1: REGULATORY CHANGE INTELLIGENCE
+// ============================================================================
+function ChangeFeedPage({ tenantId, isReadOnly }) {
+  const { data: changes, loading, refetch } = useRegChanges(tenantId);
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Change Feed</h1>
+        <p className="page-subtitle">Regulatory updates and change items for your firm</p>
+      </div>
+
+      {!isReadOnly && (
+        <button onClick={() => refetch()} className="btn-primary">
+          Scan for Updates
+        </button>
+      )}
+
+      <div className="card-grid">
+        {changes?.map(change => (
+          <div key={change.id} className="card">
+            <div className="card-badges">
+              <span className="source-badge">{change.source}</span>
+              <span className="date-badge">{change.published_at}</span>
+              <StatusBadge status={change.status} />
+              <ImpactBadge impact={change.impact_rating} />
+            </div>
+            <h3 className="card-title">{change.title}</h3>
+            <p className="card-text">{change.summary}</p>
+            {!isReadOnly && (
+              <div className="card-actions">
+                <button className="btn-secondary">Review</button>
+                <button className="btn-ghost">Map to Controls</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChangeRegisterPage({ tenantId }) {
+  const { data: changes, loading } = useRegChanges(tenantId);
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Change Register</h1>
+        <p className="page-subtitle">Full register of regulatory changes with impact assessments</p>
+      </div>
+      
+      <DataTable 
+        headers={['ID', 'Source', 'Title', 'Published', 'Status', 'Impact']}
+        rows={changes?.map(c => [
+          c.id,
+          c.source,
+          c.title,
+          c.published_at,
+          <StatusBadge key={c.id} status={c.status} />,
+          <ImpactBadge key={c.id} impact={c.impact_rating} />
+        ]) || []}
+      />
+    </div>
+  );
+}
+
+// ============================================================================
+// SOLUTION 2: CONTROL FRAMEWORK CORE
+// ============================================================================
+function ControlLibraryPage({ tenantId, isReadOnly }) {
+  const { data: controls, loading, refetch } = useControls(tenantId);
+  const [showModal, setShowModal] = useState(false);
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Control Library</h1>
+        <p className="page-subtitle">Manage your control framework</p>
+      </div>
+
+      {!isReadOnly && (
+        <button onClick={() => setShowModal(true)} className="btn-primary">
+          <Plus size={18} />
+          Create Control
+        </button>
+      )}
+
+      {showModal && (
+        <CreateControlModal 
+          tenantId={tenantId}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            refetch();
+          }}
+        />
+      )}
+
+      <div className="card-grid">
+        {controls?.map(control => (
+          <div key={control.id} className="card">
+            <div className="card-badges">
+              <span className="control-code">{control.control_code}</span>
+              <span className="frequency-badge">• {control.frequency}</span>
+              <StatusBadge status={control.status} />
+            </div>
+            <h3 className="card-title">{control.title}</h3>
+            <p className="card-text">{control.description}</p>
+            <div className="card-meta">
+              Test Method: {control.test_method}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// SOLUTION 3: CONTROL EXECUTION & MONITORING
+// ============================================================================
+function PolicyLibraryPage({ tenantId, isReadOnly }) {
+  const { data: policies, loading, refetch } = usePolicies(tenantId);
+  const [showModal, setShowModal] = useState(false);
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Policy Library</h1>
+        <p className="page-subtitle">Foundation policy inventory and templates</p>
+      </div>
+
+      {!isReadOnly && (
+        <button onClick={() => setShowModal(true)} className="btn-primary">
+          <Upload size={18} />
+          Upload Policy
+        </button>
+      )}
+
+      {showModal && (
+        <CreatePolicyModal 
+          tenantId={tenantId}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            refetch();
+          }}
+        />
+      )}
+
+      <div className="card-grid">
+        {policies?.map(policy => (
+          <div key={policy.id} className="card">
+            <div className="card-badges">
+              <FileText size={18} />
+              <span className="version-badge">v{policy.version}</span>
+              <StatusBadge status={policy.status} />
+            </div>
+            <h3 className="card-title">{policy.title}</h3>
+            <div className="card-meta">
+              Regime: {policy.regulator_regime}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RegMappingPage({ tenantId }) {
+  const { data: policies } = usePolicies(tenantId);
+  const { data: controls } = useControls(tenantId);
+
+  return (
+    <div>
+      <div className="page-header">
+        <h1>Regulatory Mapping</h1>
+        <p className="page-subtitle">Obligations ↔ Policies ↔ Controls mapping view</p>
+      </div>
+
+      <div className="mapping-grid">Continue22:39    <div className="mapping-column">
+      <h3>OBLIGATIONS</h3>
+      {['AML Customer Due Diligence', 'Conflicts of Interest Management', 'GDPR Data Subject Rights'].map((ob, i) => (
+        <div key={i} className="mapping-item">{ob}</div>
+      ))}
+    </div>
+
+    <div className="mapping-column">
+      <h3>POLICIES</h3>
+      {policies?.map(p => (
+        <div key={p.id} className="mapping-item">{p.title}</div>
+      ))}
+    </div>
+
+    <div className="mapping-column">
+      <h3>CONTROLS</h3>
+      {controls?.map(c => (
+        <div key={c.id} className="mapping-item">
+          <div className="control-code-small">{c.control_code}</div>
+          <div>{c.title}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+);
+}
+function AttestationsPage({ tenantId, isReadOnly }) {
+const attestations = [
+{ id: 1, control_code: 'AML-001', period: 'Q4 2024', owner: 'Mike Chen', status: 'pending', due_date: '2025-01-20' },
+{ id: 2, control_code: 'COI-001', period: 'Q4 2024', owner: 'Sarah Johnson', status: 'submitted', due_date: '2025-01-15' }
+];
+return (
+<div>
+<div className="page-header">
+<h1>Attestations</h1>
+<p className="page-subtitle">Scheduled attestations by owner, SMF, and department</p>
+</div>
+  {!isReadOnly && (
+    <button className="btn-primary">
+      + Request Attestation
+    </button>
+  )}
+
+  <DataTable 
+    headers={['Control', 'Period', 'Owner', 'Due Date', 'Status', 'Actions']}
+    rows={attestations.map(a => [
+      a.control_code,
+      a.period,
+      a.owner,
+      a.due_date,
+      <StatusBadge key={a.id} status={a.status} />,
+      !isReadOnly ? <button key={a.id} className="btn-primary-small">Submit</button> : '-'
+    ])}
+  />
+</div>
+);
+}
+function ExceptionsLightPage({ tenantId }) {
+const { data: exceptions, loading } = useExceptions(tenantId);
+if (loading) return <LoadingSpinner />;
+return (
+<div>
+<div className="page-header">
+<h1>Exceptions</h1>
+<p className="page-subtitle">Operational exception capture tied to failed controls</p>
+</div>
+  <div className="card-grid">
+    {exceptions?.slice(0, 2).map(ex => (
+      <div key={ex.id} className="card">
+        <div className="card-badges">
+          <AlertTriangle size={18} color={ex.severity === 'high' ? '#B91C1C' : '#B45309'} />
+          <span className="source-type-badge">{ex.source_type}</span>
+          <StatusBadge status={ex.status} />
+        </div>
+        <h3 className="card-title">{ex.title}</h3>
+        <div className="card-meta">
+          Opened: {ex.opened_at}
+        </div>
+      </div>
+    ))}
+  </div>
+  <div className="info-message">
+    View full exceptions list in Solution 4
+  </div>
+</div>
+);
+}
+// ============================================================================
+// SOLUTION 4: EXCEPTIONS & REMEDIATION
+// ============================================================================
+function UnifiedExceptionsPage({ tenantId, isReadOnly }) {
+const { data: exceptions, loading, refetch } = useExceptions(tenantId);
+const [showModal, setShowModal] = useState(false);
+if (loading) return <LoadingSpinner />;
+return (
+<div>
+<div className="page-header">
+<h1>Unified Exceptions</h1>
+<p className="page-subtitle">All exceptions from controls, incidents, complaints, and other sources</p>
+</div>
+  {!isReadOnly && (
+    <button onClick={() => setShowModal(true)} className="btn-primary">
+      + Create Exception
+    </button>
+  )}
+
+  {showModal && (
+    <CreateExceptionModal 
+      tenantId={tenantId}
+      onClose={() => setShowModal(false)}
+      onSuccess={() => {
+        setShowModal(false);
+        refetch();
+      }}
+    />
+  )}
+
+  <div className="card-grid">
+    {exceptions?.map(ex => (
+      <div key={ex.id} className="card">
+        <div className="card-badges">
+          <AlertTriangle size={18} color={ex.severity === 'high' ? '#B91C1C' : '#B45309'} />
+          <span className="source-type-badge">{ex.source_type}</span>
+          <span className={`severity-badge ${ex.severity}`}>{ex.severity} severity</span>
+          <StatusBadge status={ex.status} />
+        </div>
+        <h3 className="card-title">{ex.title}</h3>
+        <p className="card-text">{ex.description}</p>
+        <div className="card-meta">
+          Opened: {ex.opened_at}
+        </div>
+        {!isReadOnly && (
+          <div className="card-actions">
+            <button className="btn-secondary">Assign Action</button>
+            <button 
+              onClick={async () => {
+                await closeException(tenantId, ex.id);
+                refetch();
+              }}
+              className="btn-success"
+            >
+              Close
+            </button>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+);
+}
+function EvidenceAuditPage({ tenantId }) {
+const evidenceItems = [
+{ id: 1, linked_type: 'control_test', control: 'AML-001', description: 'CDD Sample Test Results Q4 2024', file: 'cdd_test_q4.xlsx', collected_at: '2025-01-10' },
+{ id: 2, linked_type: 'control', control: 'COI-001', description: 'Conflicts Register December 2024', file: 'conflicts_dec.pdf', collected_at: '2025-01-05' }
+];
+return (
+<div>
+<div className="page-header">
+<h1>Evidence & Audit Readiness</h1>
+<p className="page-subtitle">Evidence inventory, audit packs, and traceability</p>
+</div>
+  <button className="btn-primary">
+    <Upload size={18} />
+    Upload Evidence
+  </button>
+
+  <DataTable 
+    headers={['Type', 'Control', 'Description', 'File', 'Collected', 'Actions']}
+    rows={evidenceItems.map(e => [
+      e.linked_type,
+      e.control,
+      e.description,
+      e.file,
+      e.collected_at,
+      <button key={e.id} className="btn-ghost"><Download size={16} /> Download</button>
+    ])}
+  />
+
+  <div className="audit-trail-section">
+    <h3>Audit Trail</h3>
+    <div className="audit-trail">
+      <div>2025-01-10 14:23 • Sarah Johnson uploaded evidence for AML-001</div>
+      <div>2025-01-10 12:15 • Mike Chen completed control test COI-001</div>
+      <div>2025-01-09 16:45 • Sarah Johnson created exception EXC-002</div>
+    </div>
+  </div>
+</div>
+);
+}
+// ============================================================================
+// SOLUTION 5: BOARD VIEW PAGES
+// ============================================================================
+function ManagementSummaryPage() {
+return (
+<div>
+<div className="page-header">
+<h1>Management Summary</h1>
+<p className="page-subtitle">Executive overview of compliance posture</p>
+</div>
+  <div className="metrics-grid">
+    <MetricCard title="Control Coverage" value="94%" status="success" />
+    <MetricCard title="Open Exceptions" value="2" status="warning" />
+    <MetricCard title="Overdue Tests" value="0" status="success" />
+    <MetricCard title="Attestations Due" value="1" status="info" />
+  </div>
+
+  <div className="highlights-section">
+    <h3>Key Highlights</h3>
+    <ul>
+      <li>All critical controls tested and passed in current period</li>
+      <li>2 medium severity exceptions identified and under remediation</li>
+      <li>Consumer Duty outcomes testing framework implemented</li>
+      <li>Regulatory change PS24/3 impact assessment completed</li>
+    </ul>
+  </div>
+
+  <div className="export-actions">
+    <button className="btn-secondary" onClick={() => window.print()}>Export PDF</button>
+    <button className="btn-secondary" onClick={() => alert('CSV export coming soon!')}>Export CSV</button>
+  </div>
+</div>
+);
+}
+function RiskPosturePage() {
+const risks = [
+{ name: 'AML/CTF Risk', inherent: 'High', residual: 'Medium', trend: 'stable' },
+{ name: 'Data Protection Risk', inherent: 'Medium', residual: 'Low', trend: 'improving' },
+{ name: 'Operational Resilience', inherent: 'Medium', residual: 'Medium', trend: 'stable' }
+];
+return (
+<div>
+<div className="page-header">
+<h1>Risk Posture</h1>
+<p className="page-subtitle">Risk universe and residual risk assessment</p>
+</div>
+  <DataTable 
+    headers={['Risk', 'Inherent Risk', 'Residual Risk', 'Trend']}
+    rows={risks.map((r, i) => [
+      r.name,
+      <span key={i} className={`risk-level ${r.inherent.toLowerCase()}`}>{r.inherent}</span>,
+      <span key={i} className={`risk-level ${r.residual.toLowerCase()}`}>{r.residual}</span>,
+      r.trend === 'improving' ? '↓ Improving' : '→ Stable'
+    ])}
+  />
+
+  <div className="export-actions">
+    <button className="btn-secondary">Export PDF</button>
+  </div>
+</div>
+);
+}
+function ControlEffectivenessPage() {
+return (
+<div>
+<div className="page-header">
+<h1>Control Effectiveness</h1>
+<p className="page-subtitle">Control testing results and effectiveness metrics</p>
+</div>
+  <div className="metrics-grid">
+    <MetricCard title="Controls Tested" value="28/30" status="success" />
+    <MetricCard title="Pass Rate" value="96%" status="success" />
+    <MetricCard title="Avg Test Cycle" value="23 days" status="info" />
+  </div>
+
+  <div className="testing-summary">
+    <h3>Testing Summary</h3>
+    <DataTable 
+      headers={['Domain', 'Total Controls', 'Tested', 'Pass', 'Fail']}
+      rows={[
+        ['AML/CTF', '8', '8', '8', '0'],
+        ['Data Protection', '6', '6', '6', '0'],
+        ['Conflicts of Interest', '4', '4', '3', '1'],
+        ['Operational Resilience', '12', '10', '10', '0']
+      ]}
+    />
+  </div>
+
+  <div className="export-actions">
+    <button className="btn-secondary">Export PDF</button>
+  </div>
+</div>
+);
+}
+function APIHealthPage() {
+const endpoints = [
+{ name: 'v_risk_posture_mi', url: '/api/v1/mi/risk-posture', status: 'healthy', lastCheck: '2025-01-16 09:30' },
+{ name: 'v_control_effectiveness_mi', url: '/api/v1/mi/control-effectiveness', status: 'healthy', lastCheck: '2025-01-16 09:30' },
+{ name: 'v_exceptions_mi', url: '/api/v1/mi/exceptions', status: 'healthy', lastCheck: '2025-01-16 09:30' }
+];
+return (
+<div>
+<div className="page-header">
+<h1>API Health</h1>
+<p className="page-subtitle">Tenant-scoped MI endpoint health checks</p>
+</div>
+  <div className="card-grid">
+    {endpoints.map((ep, i) => (
+      <div key={i} className="card">
+        <div className="endpoint-header">
+          <div>
+            <div className="endpoint-status">
+              <CheckCircle size={20} color="#15803D" />
+              <span className="endpoint-name">{ep.name}</span>
+            </div>
+            <div className="endpoint-url">{ep.url}</div>
+            <div className="endpoint-meta">Last checked: {ep.lastCheck}</div>
+          </div>
+          <button className="btn-primary">Test Now</button>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+);
+}
+function BoardPagePlaceholder({ page }) {
+return (
+<div>
+<div className="page-header">
+<h1>{page}</h1>
+<p className="page-subtitle">Board-level view (read-only)</p>
+</div>
+  <div className="placeholder-content">
+    <BarChart3 size={48} />
+    <p>This page will display {page.toLowerCase()} data from tenant MI views</p>
+    <p className="placeholder-source">Data source: v_{page.toLowerCase().replace(/ /g, '_')}_mi</p>
+  </div>
+
+  <div className="export-actions">
+    <button className="btn-secondary">Export PDF</button>
+    <button className="btn-secondary">Export CSV</button>
+  </div>
+</div>
+);
+}
+function MetricCard({ title, value, status }) {
+return (
+<div className="metric-card">
+<div className="metric-title">{title}</div>
+<div className={`metric-value ${status}`}>{value}</div>
+</div>
+);
+}
+// ============================================================================
+// MODAL COMPONENTS
+// ============================================================================
+function Modal({ title, children, onClose }) {
+return (
+<div className="modal-overlay">
+<div className="modal">
+<div className="modal-header">
+<h3>{title}</h3>
+<button onClick={onClose} className="modal-close">
+<X size={20} />
+</button>
+</div>
+<div className="modal-body">
+{children}
+</div>
+</div>
+</div>
+);
+}
+function CreatePolicyModal({ tenantId, onClose, onSuccess }) {
+const [formData, setFormData] = useState({
+title: '',
+version: '1.0',
+regulator_regime: 'API',
+status: 'draft',
+owner_user_id: 1
+});
+const [loading, setLoading] = useState(false);
+const handleSubmit = async (e) => {
+e.preventDefault();
+setLoading(true);
+try {
+await createPolicy(tenantId, formData);
+onSuccess();
+} catch (error) {
+console.error('Failed to create policy:', error);
+} finally {
+setLoading(false);
+}
+};
+return (
+<Modal title="Upload Policy" onClose={onClose}>
+<form onSubmit={handleSubmit} className="modal-form">
+<div className="form-group">
+<label>Policy Title *</label>
+<input
+type="text"
+required
+value={formData.title}
+onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+placeholder="e.g., Anti-Money Laundering Policy"
+/>
+</div>
+    <div className="form-group">
+      <label>Version</label>
+      <input
+        type="text"
+        value={formData.version}
+        onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Regime</label>
+      <select
+        value={formData.regulator_regime}
+        onChange={(e) => setFormData({ ...formData, regulator_regime: e.target.value })}
+      >
+        <option value="API">API</option>
+        <option value="SPI">SPI</option>
+        <option value="SEMI">SEMI</option>
+        <option value="AEMI">AEMI</option>
+        <option value="CCON">CCON</option>
+      </select>
+    </div>
+
+    <div className="form-actions">
+      <button type="button" onClick={onClose} className="btn-ghost">
+        Cancel
+      </button>
+      <button type="submit" disabled={loading} className="btn-primary">
+        {loading ? 'Creating...' : 'Create Policy'}
+      </button>
+    </div>
+  </form>
+</Modal>
+);
+}
+function CreateControlModal({ tenantId, onClose, onSuccess }) {
+const [formData, setFormData] = useState({
+control_code: '',
+title: '',
+description: '',
+frequency: 'Monthly',
+test_method: '',
+evidence_required: '',
+owner_user_id: 1
+});
+const [loading, setLoading] = useState(false);
+const handleSubmit = async (e) => {
+e.preventDefault();
+setLoading(true);
+try {
+await createControl(tenantId, formData);
+onSuccess();
+} catch (error) {
+console.error('Failed to create control:', error);
+} finally {
+setLoading(false);
+}
+};
+return (
+<Modal title="Create Control" onClose={onClose}>
+<form onSubmit={handleSubmit} className="modal-form">
+<div className="form-group">
+<label>Control Code *</label>
+<input
+type="text"
+required
+value={formData.control_code}
+onChange={(e) => setFormData({ ...formData, control_code: e.target.value })}
+placeholder="e.g., AML-001"
+style={{ fontFamily: 'monospace' }}
+/>
+</div>
+    <div className="form-group">
+      <label>Title *</label>
+      <input
+        type="text"
+        required
+        value={formData.title}
+        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Description *</label>
+      <textarea
+        required
+        value={formData.description}
+        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Frequency</label>
+      <select
+        value={formData.frequency}
+        onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
+      >
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Quarterly">Quarterly</option>
+        <option value="Annually">Annually</option>
+      </select>
+    </div>
+
+    <div className="form-group">
+      <label>Test Method</label>
+      <input
+        type="text"
+        value={formData.test_method}
+        onChange={(e) => setFormData({ ...formData, test_method: e.target.value })}
+        placeholder="e.g., Sample testing"
+      />
+    </div>
+
+    <div className="form-actions">
+      <button type="button" onClick={onClose} className="btn-ghost">
+        Cancel
+      </button>
+      <button type="submit" disabled={loading} className="btn-primary">
+        {loading ? 'Creating...' : 'Create Control'}
+      </button>
+    </div>
+  </form>
+</Modal>
+);
+}
+function CreateExceptionModal({ tenantId, onClose, onSuccess }) {
+const [formData, setFormData] = useState({
+source_type: 'control',
+title: '',
+description: '',
+severity: 'medium'
+});
+const [loading, setLoading] = useState(false);
+const handleSubmit = async (e) => {
+e.preventDefault();
+setLoading(true);
+try {
+await createException(tenantId, formData);
+onSuccess();
+} catch (error) {
+console.error('Failed to create exception:', error);
+} finally {
+setLoading(false);
+}
+};
+return (
+<Modal title="Create Exception" onClose={onClose}>
+<form onSubmit={handleSubmit} className="modal-form">
+<div className="form-group">
+<label>Source Type</label>
+<select
+value={formData.source_type}
+onChange={(e) => setFormData({ ...formData, source_type: e.target.value })}
+>
+<option value="control">Control</option>
+<option value="incident">Incident</option>
+<option value="complaint">Complaint</option>
+<option value="audit">Audit</option>
+</select>
+</div>
+    <div className="form-group">
+      <label>Title *</label>
+      <input
+        type="text"
+        required
+        value={formData.title}
+        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Description *</label>
+      <textarea
+        required
+        value={formData.description}
+        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Severity</label>
+      <select
+        value={formData.severity}
+        onChange={(e) => setFormData({ ...formData, severity: e.target.value })}
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+    </div>
+
+    <div className="form-actions">
+      <button type="button" onClick={onClose} className="btn-ghost">
+        Cancel
+      </button>
+      <button type="submit" disabled={loading} className="btn-primary">
+        {loading ? 'Creating...' : 'Create Exception'}
+      </button>
+    </div>
+  </form>
+</Modal>
+);
+}
+// ============================================================================
+// SETUP PAGE
+// ============================================================================
+function SetupPage({ onClose, onComplete }) {
+const [url, setUrl] = useState('');
+const [key, setKey] = useState('');
+const [status, setStatus] = useState(null);
+const skip = () => {
+if (!url || !key) {
+setStatus({ success: false, message: 'Please fill in both fields' });
+return;
+}
+setStatus({ success: true, message: 'Credentials will be saved without testing' });
+};
+const save = () => {
+supabase.updateConfig(url, key);
+onComplete();
+};
+return (
+<div className="setup-container">
+<div className="setup-header">
+<h1><Database size={32} /> Supabase Database Setup</h1>
+<button onClick={onClose} className="modal-close"><X size={24} /></button>
+</div>
+  <div className="setup-instructions">
+    <h3>📋 Step-by-Step Instructions</h3>
+    <ol>
+      <li>Go to <a href="https://supabase.com" target="_blank" rel="noopener noreferrer">supabase.com</a> → Your Project</li>
+      <li>Click <strong>Settings</strong> → <strong>API</strong></li>
+      <li>Copy <strong>Project URL</strong> and <strong>anon public key</strong></li>
+      <li>Paste them below</li>
+    </ol>
+  </div>
+
+  <div className="setup-form">
+    <div className="form-group">
+      <label>Supabase Project URL *</label>
+      <input
+        type="text"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        placeholder="https://yourproject.supabase.co"
+        style={{ fontFamily: 'monospace' }}
+      />
+      <p className="form-hint">Example: https://abcdefgh.supabase.co</p>
+    </div>
+
+    <div className="form-group">
+      <label>Supabase Anon Key *</label>
+      <textarea
+        value={key}
+        onChange={(e) => setKey(e.target.value)}
+        placeholder="eyJhbGc..."
+        style={{ fontFamily: 'monospace', minHeight: '100px' }}
+      />
+      <p className="form-hint">Long string starting with "eyJ..." - safe to use in browser</p>
+    </div>
+
+    {status && (
+      <div className={`status-message ${status.success ? 'success' : 'error'}`}>
+        {status.message}
+      </div>
+    )}
+
+    <div className="form-actions">
+      <button onClick={skip} disabled={!url || !key} className="btn-primary">
+        Skip Test & Save
+      </button>
+      <button onClick={save} disabled={!status || !status.success} className="btn-success">
+        Save & Continue
+      </button>
+    </div>
+  </div>
+
+  <div className="setup-note">
+    <strong>CORS Setup:</strong> In Supabase → Authentication → URL Configuration, add Site URL: <code>https://localhost:3000</code> and Redirect URLs: <code>http://localhost:3000/*</code>
+  </div>
+  </div>
+  );
+}
+
+// ============================================================================
+// TENANT ONBOARDING WIZARD - FCA GRADE MULTI-STEP
+// ============================================================================
+function TenantOnboardingWizard({ onComplete }) {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    // Step 1: Firm Details
+    firmName: '',
+    tradingName: '',
+    regime: 'API',
+    frn: '',
+    registeredAddress: '',
+    country: 'United Kingdom',
+    
+    // Step 2: Primary Contact
+    contactName: '',
+    contactEmail: '',
+    contactPhone: '',
+    contactPosition: '',
+    
+    // Step 3: Regulatory Details
+    regulatedActivities: [],
+    numberOfEmployees: '',
+    hasMLRO: false,
+    hasSMF: false,
+    
+    // Step 4: Documentation
+    certificateOfIncorporation: null,
+    proofOfAddress: null,
+    fcaAuthorization: null,
+    policyDocuments: null,
+    
+    // Step 5: Compliance Confirmation
+    acceptTerms: false,
+    confirmAccuracy: false,
+    confirmFCACompliance: false
+  });
+  
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const totalSteps = 5;
+
+  const regimeOptions = [
+    { value: 'API', label: 'Appointed Representative (API)' },
+    { value: 'SPI', label: 'Small Payment Institution (SPI)' },
+    { value: 'SEMI', label: 'Small E-Money Institution (SEMI)' },
+    { value: 'AEMI', label: 'Authorised E-Money Institution (AEMI)' },
+    { value: 'CCON', label: 'Consumer Credit (CCON)' }
+  ];
+
+  const validateStep = (currentStep) => {
+    const newErrors = {};
+    
+    if (currentStep === 1) {
+      if (!formData.firmName) newErrors.firmName = 'Firm name is required';
+      if (!formData.regime) newErrors.regime = 'Regime is required';
+      if (!formData.frn) newErrors.frn = 'FRN is required';
+      if (!formData.registeredAddress) newErrors.registeredAddress = 'Address is required';
+    }
+    
+    if (currentStep === 2) {
+      if (!formData.contactName) newErrors.contactName = 'Contact name is required';
+      if (!formData.contactEmail) newErrors.contactEmail = 'Email is required';
+      if (formData.contactEmail && !formData.contactEmail.includes('@')) {
+        newErrors.contactEmail = 'Valid email is required';
+      }
+      if (!formData.contactPhone) newErrors.contactPhone = 'Phone is required';
+    }
+    
+    if (currentStep === 3) {
+      if (formData.regulatedActivities.length === 0) {
+        newErrors.regulatedActivities = 'Select at least one regulated activity';
+      }
+      if (!formData.numberOfEmployees) newErrors.numberOfEmployees = 'Number of employees required';
+    }
+    
+    if (currentStep === 5) {
+      if (!formData.acceptTerms) newErrors.acceptTerms = 'You must accept terms';
+      if (!formData.confirmAccuracy) newErrors.confirmAccuracy = 'You must confirm accuracy';
+      if (!formData.confirmFCACompliance) newErrors.confirmFCACompliance = 'You must confirm FCA compliance';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) {
+      setStep(step + 1);
+    }
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+    setErrors({});
+  };
+
+  const handleSubmit = async () => {
+    if (!validateStep(step)) return;
+    
+    setLoading(true);
+    
+    try {
+      // Create tenant in Supabase
+      const tenantData = {
+        name: formData.firmName,
+        regime: formData.regime,
+        frn: formData.frn,
+        status: 'pending_verification'
+      };
+      
+      const tenant = await supabase.insert('tenants', tenantData, null);
+      
+      // Create user profile
+      const userData = {
+        tenant_id: tenant.id,
+        email: formData.contactEmail,
+        display_name: formData.contactName,
+        department: 'Management',
+        role: 'Admin',
+        status: 'active'
+      };
+      
+      // For now, complete onboarding (email would be sent via Supabase in production)
+      setTimeout(() => {
+        onComplete(
+          { id: tenant.id || '5925873a-2119-444c-93b5-e0cd6ed1bdad', ...tenantData },
+          { id: 1, ...userData }
+        );
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Onboarding error:', error);
+      alert('Onboarding failed. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  const toggleActivity = (activity) => {
+    const current = formData.regulatedActivities;
+    if (current.includes(activity)) {
+      setFormData({ ...formData, regulatedActivities: current.filter(a => a !== activity) });
+    } else {
+      setFormData({ ...formData, regulatedActivities: [...current, activity] });
+    }
+  };
+
+  return (
+    <div className="onboarding-wizard">
+      <div className="onboarding-header">
+        <div className="onboarding-logo">
+          <Shield size={48} strokeWidth={2.5} />
+          <h1>RegIntels</h1>
+        </div>
+        <div className="onboarding-subtitle">FCA-Grade Compliance Platform</div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="progress-container">
+        <div className="progress-steps">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <div key={s} className="progress-step-wrapper">
+              <div className={`progress-step ${step >= s ? 'active' : ''} ${step > s ? 'completed' : ''}`}>
+                {step > s ? <CheckCircle size={20} /> : s}
+              </div>
+              <div className="progress-label">
+                {s === 1 && 'Firm Details'}
+                {s === 2 && 'Contact Info'}
+                {s === 3 && 'Regulatory'}
+                {s === 4 && 'Documents'}
+                {s === 5 && 'Confirm'}
+              </div>
+              {s < 5 && <div className={`progress-line ${step > s ? 'completed' : ''}`} />}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Step Content */}
+      <div className="onboarding-content">
+        
+        {/* STEP 1: FIRM DETAILS */}
+        {step === 1 && (
+          <div className="onboarding-step">
+            <div className="step-header">
+              <h2>Firm Details</h2>
+              <p>Tell us about your regulated entity</p>
+            </div>
+            
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Legal Firm Name *</label>
+                <input
+                  type="text"
+                  value={formData.firmName}
+                  onChange={(e) => setFormData({ ...formData, firmName: e.target.value })}
+                  placeholder="e.g., ABC Financial Services Limited"
+                  className={errors.firmName ? 'error' : ''}
+                />
+                {errors.firmName && <span className="error-message">{errors.firmName}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Trading Name</label>
+                <input
+                  type="text"
+                  value={formData.tradingName}
+                  onChange={(e) => setFormData({ ...formData, tradingName: e.target.value })}
+                  placeholder="If different from legal name"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>FCA Firm Reference Number (FRN) *</label>
+                <input
+                  type="text"
+                  value={formData.frn}
+                  onChange={(e) => setFormData({ ...formData, frn: e.target.value })}
+                  placeholder="e.g., 123456"
+                  className={errors.frn ? 'error' : ''}
+                />
+                {errors.frn && <span className="error-message">{errors.frn}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Regulatory Regime *</label>
+                <select
+                  value={formData.regime}
+                  onChange={(e) => setFormData({ ...formData, regime: e.target.value })}
+                  className={errors.regime ? 'error' : ''}
+                >
+                  {regimeOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+                {errors.regime && <span className="error-message">{errors.regime}</span>}
+              </div>
+
+              <div className="form-group full-width">
+                <label>Registered Address *</label>
+                <textarea
+                  value={formData.registeredAddress}
+                  onChange={(e) => setFormData({ ...formData, registeredAddress: e.target.value })}
+                  placeholder="Full registered address"
+                  rows="3"
+                  className={errors.registeredAddress ? 'error' : ''}
+                />
+                {errors.registeredAddress && <span className="error-message">{errors.registeredAddress}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Country *</label>
+                <select
+                  value={formData.country}
+                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                >
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Gibraltar">Gibraltar</option>
+                  <option value="Ireland">Ireland</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: PRIMARY CONTACT */}
+        {step === 2 && (
+          <div className="onboarding-step">
+            <div className="step-header">
+              <h2>Primary Contact</h2>
+              <p>Who will be the main administrator?</p>
+            </div>
+            
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Full Name *</label>
+                <input
+                  type="text"
+                  value={formData.contactName}
+                  onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                  placeholder="e.g., John Smith"
+                  className={errors.contactName ? 'error' : ''}
+                />
+                {errors.contactName && <span className="error-message">{errors.contactName}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Position/Title *</label>
+                <input
+                  type="text"
+                  value={formData.contactPosition}
+                  onChange={(e) => setFormData({ ...formData, contactPosition: e.target.value })}
+                  placeholder="e.g., Compliance Director"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Email Address *</label>
+                <input
+                  type="email"
+                  value={formData.contactEmail}
+                  onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                  placeholder="email@firm.com"
+                  className={errors.contactEmail ? 'error' : ''}
+                />
+                {errors.contactEmail && <span className="error-message">{errors.contactEmail}</span>}
+              </div>
+
+              <div className="form-group">
+                <label>Phone Number *</label>
+                <input
+                  type="tel"
+                  value={formData.contactPhone}
+                  onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                  placeholder="+44 20 1234 5678"
+                  className={errors.contactPhone ? 'error' : ''}
+                />
+                {errors.contactPhone && <span className="error-message">{errors.contactPhone}</span>}
+              </div>
+            </div>
+
+            <div className="info-box">
+              <AlertCircle size={20} />
+              <div>
+                <strong>Email Verification Required</strong>
+                <p>A verification email will be sent to this address to complete setup</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: REGULATORY DETAILS */}
+        {step === 3 && (
+          <div className="onboarding-step">
+            <div className="step-header">
+              <h2>Regulatory Details</h2>
+              <p>Information about your regulated activities</p>
+            </div>
+            
+            <div className="form-group">
+              <label>Regulated Activities *</label>
+              <div className="checkbox-grid">
+                {['Accepting Deposits', 'Insurance Distribution', 'Investment Management', 'Payment Services', 'E-Money Services', 'Consumer Credit'].map(activity => (
+                  <label key={activity} className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={formData.regulatedActivities.includes(activity)}
+                      onChange={() => toggleActivity(activity)}
+                    />
+                    <span>{activity}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.regulatedActivities && <span className="error-message">{errors.regulatedActivities}</span>}
+            </div>
+
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Number of Employees *</label>
+                <select
+                  value={formData.numberOfEmployees}
+                  onChange={(e) => setFormData({ ...formData, numberOfEmployees: e.target.value })}
+                  className={errors.numberOfEmployees ? 'error' : ''}
+                >
+                  <option value="">Select range</option>
+                  <option value="1-10">1-10</option>
+                  <option value="11-50">11-50</option>
+                  <option value="51-200">51-200</option>
+                  <option value="201+">201+</option>
+                </select>
+                {errors.numberOfEmployees && <span className="error-message">{errors.numberOfEmployees}</span>}
+              </div>
+
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasMLRO}
+                    onChange={(e) => setFormData({ ...formData, hasMLRO: e.target.checked })}
+                  />
+                  <span>Has appointed MLRO</span>
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={formData.hasSMF}
+                    onChange={(e) => setFormData({ ...formData, hasSMF: e.target.checked })}
+                  />
+                  <span>Has Senior Management Functions (SMF)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4: DOCUMENTATION */}
+        {step === 4 && (
+          <div className="onboarding-step">
+            <div className="step-header">
+              <h2>Documentation Upload</h2>
+              <p>Upload required regulatory documents (optional for demo)</p>
+            </div>
+            
+            <div className="upload-grid">
+              <div className="upload-box">
+                <Upload size={32} />
+                <h4>Certificate of Incorporation</h4>
+                <p>Companies House registration document</p>
+                <button className="btn-upload">Choose File</button>
+              </div>
+
+              <div className="upload-box">
+                <Upload size={32} />
+                <h4>Proof of Address</h4>
+                <p>Recent utility bill or bank statement</p>
+                <button className="btn-upload">Choose File</button>
+              </div>
+
+              <div className="upload-box">
+                <Upload size={32} />
+                <h4>FCA Authorization Letter</h4>
+                <p>Part 4A permission notice</p>
+                <button className="btn-upload">Choose File</button>
+              </div>
+
+              <div className="upload-box">
+                <Upload size={32} />
+                <h4>Policy Documents</h4>
+                <p>AML, Complaints, COI policies</p>
+                <button className="btn-upload">Choose File</button>
+              </div>
+            </div>
+
+            <div className="info-box">
+              <AlertCircle size={20} />
+              <div>
+                <strong>Document Verification</strong>
+                <p>Documents will be reviewed within 24-48 hours. You can proceed without uploading for demo purposes.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 5: CONFIRMATION */}
+        {step === 5 && (
+          <div className="onboarding-step">
+            <div className="step-header">
+              <h2>Compliance Confirmation</h2>
+              <p>Review and confirm your application</p>
+            </div>
+
+            <div className="summary-card">
+              <h3>Application Summary</h3>
+              <div className="summary-grid">
+                <div><strong>Firm Name:</strong> {formData.firmName}</div>
+                <div><strong>FRN:</strong> {formData.frn}</div>
+                <div><strong>Regime:</strong> {formData.regime}</div>
+                <div><strong>Contact:</strong> {formData.contactName}</div>
+                <div><strong>Email:</strong> {formData.contactEmail}</div>
+                <div><strong>Employees:</strong> {formData.numberOfEmployees}</div>
+              </div>
+            </div>
+
+            <div className="confirmation-checks">
+              <label className={`confirmation-checkbox ${errors.acceptTerms ? 'error' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={formData.acceptTerms}
+                  onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
+                />
+                <span>I accept the Terms & Conditions and Privacy Policy *</span>
+              </label>
+
+              <label className={`confirmation-checkbox ${errors.confirmAccuracy ? 'error' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={formData.confirmAccuracy}
+                  onChange={(e) => setFormData({ ...formData, confirmAccuracy: e.target.checked })}
+                />
+                <span>I confirm that all information provided is accurate and complete *</span>
+              </label>
+
+              <label className={`confirmation-checkbox ${errors.confirmFCACompliance ? 'error' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={formData.confirmFCACompliance}
+                  onChange={(e) => setFormData({ ...formData, confirmFCACompliance: e.target.checked })}
+                />
+                <span>I confirm this firm is FCA-authorized and compliant with regulatory requirements *</span>
+              </label>
+            </div>
+
+            <div className="warning-box">
+              <AlertTriangle size={20} />
+              <div>
+                <strong>Important Notice</strong>
+                <p>False or misleading information may result in account suspension and regulatory reporting.</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="onboarding-footer">
+        <div className="footer-buttons">
+          {step > 1 && (
+            <button onClick={handleBack} className="btn-secondary" disabled={loading}>
+              ← Back
+            </button>
+          )}
+          
+          <div className="footer-right">
+            {step < totalSteps ? (
+              <button onClick={handleNext} className="btn-primary">
+                Continue →
+              </button>
+            ) : (
+              <button onClick={handleSubmit} className="btn-primary" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader size={18} className="spinner" />
+                    Processing...
+                  </>
+                ) : (
+                  'Complete Onboarding'
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+);
+}
