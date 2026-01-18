@@ -77,7 +77,7 @@ Write-Host ""
 
 # Step 5: Push to remote
 Write-Host "[5/5] Pushing to remote repository..." -ForegroundColor Yellow
-git push origin fix/policy-endpoints
+git push origin main
 git push origin v1.3.0
 
 Write-Host ""
