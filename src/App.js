@@ -8,6 +8,7 @@ import ImpactScoreCard from './components/ImpactScoreCard';
 import ControlDriftBadge from './components/ControlDriftBadge';
 import AttestationConfidenceWidget from './components/AttestationConfidenceWidget';
 import ControlDriftHeatmap from './components/ControlDriftHeatmap';
+import StrategicDashboard from './components/StrategicDashboard';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -1027,6 +1028,7 @@ export default function RegIntels() {
       name: 'Board View',
       icon: BarChart3,
       pages: [
+        'Strategic Scoring',
         'Management Summary',
         'Risk Posture',
         'Control Effectiveness',
@@ -1277,6 +1279,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Solution 3' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 4' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 4' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Solution 5' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
   if (solution === 'Solution 5' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
