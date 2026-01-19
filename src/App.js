@@ -9,6 +9,7 @@ import ControlDriftBadge from './components/ControlDriftBadge';
 import AttestationConfidenceWidget from './components/AttestationConfidenceWidget';
 import ControlDriftHeatmap from './components/ControlDriftHeatmap';
 import StrategicDashboard from './components/StrategicDashboard';
+import PlatformFeatureControl from './components/PlatformFeatureControl';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -1057,7 +1058,7 @@ export default function RegIntels() {
     'Platform Admin': {
       name: 'Platform Administration',
       icon: Settings,
-      pages: ['Platform Metrics', 'Tenant Approvals', 'Tenant Management', 'Marketing Emails', 'Messages'],
+      pages: ['Feature Control', 'Platform Metrics', 'Tenant Approvals', 'Tenant Management', 'Marketing Emails', 'Messages'],
       accessRoles: ['PlatformAdmin'],
       isPlatformAdminOnly: true,
     },
@@ -1288,6 +1289,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Tenant Admin' && page === 'User Management') return <TenantUserManagementPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Firm Settings') return <TenantFirmSettingsPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Subscription') return <TenantSubscriptionPage currentUser={currentUser} tenantId={tenantId} />;
+  if (solution === 'Platform Admin' && page === 'Feature Control') return <PlatformFeatureControl supabase={supabase.client} />;
   if (solution === 'Platform Admin' && page === 'Platform Metrics') return <PlatformMetricsPage currentUser={currentUser} />;
   if (solution === 'Platform Admin' && page === 'Tenant Approvals') return <TenantApprovalsPage currentUser={currentUser} />;
   if (solution === 'Platform Admin' && page === 'Tenant Management') return <TenantManagementPage currentUser={currentUser} />;
