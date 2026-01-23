@@ -8,7 +8,10 @@
       "Bash(supabase --version:*)",
       "Bash(supabase login:*)",
       "Bash(curl:*)",
-      "Bash(npm start)"
+      "Bash(npm start)",
+      "Bash(npm run build:*)",
+      "Bash(test:*)",
+      "Bash(git add:*)"
     ]
   }
 }

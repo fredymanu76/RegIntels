@@ -11,6 +11,7 @@ import ControlDriftHeatmap from './components/ControlDriftHeatmap';
 import StrategicDashboard from './components/StrategicDashboard';
 import PlatformFeatureControl from './components/PlatformFeatureControl';
 import ExceptionIntelligenceDashboard from './components/ExceptionIntelligenceDashboard';
+import ExceptionsOverviewBoard from './components/ExceptionsOverviewBoard';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -1286,6 +1287,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Solution 5' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
+  if (solution === 'Solution 5' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard supabase={supabase.client} />;
   if (solution === 'Solution 5' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
   if (solution === 'Solution 5') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'User Management') return <TenantUserManagementPage currentUser={currentUser} tenantId={tenantId} />;
