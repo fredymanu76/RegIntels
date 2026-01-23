@@ -24,8 +24,8 @@ SELECT
   -- Reference to control (if source_type is 'control')
   CASE WHEN e.source_type = 'control' THEN e.source_id ELSE NULL END as control_id,
 
-  cl.name as control_name,
-  cl.category as control_category,
+  cl.title as control_name,
+  cl.control_code as control_category,
 
   -- Root cause classification based on description/notes analysis
   CASE
