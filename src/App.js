@@ -11,6 +11,7 @@ import ControlDriftHeatmap from './components/ControlDriftHeatmap';
 import StrategicDashboard from './components/StrategicDashboard';
 import PlatformFeatureControl from './components/PlatformFeatureControl';
 import ExceptionIntelligenceDashboard from './components/ExceptionIntelligenceDashboard';
+import Solution4Dashboard from './components/Solution4Dashboard';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -1023,7 +1024,7 @@ export default function RegIntels() {
     'Solution 4': {
       name: 'Exceptions & Remediation',
       icon: AlertTriangle,
-      pages: ['Exception Intelligence', 'Unified Exceptions', 'Evidence & Audit'],
+      pages: ['Exception Intelligence', 'Risk Signal Hub', 'Unified Exceptions', 'Evidence & Audit'],
       accessRoles: ['Admin', 'Compliance'],
     },
     'Solution 5': {
@@ -1280,6 +1281,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Solution 3' && page === 'Attestations') return <AttestationsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 3' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 4' && page === 'Exception Intelligence') return <ExceptionIntelligenceDashboard supabase={supabase.client} />;
+  if (solution === 'Solution 4' && page === 'Risk Signal Hub') return <Solution4Dashboard supabase={supabase.client} />;
   if (solution === 'Solution 4' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 4' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Solution 5' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
