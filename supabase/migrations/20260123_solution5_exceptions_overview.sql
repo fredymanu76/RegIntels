@@ -41,7 +41,7 @@ SELECT
     ELSE 'Other'
   END as root_cause,
 
-  e.created_at,
+  e.opened_at as created_at,
   e.closed_at as resolved_at,
 
   -- Days open calculation

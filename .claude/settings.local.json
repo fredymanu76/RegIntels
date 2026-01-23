@@ -15,7 +15,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Solution 5 Exceptions Overview - Board-level exception intelligence\n\nImplements the first component of Solution 5 Batch 3 upgrade.\n\nStrategic Purpose:\n- Board-level, forward-looking risk signal vs static exception list\n- Exception intelligence rather than exception reporting\n\nFeatures Implemented:\n- Exception materiality scoring \\(impact, recurrence, regulatory sensitivity\\)\n- Trend heatmap showing deterioration/stabilisation over rolling periods\n- Root cause taxonomy \\(Process, People, Systems, Third Party\\)\n- Risk signal banner with intelligent alerts\n- Export to CSV/PDF \\(PDF placeholder\\)\n\nDatabase Views:\n- v_exception_root_cause_taxonomy: Categorizes exceptions by root cause\n- v_exception_trend_heatmap: Monthly trends with volume/severity indicators\n- v_exceptions_overview_mi: Comprehensive board-level MI view\n\nComponent Architecture:\n- ExceptionsOverviewBoard.jsx: Main React component\n- ExceptionsOverviewBoard.css: Comprehensive styling\n- Integrated with existing v_exception_materiality from Solution 4\n\nRouting:\n- Added import in App.js line 14\n- Added routing logic in App.js line 1289\n\nDocumentation:\n- SOLUTION5_BATCH3_MASTERPLAN.md: Master reference document\n- SOLUTION5_IMPLEMENTATION_PROGRESS.md: Progress tracker\n\nFiles Created:\n- src/components/ExceptionsOverviewBoard.jsx\n- src/components/ExceptionsOverviewBoard.css\n- supabase/migrations/20260123_solution5_exceptions_overview.sql\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
       "Bash(find:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep:*)"
     ]
   }
 }
