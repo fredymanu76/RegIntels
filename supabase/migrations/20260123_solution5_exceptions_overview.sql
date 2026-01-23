@@ -56,7 +56,7 @@ SELECT
   CAST(NULL AS TEXT) as materiality_band
 
 FROM exceptions e
-WHERE e.deleted_at IS NULL;
+WHERE 1=1;
 
 COMMENT ON VIEW v_exception_root_cause_taxonomy IS 'Solution 5: Root cause classification for exceptions';
 
@@ -74,7 +74,6 @@ WITH monthly_exceptions AS (
     COUNT(*) FILTER (WHERE e.status = 'closed') as resolved_count
   FROM exceptions e
   WHERE e.created_at >= CURRENT_DATE - INTERVAL '12 months'
-    AND e.deleted_at IS NULL
   GROUP BY e.tenant_id, DATE_TRUNC('month', e.created_at), e.severity
 ),
 trend_calculation AS (
@@ -134,7 +133,7 @@ WITH current_exceptions AS (
     AVG(CASE WHEN status IN ('open', 'remediation')
       THEN (CURRENT_DATE - opened_at::date) ELSE NULL END) as avg_days_open
   FROM exceptions
-  WHERE deleted_at IS NULL
+  WHERE 1=1
   GROUP BY tenant_id
 ),
 root_cause_summary AS (
@@ -196,8 +195,7 @@ FROM tenants t
 LEFT JOIN current_exceptions ce ON ce.tenant_id = t.id
 LEFT JOIN root_cause_summary rcs ON rcs.tenant_id = t.id
 LEFT JOIN recent_trend rt ON rt.tenant_id = t.id
-WHERE t.deleted_at IS NULL
-  AND t.status = 'active';
+WHERE t.status = 'active';
 
 COMMENT ON VIEW v_exceptions_overview_mi IS 'Solution 5: Board-level exceptions overview';
 
