@@ -6,19 +6,8 @@
 -- Date: 2026-01-23
 -- ============================================================================
 
--- First, check if we need to add control_id column (backward compatibility)
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'exceptions' AND column_name = 'control_id'
-  ) THEN
-    -- Add control_id as an alias/reference for source_id when source_type = 'control'
-    ALTER TABLE exceptions
-    ADD COLUMN control_id BIGINT
-    GENERATED ALWAYS AS (CASE WHEN source_type = 'control' THEN source_id ELSE NULL END) STORED;
-  END IF;
-END $$;
+-- Note: source_id can reference different tables depending on source_type
+-- No need to add control_id column - we'll use source_id directly in queries
 
 -- ============================================================================
 -- VIEW 1: Exception Root Cause Taxonomy
@@ -32,7 +21,7 @@ SELECT
   e.status,
   e.severity,
 
-  -- Use source_id when source_type is 'control'
+  -- Reference to control (if source_type is 'control')
   CASE WHEN e.source_type = 'control' THEN e.source_id ELSE NULL END as control_id,
 
   cl.name as control_name,
