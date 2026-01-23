@@ -1,8 +1,7 @@
 -- ============================================================================
--- SOLUTION 5 - EXCEPTIONS OVERVIEW (BOARD VIEW) - FIXED VERSION
+-- SOLUTION 5 - EXCEPTIONS OVERVIEW (BOARD VIEW) - CORRECT SCHEMA
 -- ============================================================================
--- Board-level exception intelligence views
--- Part of Solution 5 Batch 3 Implementation
+-- Based on ACTUAL production database schema
 -- Date: 2026-01-23
 -- ============================================================================
 
@@ -24,29 +23,29 @@ SELECT
   -- Reference to control (if source_type is 'control')
   CASE WHEN e.source_type = 'control' THEN e.source_id ELSE NULL END as control_id,
 
-  cl.title as control_name,
-  cl.control_code as control_category,
+  c.control_title as control_name,
+  c.control_code as control_category,
 
-  -- Root cause classification based on description/notes analysis
+  -- Root cause classification based on description analysis
   CASE
-    WHEN LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%process%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%procedure%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%workflow%'
+    WHEN LOWER(COALESCE(e.description, '')) LIKE '%process%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%procedure%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%workflow%'
       THEN 'Process'
-    WHEN LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%training%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%staff%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%employee%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%human error%'
+    WHEN LOWER(COALESCE(e.description, '')) LIKE '%training%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%staff%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%employee%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%human error%'
       THEN 'People'
-    WHEN LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%system%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%technology%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%software%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%technical%'
+    WHEN LOWER(COALESCE(e.description, '')) LIKE '%system%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%technology%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%software%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%technical%'
       THEN 'Systems'
-    WHEN LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%vendor%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%third party%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%supplier%'
-      OR LOWER(COALESCE(e.description, '') || ' ' || COALESCE(e.resolution_notes, '')) LIKE '%outsourc%'
+    WHEN LOWER(COALESCE(e.description, '')) LIKE '%vendor%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%third party%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%supplier%'
+      OR LOWER(COALESCE(e.description, '')) LIKE '%outsourc%'
       THEN 'Third Party'
     ELSE 'Other'
   END as root_cause,
@@ -66,7 +65,7 @@ SELECT
   vm.materiality_band
 
 FROM exceptions e
-LEFT JOIN controls cl ON cl.id = e.source_id AND e.source_type = 'control'
+LEFT JOIN controls c ON c.id = e.source_id AND e.source_type = 'control'
 LEFT JOIN v_exception_materiality vm ON vm.exception_id = e.id
 WHERE e.deleted_at IS NULL;
 
