@@ -34,7 +34,7 @@ const AttestationsBoard = () => {
       // Calculate stats
       const total = statsData?.length || 0;
       const pending = statsData?.filter(a => a.status === 'pending').length || 0;
-      const completed = statsData?.filter(a => a.status === 'completed').length || 0;
+      const completed = statsData?.filter(a => a.status === 'approved').length || 0;
       const overdue = statsData?.filter(a =>
         a.status === 'pending' && new Date(a.due_date) < new Date()
       ).length || 0;
@@ -57,8 +57,9 @@ const AttestationsBoard = () => {
           due_date,
           control_id,
           controls:control_id (
-            control_code,
-            title
+            id,
+            control_id,
+            control_title
           )
         `)
         .order('due_date', { ascending: true })
@@ -73,16 +74,18 @@ const AttestationsBoard = () => {
         .select(`
           id,
           status,
-          attested_at,
-          attested_by,
+          submitted_at,
+          attestor_id,
+          attestor_role,
           control_id,
           controls:control_id (
-            control_code,
-            title
+            id,
+            control_id,
+            control_title
           )
         `)
-        .eq('status', 'completed')
-        .order('attested_at', { ascending: false })
+        .eq('status', 'approved')
+        .order('submitted_at', { ascending: false })
         .limit(5);
 
       if (recentError) throw recentError;
@@ -248,13 +251,13 @@ const AttestationsBoard = () => {
                 recentAttestations.map((attestation) => (
                   <tr key={attestation.id}>
                     <td className="control-code">
-                      {attestation.controls?.control_code || 'N/A'}
+                      {attestation.controls?.control_id || 'N/A'}
                     </td>
-                    <td>{attestation.controls?.title || 'Unknown Control'}</td>
-                    <td>{attestation.attested_by || 'N/A'}</td>
+                    <td>{attestation.controls?.control_title || 'Unknown Control'}</td>
+                    <td>{attestation.attestor_role || attestation.attestor_id || 'N/A'}</td>
                     <td>
-                      {attestation.attested_at
-                        ? new Date(attestation.attested_at).toLocaleDateString()
+                      {attestation.submitted_at
+                        ? new Date(attestation.submitted_at).toLocaleDateString()
                         : 'N/A'}
                     </td>
                   </tr>
