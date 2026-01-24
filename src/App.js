@@ -12,6 +12,12 @@ import StrategicDashboard from './components/StrategicDashboard';
 import PlatformFeatureControl from './components/PlatformFeatureControl';
 import ExceptionIntelligenceDashboard from './components/ExceptionIntelligenceDashboard';
 import Solution4Dashboard from './components/Solution4Dashboard';
+import ExceptionsOverviewBoard from './components/ExceptionsOverviewBoard';
+import RegulatoryReadinessBoard from './components/RegulatoryReadinessBoard';
+import AttestationsBoard from './components/AttestationsBoard';
+import AuditTrailBoard from './components/AuditTrailBoard';
+import DecisionRegisterBoard from './components/DecisionRegisterBoard';
+import ApprovalsBoard from './components/ApprovalsBoard';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -1289,6 +1295,12 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Solution 5' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
   if (solution === 'Solution 5' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
+  if (solution === 'Solution 5' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard supabase={supabase.client} />;
+  if (solution === 'Solution 5' && page === 'Regulatory Readiness') return <RegulatoryReadinessBoard supabase={supabase.client} />;
+  if (solution === 'Solution 5' && page === 'Attestations') return <AttestationsBoard supabase={supabase.client} />;
+  if (solution === 'Solution 5' && page === 'Audit Trail') return <AuditTrailBoard supabase={supabase.client} />;
+  if (solution === 'Solution 5' && page === 'Decision Register') return <DecisionRegisterBoard supabase={supabase.client} />;
+  if (solution === 'Solution 5' && page === 'Approvals') return <ApprovalsBoard supabase={supabase.client} />;
   if (solution === 'Solution 5') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'User Management') return <TenantUserManagementPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Firm Settings') return <TenantFirmSettingsPage currentUser={currentUser} tenantId={tenantId} />;
