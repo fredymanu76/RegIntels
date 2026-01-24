@@ -1,0 +1,9 @@
+-- Check regulatory_change_control_map table structure
+SELECT
+  table_name,
+  column_name,
+  data_type
+FROM information_schema.columns
+WHERE table_name = 'regulatory_change_control_map'
+  AND table_schema = 'public'
+ORDER BY ordinal_position;
