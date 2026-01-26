@@ -12,7 +12,7 @@ const AttestationsBoard = () => {
     completionRate: 0
   });
   const [attestationsByControl, setAttestationsByControl] = useState([]);
-  const [recentAttestations, setRecentAttestations] = useState([]);
+  const [confidenceSummary, setConfidenceSummary] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -24,20 +24,26 @@ const AttestationsBoard = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch attestation statistics
-      const { data: statsData, error: statsError } = await supabase
-        .from('attestations')
-        .select('status, due_date');
+      // Use the view that we know works (same as StrategicDashboard)
+      const { data: confidenceData, error: confidenceError } = await supabase
+        .from('v_attestation_confidence_index')
+        .select('*')
+        .order('confidence_score', { ascending: true });
 
-      if (statsError) throw statsError;
+      if (confidenceError) throw confidenceError;
 
-      // Calculate stats
-      const total = statsData?.length || 0;
-      const pending = statsData?.filter(a => a.status === 'pending').length || 0;
-      const completed = statsData?.filter(a => a.status === 'approved').length || 0;
-      const overdue = statsData?.filter(a =>
-        a.status === 'pending' && new Date(a.due_date) < new Date()
-      ).length || 0;
+      // Fetch confidence summary
+      const { data: summaryData, error: summaryError } = await supabase
+        .from('v_attestation_confidence_summary')
+        .select('*');
+
+      if (summaryError) throw summaryError;
+
+      // Calculate stats from the confidence data
+      const total = confidenceData?.length || 0;
+      const completed = confidenceData?.filter(a => a.status === 'approved').length || 0;
+      const pending = confidenceData?.filter(a => a.status === 'pending').length || 0;
+      const overdue = confidenceData?.filter(a => a.days_delta > 0 && a.status !== 'approved').length || 0;
       const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
       setAttestationStats({
@@ -48,48 +54,8 @@ const AttestationsBoard = () => {
         completionRate
       });
 
-      // Fetch attestations by control
-      const { data: controlData, error: controlError } = await supabase
-        .from('attestations')
-        .select(`
-          id,
-          status,
-          due_date,
-          control_id,
-          controls:control_id (
-            id,
-            control_id,
-            control_title
-          )
-        `)
-        .order('due_date', { ascending: true })
-        .limit(10);
-
-      if (controlError) throw controlError;
-      setAttestationsByControl(controlData || []);
-
-      // Fetch recent attestations
-      const { data: recentData, error: recentError } = await supabase
-        .from('attestations')
-        .select(`
-          id,
-          status,
-          submitted_at,
-          attestor_id,
-          attestor_role,
-          control_id,
-          controls:control_id (
-            id,
-            control_id,
-            control_title
-          )
-        `)
-        .eq('status', 'approved')
-        .order('submitted_at', { ascending: false })
-        .limit(5);
-
-      if (recentError) throw recentError;
-      setRecentAttestations(recentData || []);
+      setAttestationsByControl(confidenceData || []);
+      setConfidenceSummary(summaryData || []);
 
     } catch (err) {
       console.error('Error fetching attestation data:', err);
@@ -99,21 +65,19 @@ const AttestationsBoard = () => {
     }
   };
 
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case 'completed':
-        return 'status-badge status-completed';
-      case 'pending':
-        return 'status-badge status-pending';
-      case 'overdue':
-        return 'status-badge status-overdue';
-      default:
-        return 'status-badge';
-    }
+  const getStatusBadgeClass = (status, confidenceBand) => {
+    if (status === 'approved') return 'status-badge status-completed';
+    if (confidenceBand === 'LOW_CONFIDENCE') return 'status-badge status-overdue';
+    return 'status-badge status-pending';
   };
 
-  const isOverdue = (dueDate, status) => {
-    return status === 'pending' && new Date(dueDate) < new Date();
+  const getConfidenceBadgeClass = (band) => {
+    switch (band) {
+      case 'HIGH_CONFIDENCE': return 'confidence-badge high';
+      case 'MEDIUM_CONFIDENCE': return 'confidence-badge medium';
+      case 'LOW_CONFIDENCE': return 'confidence-badge low';
+      default: return 'confidence-badge';
+    }
   };
 
   if (loading) {
@@ -166,7 +130,7 @@ const AttestationsBoard = () => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Overdue</div>
+          <div className="kpi-label">Overdue / At Risk</div>
           <div className="kpi-value kpi-danger">{attestationStats.overdue}</div>
         </div>
 
@@ -182,9 +146,28 @@ const AttestationsBoard = () => {
         </div>
       </div>
 
+      {/* Confidence Summary Cards */}
+      {confidenceSummary.length > 0 && (
+        <div className="data-section">
+          <h2>Confidence Distribution</h2>
+          <div className="confidence-grid">
+            {confidenceSummary.map((summary, index) => (
+              <div key={index} className={`confidence-card ${summary.confidence_band?.toLowerCase().replace('_', '-')}`}>
+                <h4>{summary.confidence_band?.replace(/_/g, ' ')}</h4>
+                <div className="confidence-value">{summary.attestation_count || 0}</div>
+                <p className="confidence-detail">Avg Score: {Math.round(summary.avg_confidence_score || 0)}</p>
+                {summary.late_count > 0 && (
+                  <p className="confidence-warning">{summary.late_count} late submissions</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Attestations by Control */}
       <div className="data-section">
-        <h2>Upcoming Attestations by Control</h2>
+        <h2>Attestations by Control</h2>
         <div className="table-container">
           <table className="data-table">
             <thead>
@@ -192,80 +175,47 @@ const AttestationsBoard = () => {
                 <th>Control Code</th>
                 <th>Control Title</th>
                 <th>Status</th>
-                <th>Due Date</th>
+                <th>Confidence</th>
+                <th>Score</th>
+                <th>Driver</th>
               </tr>
             </thead>
             <tbody>
               {attestationsByControl.length > 0 ? (
-                attestationsByControl.map((attestation) => (
-                  <tr key={attestation.id}>
+                attestationsByControl.slice(0, 15).map((attestation, index) => (
+                  <tr key={index}>
                     <td className="control-code">
-                      {attestation.controls?.control_code || 'N/A'}
+                      {attestation.control_code || 'N/A'}
                     </td>
-                    <td>{attestation.controls?.title || 'Unknown Control'}</td>
+                    <td>{attestation.control_title || 'Unknown Control'}</td>
                     <td>
-                      <span className={getStatusBadgeClass(
-                        isOverdue(attestation.due_date, attestation.status)
-                          ? 'overdue'
-                          : attestation.status
-                      )}>
-                        {isOverdue(attestation.due_date, attestation.status)
-                          ? 'Overdue'
-                          : attestation.status}
+                      <span className={getStatusBadgeClass(attestation.status, attestation.confidence_band)}>
+                        {attestation.status || 'Unknown'}
                       </span>
                     </td>
                     <td>
-                      {attestation.due_date
-                        ? new Date(attestation.due_date).toLocaleDateString()
-                        : 'N/A'}
+                      <span className={getConfidenceBadgeClass(attestation.confidence_band)}>
+                        {attestation.confidence_band?.replace(/_/g, ' ') || 'N/A'}
+                      </span>
                     </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="empty-state">
-                    No upcoming attestations found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Recent Attestations */}
-      <div className="data-section">
-        <h2>Recently Completed Attestations</h2>
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Control Code</th>
-                <th>Control Title</th>
-                <th>Attested By</th>
-                <th>Attested At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentAttestations.length > 0 ? (
-                recentAttestations.map((attestation) => (
-                  <tr key={attestation.id}>
-                    <td className="control-code">
-                      {attestation.controls?.control_id || 'N/A'}
-                    </td>
-                    <td>{attestation.controls?.control_title || 'Unknown Control'}</td>
-                    <td>{attestation.attestor_role || attestation.attestor_id || 'N/A'}</td>
                     <td>
-                      {attestation.submitted_at
-                        ? new Date(attestation.submitted_at).toLocaleDateString()
-                        : 'N/A'}
+                      <div className="score-cell">
+                        <div className="score-bar">
+                          <div
+                            className="score-fill"
+                            style={{ width: `${attestation.confidence_score || 0}%` }}
+                          ></div>
+                        </div>
+                        <span>{attestation.confidence_score || 0}</span>
+                      </div>
                     </td>
+                    <td className="driver-cell">{attestation.confidence_driver || 'N/A'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="empty-state">
-                    No completed attestations found
+                  <td colSpan="6" className="empty-state">
+                    No attestations found
                   </td>
                 </tr>
               )}
