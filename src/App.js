@@ -1009,31 +1009,37 @@ export default function RegIntels() {
 
   // single solutions declaration
   const solutions = {
-    'Solution 1': {
+    'Regulatory Horizon': {
       name: 'Regulatory Change Intelligence',
       icon: Bell,
       pages: ['Change Feed', 'Change Register'],
       accessRoles: ['Admin', 'Compliance'],
     },
-    'Solution 2': {
+    'Control Architecture': {
       name: 'Control Framework Core',
       icon: Shield,
       pages: ['Control Library'],
       accessRoles: ['Admin', 'Compliance'],
     },
-    'Solution 3': {
+    'Operational Assurance': {
       name: 'Control Execution & Monitoring',
       icon: FileCheck,
       pages: ['Policy Library', 'Reg Mapping', 'Attestations', 'Exceptions'],
       accessRoles: ['Admin', 'Compliance'],
     },
-    'Solution 4': {
+    'Issue & Breach Management': {
       name: 'Exceptions & Remediation',
       icon: AlertTriangle,
-      pages: ['Exception Intelligence', 'Risk Signal Hub', 'Unified Exceptions', 'Evidence & Audit'],
+      pages: ['Exception Intelligence', 'Risk Signal Hub', 'Unified Exceptions'],
       accessRoles: ['Admin', 'Compliance'],
     },
-    'Solution 5': {
+    'Evidence & Audit Readiness': {
+      name: 'Evidence & Audit Readiness',
+      icon: FileCheck,
+      pages: ['Evidence & Audit'],
+      accessRoles: ['Admin', 'Compliance'],
+    },
+    'Governance & Board Assurance': {
       name: 'Board View',
       icon: BarChart3,
       pages: [
@@ -1279,29 +1285,35 @@ export default function RegIntels() {
 // PAGE CONTENT ROUTER
 // ============================================================================
 function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
-  if (solution === 'Solution 1' && page === 'Change Feed') return <ChangeFeedPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 1' && page === 'Change Register') return <ChangeRegisterPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 2' && page === 'Control Library') return <ControlLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 3' && page === 'Policy Library') return <PolicyLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 3' && page === 'Reg Mapping') return <RegMappingPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 3' && page === 'Attestations') return <AttestationsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 3' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 4' && page === 'Exception Intelligence') return <ExceptionIntelligenceDashboard supabase={supabase.client} />;
-  if (solution === 'Solution 4' && page === 'Risk Signal Hub') return <Solution4Dashboard supabase={supabase.client} />;
-  if (solution === 'Solution 4' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 4' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Solution 5' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
-  if (solution === 'Solution 5' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
-  if (solution === 'Solution 5' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
-  if (solution === 'Solution 5' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
-  if (solution === 'Solution 5' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Regulatory Readiness') return <RegulatoryReadinessBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Attestations') return <AttestationsBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Audit Trail') return <AuditTrailBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Decision Register') return <DecisionRegisterBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5' && page === 'Approvals') return <ApprovalsBoard supabase={supabase.client} />;
-  if (solution === 'Solution 5') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
+  // Regulatory Horizon (formerly Solution 1)
+  if (solution === 'Regulatory Horizon' && page === 'Change Feed') return <ChangeFeedPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Regulatory Horizon' && page === 'Change Register') return <ChangeRegisterPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Control Architecture (formerly Solution 2)
+  if (solution === 'Control Architecture' && page === 'Control Library') return <ControlLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Operational Assurance (formerly Solution 3)
+  if (solution === 'Operational Assurance' && page === 'Policy Library') return <PolicyLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Operational Assurance' && page === 'Reg Mapping') return <RegMappingPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Operational Assurance' && page === 'Attestations') return <AttestationsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Operational Assurance' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Issue & Breach Management (formerly Solution 4)
+  if (solution === 'Issue & Breach Management' && page === 'Exception Intelligence') return <ExceptionIntelligenceDashboard supabase={supabase.client} />;
+  if (solution === 'Issue & Breach Management' && page === 'Risk Signal Hub') return <Solution4Dashboard supabase={supabase.client} />;
+  if (solution === 'Issue & Breach Management' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Evidence & Audit Readiness (formerly Solution 4B)
+  if (solution === 'Evidence & Audit Readiness' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Governance & Board Assurance (formerly Solution 5)
+  if (solution === 'Governance & Board Assurance' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
+  if (solution === 'Governance & Board Assurance' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Regulatory Readiness') return <RegulatoryReadinessBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Attestations') return <AttestationsBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Audit Trail') return <AuditTrailBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Decision Register') return <DecisionRegisterBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Approvals') return <ApprovalsBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'User Management') return <TenantUserManagementPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Firm Settings') return <TenantFirmSettingsPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Subscription') return <TenantSubscriptionPage currentUser={currentUser} tenantId={tenantId} />;

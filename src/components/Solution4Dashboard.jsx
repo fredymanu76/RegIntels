@@ -1,5 +1,5 @@
 /**
- * Solution 4 Dashboard Component
+ * Issue & Breach Management Dashboard Component
  * Operational Risk Signal Hub - Exception Management Intelligence
  */
 

@@ -108,7 +108,7 @@ import ControlDriftHeatmap from './components/ControlDriftHeatmap';
 
 ## 🔗 Integration Examples
 
-### Solution 1: Regulatory Change Intelligence
+### Regulatory Horizon (formerly Solution 1)
 
 **Add Impact Scores to Change Feed**
 
@@ -162,7 +162,7 @@ function RegChangesFeedPage({ currentTenant }) {
 
 ---
 
-### Solution 2: Policy & Control Management
+### Control Architecture (formerly Solution 2)
 
 **Add Control Drift to Control Cards**
 
@@ -226,7 +226,7 @@ function ControlManagementPage({ currentTenant }) {
 
 ---
 
-### Solution 3: Risk & Control Assurance
+### Operational Assurance (formerly Solution 3)
 
 **Add Attestation Confidence to Attestations**
 

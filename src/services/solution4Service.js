@@ -1,5 +1,5 @@
 /**
- * Solution 4 Service - Operational Risk Signal Hub
+ * Issue & Breach Management Service - Operational Risk Signal Hub
  * Exception Management Intelligence API
  */
 
