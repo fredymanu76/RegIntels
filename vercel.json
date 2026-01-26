@@ -2,6 +2,13 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
+  "build": {
+    "env": {
+      "CI": "false",
+      "REACT_APP_SUPABASE_URL": "https://cnyvjuxmkpzxnztbbydu.supabase.co",
+      "REACT_APP_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNueXZqdXhta3B6eG56dGJieWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5Njc0NjYsImV4cCI6MjA4MjU0MzQ2Nn0.8aMtF7-gS07ziV3ChF9dklZiMf9bbBb-LuXYJSFUswY"
+    }
+  },
   "buildCommand": "npm run build",
   "outputDirectory": "build",
   "framework": "create-react-app"
