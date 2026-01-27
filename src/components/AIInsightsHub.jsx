@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Brain, Sparkles, FileText, Target, AlertTriangle, CheckCircle, Clock, RefreshCw, ChevronRight, Zap, TrendingUp } from 'lucide-react';
 import './AIInsightsHub.css';
 
-const AIInsightsHub = ({ tenantId }) => {
+const AIInsightsHub = ({ tenantId, supabase }) => {
   const [activeTab, setActiveTab] = useState('summaries');
   const [loading, setLoading] = useState(false);
   const [selectedChange, setSelectedChange] = useState(null);
@@ -10,23 +10,92 @@ const AIInsightsHub = ({ tenantId }) => {
   const [aiSummaries, setAiSummaries] = useState({});
   const [controlSuggestions, setControlSuggestions] = useState([]);
 
+  // Built-in sample regulatory changes for demonstration
+  const sampleRegChanges = [
+    {
+      id: 'ai-reg-1',
+      source: 'FCA',
+      title: 'PS26/2: Consumer Duty - Annual Value Assessment Requirements',
+      impact_rating: 'high',
+      published_date: '2026-01-25',
+      effective_date: '2026-07-31',
+      affected_controls: ['Consumer Duty', 'Product Governance', 'Fair Value']
+    },
+    {
+      id: 'ai-reg-2',
+      source: 'PRA',
+      title: 'SS2/26: Operational Resilience - Third-Party Concentration Risk',
+      impact_rating: 'high',
+      published_date: '2026-01-20',
+      effective_date: '2026-09-30',
+      affected_controls: ['Operational Resilience', 'Third Party Risk', 'Business Continuity']
+    },
+    {
+      id: 'ai-reg-3',
+      source: 'FCA',
+      title: 'CP26/3: Anti-Money Laundering - Enhanced Customer Due Diligence',
+      impact_rating: 'high',
+      published_date: '2026-01-18',
+      effective_date: '2026-06-30',
+      affected_controls: ['Financial Crime', 'AML', 'KYC']
+    },
+    {
+      id: 'ai-reg-4',
+      source: 'PRA',
+      title: 'SS1/26: Climate Risk - Stress Testing Requirements',
+      impact_rating: 'medium',
+      published_date: '2026-01-15',
+      effective_date: '2026-12-31',
+      affected_controls: ['Climate Risk', 'Risk Management', 'Stress Testing']
+    },
+    {
+      id: 'ai-reg-5',
+      source: 'ESMA',
+      title: 'DORA - Final RTS on ICT Risk Management Framework',
+      impact_rating: 'high',
+      published_date: '2026-01-10',
+      effective_date: '2026-01-17',
+      affected_controls: ['Operational Resilience', 'ICT Risk', 'Cyber Security']
+    }
+  ];
+
   useEffect(() => {
     loadRegulatoryChanges();
   }, []);
 
-  const loadRegulatoryChanges = () => {
-    // Load from mock database
-    if (typeof window !== 'undefined' && window.mockDatabase) {
-      const changes = window.mockDatabase.reg_changes || [];
-      setRegulatoryChanges(changes);
+  const loadRegulatoryChanges = async () => {
+    let changes = [];
 
-      // Generate AI summaries for each change
-      const summaries = {};
-      changes.forEach(change => {
-        summaries[change.id] = generateAISummary(change);
-      });
-      setAiSummaries(summaries);
+    // Try to load from Supabase first
+    if (supabase && supabase.isConfigured) {
+      try {
+        const { data, error } = await supabase.from('reg_changes').select('*').limit(10);
+        if (!error && data && data.length > 0) {
+          changes = data;
+        }
+      } catch (err) {
+        console.log('Using sample data for AI Insights');
+      }
     }
+
+    // Try mock database
+    if (changes.length === 0 && typeof window !== 'undefined' && window.mockDatabase?.reg_changes?.length > 0) {
+      changes = window.mockDatabase.reg_changes;
+    }
+
+    // Fall back to built-in sample data
+    if (changes.length === 0) {
+      changes = sampleRegChanges;
+    }
+
+    setRegulatoryChanges(changes);
+
+    // Generate AI summaries for each change
+    const summaries = {};
+    changes.forEach(change => {
+      summaries[change.id] = generateAISummary(change);
+    });
+    setAiSummaries(summaries);
   };
 
   const generateAISummary = (change) => {

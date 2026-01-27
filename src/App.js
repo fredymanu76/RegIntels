@@ -1584,7 +1584,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Evidence & Audit Readiness' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   // Automation & Intelligence
   if (solution === 'Automation & Intelligence' && page === 'Notification Center') return <NotificationCenter tenantId={tenantId} />;
-  if (solution === 'Automation & Intelligence' && page === 'AI Insights') return <AIInsightsHub tenantId={tenantId} />;
+  if (solution === 'Automation & Intelligence' && page === 'AI Insights') return <AIInsightsHub tenantId={tenantId} supabase={supabase} />;
   if (solution === 'Automation & Intelligence' && page === 'Workflow Automation') return <WorkflowAutomation tenantId={tenantId} />;
   if (solution === 'Automation & Intelligence' && page === 'Report Generator') return <ReportGenerator tenantId={tenantId} />;
   // Governance & Board Assurance (formerly Solution 5)
