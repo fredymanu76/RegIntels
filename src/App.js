@@ -808,7 +808,7 @@ function PasswordResetPage() {
 export default function RegIntels() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentTenant, setCurrentTenant] = useState(null);
-  const [activeSolution, setActiveSolution] = useState('Solution 1');
+  const [activeSolution, setActiveSolution] = useState('Regulatory Horizon');
   const [activePage, setActivePage] = useState('Change Feed');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showSetup, setShowSetup] = useState(false);
@@ -1081,6 +1081,9 @@ export default function RegIntels() {
   const hasAccess = (solution) => {
     if (!currentUser) return false;
     const solutionConfig = solutions[solution];
+
+    // Guard: if solution doesn't exist, deny access
+    if (!solutionConfig) return false;
 
     // PLATFORM OWNERS: Only show Platform Admin solution
     if (currentUser.is_platform_owner || currentUser.is_platform_admin) {
