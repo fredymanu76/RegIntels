@@ -857,7 +857,9 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>RegIntels</h1>
+        <img src="/logo.png" alt="REGINTELS" className="login-logo" />
+        <h1>REGINTELS<sup style={{fontSize: '0.5em', verticalAlign: 'super'}}>TM</sup></h1>
+        <p className="brand-tagline">Clarity. Control. Regulatory Confidence.</p>
         <p>Sign in to your account</p>
 
         <form onSubmit={handleLogin}>
@@ -905,8 +907,8 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
         </form>
 
         <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.9rem', color: '#64748B', marginBottom: '0.75rem' }}>
-            New to RegIntels?
+          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>
+            New to REGINTELS?
           </p>
           <button
             onClick={onStartOnboarding}
@@ -1412,10 +1414,10 @@ export default function RegIntels() {
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <div className="logo">
-            <Shield size={28} strokeWidth={2.5} />
+            <img src="/logo.png" alt="REGINTELS" style={{width: '32px', height: '32px'}} />
             <div>
-              <div className="logo-title">RegIntels</div>
-              <div className="logo-subtitle">{currentTenant?.name}</div>
+              <div className="logo-title">REG<span>INTELS</span></div>
+              <div className="logo-subtitle">{currentTenant?.name || 'Regulatory Intelligence'}</div>
             </div>
           </div>
         </div>
@@ -6026,10 +6028,10 @@ function TenantOnboardingWizard({ onComplete }) {
     <div className="onboarding-wizard">
       <div className="onboarding-header">
         <div className="onboarding-logo">
-          <Shield size={48} strokeWidth={2.5} />
-          <h1>RegIntels</h1>
+          <img src="/logo.png" alt="REGINTELS" style={{width: '64px', height: '64px'}} />
+          <h1>REGINTELS<sup style={{fontSize: '0.4em', verticalAlign: 'super'}}>TM</sup></h1>
         </div>
-        <div className="onboarding-subtitle">FCA-Grade Compliance Platform</div>
+        <div className="onboarding-subtitle">Clarity. Control. Regulatory Confidence.</div>
       </div>
 
       {/* Progress Bar */}
