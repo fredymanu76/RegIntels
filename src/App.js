@@ -19,6 +19,12 @@ import AuditTrailBoard from './components/AuditTrailBoard';
 import DecisionRegisterBoard from './components/DecisionRegisterBoard';
 import ApprovalsBoard from './components/ApprovalsBoard';
 
+// Automation & Intelligence Components
+import NotificationCenter from './components/NotificationCenter';
+import AIInsightsHub from './components/AIInsightsHub';
+import WorkflowAutomation from './components/WorkflowAutomation';
+import ReportGenerator from './components/ReportGenerator';
+
 // Regulatory Feed Service - Live feed from FCA, PRA, CBI, ESMA
 import {
   fetchRegulatoryUpdates,
@@ -1264,6 +1270,12 @@ export default function RegIntels() {
       pages: ['Evidence & Audit'],
       accessRoles: ['Admin', 'Compliance'],
     },
+    'Automation & Intelligence': {
+      name: 'AI & Automation Hub',
+      icon: Bell,
+      pages: ['Notification Center', 'AI Insights', 'Workflow Automation', 'Report Generator'],
+      accessRoles: ['Admin', 'Compliance'],
+    },
     'Governance & Board Assurance': {
       name: 'Board View',
       icon: BarChart3,
@@ -1529,6 +1541,11 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Issue & Breach Management' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   // Evidence & Audit Readiness (formerly Solution 4B)
   if (solution === 'Evidence & Audit Readiness' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  // Automation & Intelligence
+  if (solution === 'Automation & Intelligence' && page === 'Notification Center') return <NotificationCenter tenantId={tenantId} />;
+  if (solution === 'Automation & Intelligence' && page === 'AI Insights') return <AIInsightsHub tenantId={tenantId} />;
+  if (solution === 'Automation & Intelligence' && page === 'Workflow Automation') return <WorkflowAutomation tenantId={tenantId} />;
+  if (solution === 'Automation & Intelligence' && page === 'Report Generator') return <ReportGenerator tenantId={tenantId} />;
   // Governance & Board Assurance (formerly Solution 5)
   if (solution === 'Governance & Board Assurance' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
   if (solution === 'Governance & Board Assurance' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
