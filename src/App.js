@@ -1399,8 +1399,8 @@ export default function RegIntels() {
     );
   }
 
-  // If not authenticated and not in onboarding, show login page
-  if (!isAuthenticated && !showOnboarding) {
+  // If not authenticated and not in onboarding or welcome, show login page
+  if (!isAuthenticated && !showOnboarding && !showWelcome) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} onStartOnboarding={handleStartOnboarding} />;
   }
 
