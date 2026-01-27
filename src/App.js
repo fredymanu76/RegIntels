@@ -327,10 +327,179 @@ const mockDatabase = {
     { id: 3, user_id: '3bc72979-b961-4b75-a740-7b54485a5fa3', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', email: 'james.wilson@diamondcube.com', display_name: 'James Wilson', role: 'Board', department: 'Board', smf_designation: 'SMF1' }
   ],
   policies: [
-    { id: 1, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Consumer Duty Policy', version: '2.1', status: 'approved', owner: 'Sarah Chen', category: 'Consumer Duty', created_at: '2025-12-01', next_review_date: '2026-12-01' },
-    { id: 2, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Operational Resilience Framework', version: '1.5', status: 'approved', owner: 'Mark Lington', category: 'Operational Resilience', created_at: '2025-11-15', next_review_date: '2026-11-15' },
-    { id: 3, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Anti-Money Laundering Policy', version: '3.0', status: 'approved', owner: 'Sarah Chen', category: 'Financial Crime', created_at: '2026-01-10', next_review_date: '2027-01-10' },
-    { id: 4, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Climate Risk Management Policy', version: '1.2', status: 'under_review', owner: 'James Wilson', category: 'Climate Risk', created_at: '2025-09-01', next_review_date: '2026-06-30' }
+    // APPROVED POLICIES - Active and in use
+    {
+      id: 1,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Consumer Duty Policy',
+      version: '2.1',
+      status: 'approved',
+      owner: 'Sarah Chen',
+      owner_email: 'sarah.chen@diamondcube.com',
+      category: 'Consumer Duty',
+      regulator_regime: 'FCA',
+      description: 'Comprehensive policy establishing the framework for delivering good customer outcomes across all product lines. Covers fair value, consumer understanding, consumer support, and products & services.',
+      created_at: '2025-12-01',
+      last_updated: '2026-01-10',
+      next_review_date: '2026-12-01',
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-001', 'CTRL-005', 'CTRL-008'],
+      linked_obligations: ['FCA Consumer Duty', 'PRIN 2A'],
+      approval_history: [
+        { version: '1.0', approved_by: 'Mark Lington', approved_date: '2024-07-15', notes: 'Initial policy for Consumer Duty implementation' },
+        { version: '2.0', approved_by: 'James Wilson', approved_date: '2025-07-01', notes: 'Major update following FCA feedback' },
+        { version: '2.1', approved_by: 'Mark Lington', approved_date: '2025-12-01', notes: 'Added outcomes testing requirements' }
+      ],
+      document_url: '/policies/consumer-duty-policy-v2.1.pdf'
+    },
+    {
+      id: 2,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Operational Resilience Framework',
+      version: '1.5',
+      status: 'approved',
+      owner: 'Mark Lington',
+      owner_email: 'mark.lington@diamondcube.com',
+      category: 'Operational Resilience',
+      regulator_regime: 'FCA/PRA',
+      description: 'Framework for identifying important business services, setting impact tolerances, and ensuring operational continuity. Includes mapping of critical services and third-party dependencies.',
+      created_at: '2025-11-15',
+      last_updated: '2025-11-15',
+      next_review_date: '2026-11-15',
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-002', 'CTRL-006'],
+      linked_obligations: ['Operational Resilience Rules', 'SYSC 15A'],
+      approval_history: [
+        { version: '1.0', approved_by: 'James Wilson', approved_date: '2022-03-31', notes: 'Initial framework for March 2022 deadline' },
+        { version: '1.5', approved_by: 'James Wilson', approved_date: '2025-11-15', notes: 'Updated for third-party concentration risk' }
+      ],
+      document_url: '/policies/operational-resilience-framework-v1.5.pdf'
+    },
+    {
+      id: 3,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Anti-Money Laundering Policy',
+      version: '3.0',
+      status: 'approved',
+      owner: 'Sarah Chen',
+      owner_email: 'sarah.chen@diamondcube.com',
+      category: 'Financial Crime',
+      regulator_regime: 'FCA/MLR',
+      description: 'Policy for preventing money laundering and terrorist financing. Covers customer due diligence, ongoing monitoring, suspicious activity reporting, and record keeping requirements.',
+      created_at: '2026-01-10',
+      last_updated: '2026-01-10',
+      next_review_date: '2027-01-10',
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-003'],
+      linked_obligations: ['MLR 2017', 'JMLSG Guidance', 'POCA 2002'],
+      approval_history: [
+        { version: '1.0', approved_by: 'Mark Lington', approved_date: '2021-01-15', notes: 'Initial AML policy' },
+        { version: '2.0', approved_by: 'James Wilson', approved_date: '2023-06-01', notes: 'Updated for MLR amendments' },
+        { version: '3.0', approved_by: 'Mark Lington', approved_date: '2026-01-10', notes: 'Enhanced transaction monitoring requirements per PS26/3' }
+      ],
+      document_url: '/policies/aml-policy-v3.0.pdf'
+    },
+    // UNDER REVIEW - Policy in review process
+    {
+      id: 4,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Climate Risk Management Policy',
+      version: '1.2',
+      status: 'under_review',
+      owner: 'James Wilson',
+      owner_email: 'james.wilson@diamondcube.com',
+      category: 'Climate Risk',
+      regulator_regime: 'PRA/TCFD',
+      description: 'Policy for identifying, measuring, managing and reporting climate-related financial risks. Covers physical and transition risks, scenario analysis, and TCFD disclosures.',
+      created_at: '2025-09-01',
+      last_updated: '2026-01-20',
+      next_review_date: '2026-06-30',
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-004'],
+      linked_obligations: ['SS3/19', 'TCFD Recommendations', 'Climate BES'],
+      review_notes: 'Under review to incorporate SS1/26 stress testing requirements',
+      reviewer: 'Sarah Chen',
+      review_started: '2026-01-15',
+      approval_history: [
+        { version: '1.0', approved_by: 'Mark Lington', approved_date: '2024-09-01', notes: 'Initial climate risk policy' },
+        { version: '1.1', approved_by: 'James Wilson', approved_date: '2025-03-15', notes: 'Added scenario analysis framework' }
+      ],
+      document_url: '/policies/climate-risk-policy-v1.2-draft.pdf'
+    },
+    // DRAFT - New policy being developed
+    {
+      id: 5,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'AI and Machine Learning Governance Policy',
+      version: '0.1',
+      status: 'draft',
+      owner: 'Mark Lington',
+      owner_email: 'mark.lington@diamondcube.com',
+      category: 'Model Risk',
+      regulator_regime: 'FCA',
+      description: 'Policy for governance, validation, and monitoring of AI/ML models used in customer-facing processes. Covers model risk management, explainability requirements, and bias detection.',
+      created_at: '2026-01-22',
+      last_updated: '2026-01-25',
+      next_review_date: null,
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-007'],
+      linked_obligations: ['FG26/1', 'SS1/23 Model Risk'],
+      draft_notes: 'Initial draft following FG26/1 guidance publication. Pending legal and compliance review.',
+      approval_history: [],
+      document_url: null
+    },
+    // PENDING APPROVAL - Awaiting sign-off
+    {
+      id: 6,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Third Party Risk Management Policy',
+      version: '2.0',
+      status: 'pending_approval',
+      owner: 'Mark Lington',
+      owner_email: 'mark.lington@diamondcube.com',
+      category: 'Operational Resilience',
+      regulator_regime: 'FCA/PRA',
+      description: 'Policy for managing risks associated with third-party service providers including cloud providers. Covers due diligence, ongoing monitoring, concentration risk, and exit strategies.',
+      created_at: '2025-06-01',
+      last_updated: '2026-01-18',
+      next_review_date: '2027-01-18',
+      review_frequency: 'Annual',
+      linked_controls: ['CTRL-002', 'CTRL-006'],
+      linked_obligations: ['CP26/2', 'SYSC 8', 'EBA Outsourcing Guidelines'],
+      pending_approver: 'James Wilson',
+      submitted_for_approval: '2026-01-18',
+      approval_due_date: '2026-02-01',
+      approval_history: [
+        { version: '1.0', approved_by: 'James Wilson', approved_date: '2023-06-15', notes: 'Initial third party risk policy' },
+        { version: '1.5', approved_by: 'Mark Lington', approved_date: '2025-06-01', notes: 'Updated for cloud concentration risk' }
+      ],
+      document_url: '/policies/third-party-risk-policy-v2.0-pending.pdf'
+    },
+    // ARCHIVED - Superseded policy
+    {
+      id: 7,
+      tenant_id: '10c39831-0918-42d7-b435-bacfab214091',
+      title: 'Treating Customers Fairly Policy',
+      version: '3.2',
+      status: 'archived',
+      owner: 'Sarah Chen',
+      owner_email: 'sarah.chen@diamondcube.com',
+      category: 'Consumer Protection',
+      regulator_regime: 'FCA',
+      description: 'Legacy policy for fair treatment of customers. Superseded by Consumer Duty Policy (ID: 1) effective July 2023.',
+      created_at: '2019-01-15',
+      last_updated: '2023-07-31',
+      archived_date: '2023-07-31',
+      archive_reason: 'Superseded by Consumer Duty Policy following FCA Consumer Duty implementation',
+      superseded_by: 1,
+      linked_controls: [],
+      linked_obligations: ['PRIN 6 (Historic)'],
+      approval_history: [
+        { version: '1.0', approved_by: 'Mark Lington', approved_date: '2019-01-15', notes: 'Initial TCF policy' },
+        { version: '3.2', approved_by: 'Sarah Chen', approved_date: '2023-01-15', notes: 'Final update before Consumer Duty' }
+      ],
+      document_url: '/policies/archive/tcf-policy-v3.2.pdf'
+    }
   ],
   reg_changes: [
     { id: 1, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'FCA', title: 'Consumer Duty - Board Reporting Requirements (PS26/1)', summary: 'Final rules requiring firms to submit annual board reports on consumer outcomes, including quantitative metrics.', published_at: '2026-01-15', effective_date: '2026-07-31', status: 'in_review', impact_rating: 'high', materiality: 'high', affected_controls: 8 },
@@ -1833,25 +2002,136 @@ function ControlLibraryPage({ tenantId, isReadOnly }) {
 function PolicyLibraryPage({ tenantId, isReadOnly }) {
   const { data: policies, loading, refetch } = usePolicies(tenantId);
   const [showModal, setShowModal] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('all');
 
   if (loading) return <LoadingSpinner />;
+
+  // Filter policies by status
+  const filteredPolicies = policies?.filter(p => {
+    if (filterStatus === 'all') return true;
+    if (filterStatus === 'active') return p.status === 'approved';
+    return p.status === filterStatus;
+  }) || [];
+
+  // Count by status
+  const statusCounts = {
+    all: policies?.length || 0,
+    approved: policies?.filter(p => p.status === 'approved').length || 0,
+    under_review: policies?.filter(p => p.status === 'under_review').length || 0,
+    draft: policies?.filter(p => p.status === 'draft').length || 0,
+    pending_approval: policies?.filter(p => p.status === 'pending_approval').length || 0,
+    archived: policies?.filter(p => p.status === 'archived').length || 0
+  };
+
+  // Policy status badge color
+  const getStatusColor = (status) => {
+    const colors = {
+      approved: { bg: '#dcfce7', text: '#166534', border: '#86efac' },
+      under_review: { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
+      draft: { bg: '#e0e7ff', text: '#3730a3', border: '#a5b4fc' },
+      pending_approval: { bg: '#dbeafe', text: '#1d4ed8', border: '#93c5fd' },
+      archived: { bg: '#f1f5f9', text: '#64748b', border: '#cbd5e1' }
+    };
+    return colors[status] || colors.draft;
+  };
 
   return (
     <div>
       <div className="page-header">
         <h1>Policy Library</h1>
-        <p className="page-subtitle">Foundation policy inventory and templates</p>
+        <p className="page-subtitle">Foundation policy inventory with full lifecycle tracking</p>
+      </div>
+
+      {/* Policy Statistics */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+        <div
+          onClick={() => setFilterStatus('all')}
+          style={{
+            padding: '16px',
+            background: filterStatus === 'all' ? '#1e293b' : 'white',
+            color: filterStatus === 'all' ? 'white' : '#1e293b',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            border: '2px solid',
+            borderColor: filterStatus === 'all' ? '#1e293b' : '#e2e8f0',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>{statusCounts.all}</div>
+          <div style={{ fontSize: '12px', opacity: 0.8 }}>Total Policies</div>
+        </div>
+        <div
+          onClick={() => setFilterStatus('approved')}
+          style={{
+            padding: '16px',
+            background: filterStatus === 'approved' ? '#166534' : '#dcfce7',
+            color: filterStatus === 'approved' ? 'white' : '#166534',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            border: '2px solid #86efac',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>{statusCounts.approved}</div>
+          <div style={{ fontSize: '12px' }}>Approved</div>
+        </div>
+        <div
+          onClick={() => setFilterStatus('under_review')}
+          style={{
+            padding: '16px',
+            background: filterStatus === 'under_review' ? '#92400e' : '#fef3c7',
+            color: filterStatus === 'under_review' ? 'white' : '#92400e',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            border: '2px solid #fcd34d',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>{statusCounts.under_review}</div>
+          <div style={{ fontSize: '12px' }}>Under Review</div>
+        </div>
+        <div
+          onClick={() => setFilterStatus('pending_approval')}
+          style={{
+            padding: '16px',
+            background: filterStatus === 'pending_approval' ? '#1d4ed8' : '#dbeafe',
+            color: filterStatus === 'pending_approval' ? 'white' : '#1d4ed8',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            border: '2px solid #93c5fd',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>{statusCounts.pending_approval}</div>
+          <div style={{ fontSize: '12px' }}>Pending Approval</div>
+        </div>
+        <div
+          onClick={() => setFilterStatus('draft')}
+          style={{
+            padding: '16px',
+            background: filterStatus === 'draft' ? '#3730a3' : '#e0e7ff',
+            color: filterStatus === 'draft' ? 'white' : '#3730a3',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            border: '2px solid #a5b4fc',
+            transition: 'all 0.2s'
+          }}
+        >
+          <div style={{ fontSize: '24px', fontWeight: '700' }}>{statusCounts.draft}</div>
+          <div style={{ fontSize: '12px' }}>Draft</div>
+        </div>
       </div>
 
       {!isReadOnly && (
-        <button onClick={() => setShowModal(true)} className="btn-primary">
+        <button onClick={() => setShowModal(true)} className="btn-primary" style={{ marginBottom: '20px' }}>
           <Upload size={18} />
           Upload Policy
         </button>
       )}
 
       {showModal && (
-        <CreatePolicyModal 
+        <CreatePolicyModal
           tenantId={tenantId}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
@@ -1861,21 +2141,433 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
         />
       )}
 
+      {/* Policy Cards */}
       <div className="card-grid">
-        {policies?.map(policy => (
-          <div key={policy.id} className="card">
-            <div className="card-badges">
-              <FileText size={18} />
-              <span className="version-badge">v{policy.version}</span>
-              <StatusBadge status={policy.status} />
+        {filteredPolicies.map(policy => {
+          const statusColor = getStatusColor(policy.status);
+          return (
+            <div
+              key={policy.id}
+              className="card"
+              style={{
+                cursor: 'pointer',
+                borderLeft: `4px solid ${statusColor.border}`,
+                opacity: policy.status === 'archived' ? 0.7 : 1
+              }}
+              onClick={() => setSelectedPolicy(policy)}
+            >
+              <div className="card-badges" style={{ marginBottom: '12px' }}>
+                <FileText size={18} />
+                <span className="version-badge">v{policy.version}</span>
+                <span style={{
+                  padding: '4px 10px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  background: statusColor.bg,
+                  color: statusColor.text,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  {policy.status?.replace('_', ' ')}
+                </span>
+              </div>
+              <h3 className="card-title" style={{ marginBottom: '8px' }}>{policy.title}</h3>
+
+              {policy.description && (
+                <p style={{
+                  fontSize: '13px',
+                  color: '#64748b',
+                  marginBottom: '12px',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden'
+                }}>
+                  {policy.description}
+                </p>
+              )}
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                {policy.regulator_regime && (
+                  <span style={{
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    background: '#f1f5f9',
+                    color: '#475569'
+                  }}>
+                    {policy.regulator_regime}
+                  </span>
+                )}
+                {policy.category && (
+                  <span style={{
+                    padding: '3px 8px',
+                    borderRadius: '4px',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    background: '#eff6ff',
+                    color: '#1d4ed8'
+                  }}>
+                    {policy.category}
+                  </span>
+                )}
+              </div>
+
+              <div className="card-meta" style={{ fontSize: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span>Owner: {policy.owner}</span>
+                  {policy.review_frequency && <span>{policy.review_frequency} Review</span>}
+                </div>
+                {policy.next_review_date && policy.status !== 'archived' && (
+                  <div style={{
+                    color: new Date(policy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#dc2626' : '#64748b'
+                  }}>
+                    Next Review: {new Date(policy.next_review_date).toLocaleDateString()}
+                  </div>
+                )}
+                {policy.status === 'pending_approval' && policy.pending_approver && (
+                  <div style={{ color: '#1d4ed8', fontWeight: '500' }}>
+                    Awaiting approval from: {policy.pending_approver}
+                  </div>
+                )}
+                {policy.status === 'under_review' && policy.reviewer && (
+                  <div style={{ color: '#92400e', fontWeight: '500' }}>
+                    Reviewer: {policy.reviewer}
+                  </div>
+                )}
+                {policy.status === 'archived' && policy.archive_reason && (
+                  <div style={{ color: '#64748b', fontStyle: 'italic', marginTop: '8px' }}>
+                    {policy.archive_reason}
+                  </div>
+                )}
+              </div>
+
+              {/* Linked Controls */}
+              {policy.linked_controls && policy.linked_controls.length > 0 && (
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '6px' }}>Linked Controls:</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                    {policy.linked_controls.map((ctrl, i) => (
+                      <span key={i} style={{
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        background: '#f8fafc',
+                        color: '#475569',
+                        border: '1px solid #e2e8f0'
+                      }}>
+                        {ctrl}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <h3 className="card-title">{policy.title}</h3>
-            <div className="card-meta">
-              Regime: {policy.regulator_regime}
+          );
+        })}
+      </div>
+
+      {filteredPolicies.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+          <FileText size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+          <p>No policies found with the selected filter.</p>
+        </div>
+      )}
+
+      {/* Policy Detail Modal */}
+      {selectedPolicy && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(15, 23, 42, 0.7)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+          onClick={() => setSelectedPolicy(null)}
+        >
+          <div
+            style={{
+              background: 'white',
+              borderRadius: '16px',
+              width: '90%',
+              maxWidth: '700px',
+              maxHeight: '85vh',
+              overflow: 'auto',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{
+              padding: '24px',
+              borderBottom: '1px solid #e2e8f0',
+              background: 'linear-gradient(135deg, #1e293b, #334155)',
+              color: 'white',
+              borderRadius: '16px 16px 0 0'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <h2 style={{ margin: '0 0 8px 0', fontSize: '1.5rem' }}>{selectedPolicy.title}</h2>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <span style={{
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      background: 'rgba(255,255,255,0.2)',
+                      color: 'white'
+                    }}>
+                      v{selectedPolicy.version}
+                    </span>
+                    <span style={{
+                      padding: '4px 12px',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      background: getStatusColor(selectedPolicy.status).bg,
+                      color: getStatusColor(selectedPolicy.status).text,
+                      textTransform: 'uppercase'
+                    }}>
+                      {selectedPolicy.status?.replace('_', ' ')}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedPolicy(null)}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    cursor: 'pointer',
+                    color: 'white'
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div style={{ padding: '24px' }}>
+              {/* Description */}
+              {selectedPolicy.description && (
+                <div style={{ marginBottom: '24px' }}>
+                  <h4 style={{ margin: '0 0 8px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Description</h4>
+                  <p style={{ margin: 0, color: '#334155', lineHeight: 1.6 }}>{selectedPolicy.description}</p>
+                </div>
+              )}
+
+              {/* Key Information Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '16px',
+                marginBottom: '24px'
+              }}>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Owner</div>
+                  <div style={{ fontWeight: '600' }}>{selectedPolicy.owner}</div>
+                  {selectedPolicy.owner_email && (
+                    <div style={{ fontSize: '12px', color: '#64748b' }}>{selectedPolicy.owner_email}</div>
+                  )}
+                </div>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Regime</div>
+                  <div style={{ fontWeight: '600' }}>{selectedPolicy.regulator_regime}</div>
+                </div>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Category</div>
+                  <div style={{ fontWeight: '600' }}>{selectedPolicy.category}</div>
+                </div>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Review Frequency</div>
+                  <div style={{ fontWeight: '600' }}>{selectedPolicy.review_frequency || 'Not set'}</div>
+                </div>
+              </div>
+
+              {/* Dates */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                gap: '16px',
+                marginBottom: '24px',
+                padding: '16px',
+                background: '#f8fafc',
+                borderRadius: '8px'
+              }}>
+                <div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Created</div>
+                  <div style={{ fontWeight: '500' }}>{new Date(selectedPolicy.created_at).toLocaleDateString()}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Last Updated</div>
+                  <div style={{ fontWeight: '500' }}>{selectedPolicy.last_updated ? new Date(selectedPolicy.last_updated).toLocaleDateString() : 'N/A'}</div>
+                </div>
+                {selectedPolicy.next_review_date && (
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Next Review</div>
+                    <div style={{
+                      fontWeight: '500',
+                      color: new Date(selectedPolicy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#dc2626' : 'inherit'
+                    }}>
+                      {new Date(selectedPolicy.next_review_date).toLocaleDateString()}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Linked Obligations */}
+              {selectedPolicy.linked_obligations && selectedPolicy.linked_obligations.length > 0 && (
+                <div style={{ marginBottom: '24px' }}>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Linked Obligations</h4>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {selectedPolicy.linked_obligations.map((ob, i) => (
+                      <span key={i} style={{
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '500',
+                        background: '#eff6ff',
+                        color: '#1d4ed8',
+                        border: '1px solid #93c5fd'
+                      }}>
+                        {ob}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Linked Controls */}
+              {selectedPolicy.linked_controls && selectedPolicy.linked_controls.length > 0 && (
+                <div style={{ marginBottom: '24px' }}>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Linked Controls</h4>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {selectedPolicy.linked_controls.map((ctrl, i) => (
+                      <span key={i} style={{
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        background: '#f8fafc',
+                        color: '#475569',
+                        border: '1px solid #e2e8f0',
+                        fontFamily: 'monospace'
+                      }}>
+                        {ctrl}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Approval History */}
+              {selectedPolicy.approval_history && selectedPolicy.approval_history.length > 0 && (
+                <div>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Approval History</h4>
+                  <div style={{
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    overflow: 'hidden'
+                  }}>
+                    {selectedPolicy.approval_history.slice().reverse().map((approval, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          padding: '12px 16px',
+                          background: i === 0 ? '#f0fdf4' : 'white',
+                          borderBottom: i < selectedPolicy.approval_history.length - 1 ? '1px solid #e2e8f0' : 'none',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '12px'
+                        }}
+                      >
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          background: i === 0 ? '#10b981' : '#e2e8f0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: i === 0 ? 'white' : '#64748b',
+                          flexShrink: 0
+                        }}>
+                          <CheckCircle size={16} />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: '600', color: '#1e293b' }}>Version {approval.version}</span>
+                            <span style={{ fontSize: '12px', color: '#64748b' }}>
+                              {new Date(approval.approved_date).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '2px' }}>
+                            Approved by: {approval.approved_by}
+                          </div>
+                          {approval.notes && (
+                            <div style={{ fontSize: '13px', color: '#475569', marginTop: '8px', fontStyle: 'italic' }}>
+                              "{approval.notes}"
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginTop: '24px',
+                paddingTop: '24px',
+                borderTop: '1px solid #e2e8f0'
+              }}>
+                {selectedPolicy.document_url && (
+                  <button
+                    className="btn-primary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                  >
+                    <Download size={16} />
+                    Download Policy
+                  </button>
+                )}
+                {selectedPolicy.status === 'approved' && !isReadOnly && (
+                  <button className="btn-ghost">
+                    Start Review
+                  </button>
+                )}
+                {selectedPolicy.status === 'pending_approval' && !isReadOnly && (
+                  <button
+                    className="btn-primary"
+                    style={{ background: '#10b981' }}
+                  >
+                    <CheckCircle size={16} />
+                    Approve Policy
+                  </button>
+                )}
+                <button
+                  className="btn-ghost"
+                  onClick={() => setSelectedPolicy(null)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
