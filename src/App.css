@@ -228,9 +228,10 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .status-banner.success {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: white;
-  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: var(--color-primary);
+  box-shadow: 0 4px 6px rgba(0, 212, 228, 0.3);
+  font-weight: 600;
 }
 
 .status-content {
@@ -280,8 +281,8 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .logo img {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
 }
 
 .logo:hover {
@@ -290,7 +291,7 @@ h1, h2, h3, h4, h5, h6,
 
 .logo-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-text);
@@ -349,7 +350,7 @@ h1, h2, h3, h4, h5, h6,
 
 .user-select option {
   color: var(--color-text);
-  background: white;
+  background: var(--color-surface);
   font-weight: 600;
 }
 
@@ -900,7 +901,7 @@ h1, h2, h3, h4, h5, h6,
 
 /* DATA TABLE - SHARP MODERN STYLE */
 .data-table-container {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   overflow: hidden;
   margin-top: 2rem;
@@ -961,7 +962,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .metric-card {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   padding: 1.75rem;
   box-shadow: var(--shadow-lg);
@@ -1055,7 +1056,7 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .modal {
-  background: white;
+  background: var(--color-surface);
   padding: 2rem;
   max-width: 600px;
   width: 90%;
@@ -1136,7 +1137,7 @@ h1, h2, h3, h4, h5, h6,
   font-family: inherit;
   font-weight: 500;
 transition: all 0.3s ease;
-background: white;
+background: var(--color-surface);
 }
 .form-group input:focus,
 .form-group select:focus,
@@ -1284,7 +1285,7 @@ box-shadow: 0 0 10px rgba(21, 128, 61, 0.6);
 .onboarding-content {
 max-width: 900px;
 margin: 0 auto;
-background: white;
+background: var(--color-surface);
 padding: 3rem;
 box-shadow: var(--shadow-float);
 border: 1px solid var(--color-border);

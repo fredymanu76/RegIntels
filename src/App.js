@@ -25,6 +25,9 @@ import AIInsightsHub from './components/AIInsightsHub';
 import WorkflowAutomation from './components/WorkflowAutomation';
 import ReportGenerator from './components/ReportGenerator';
 
+// Welcome Experience
+import WelcomeExperience from './components/WelcomeExperience';
+
 // Regulatory Feed Service - Live feed from FCA, PRA, CBI, ESMA
 import {
   fetchRegulatoryUpdates,
@@ -1049,6 +1052,7 @@ export default function RegIntels() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   // Global handler for unhandled promise rejections (abort errors)
   useEffect(() => {
@@ -1185,7 +1189,14 @@ export default function RegIntels() {
 
         setCurrentUser({ ...userProfile, is_platform_admin: false });
         setCurrentTenant(tenant);
-        setIsAuthenticated(true);
+
+        // Check if user has seen the welcome experience
+        const hasSeenWelcome = localStorage.getItem(`welcome_seen_${userProfile.id}`);
+        if (!hasSeenWelcome) {
+          setShowWelcome(true);
+        } else {
+          setIsAuthenticated(true);
+        }
         setShowOnboarding(false);
         console.log('[LOAD_USER_DATA] ✅ Regular user login complete');
       } else {
@@ -1201,8 +1212,24 @@ export default function RegIntels() {
   const handleLoginSuccess = (tenant, userProfile) => {
     setCurrentTenant(tenant);
     setCurrentUser(userProfile);
-    setIsAuthenticated(true);
+
+    // Check if user has seen the welcome experience
+    const hasSeenWelcome = localStorage.getItem(`welcome_seen_${userProfile?.id || tenant?.id}`);
+    if (!hasSeenWelcome) {
+      setShowWelcome(true);
+    } else {
+      setIsAuthenticated(true);
+    }
     localStorage.setItem('tenant_onboarded', 'true');
+  };
+
+  const handleWelcomeComplete = () => {
+    const userId = currentUser?.id || currentTenant?.id;
+    if (userId) {
+      localStorage.setItem(`welcome_seen_${userId}`, 'true');
+    }
+    setShowWelcome(false);
+    setIsAuthenticated(true);
   };
 
   const handleSignOut = async () => {
@@ -1230,7 +1257,8 @@ export default function RegIntels() {
     if (tenantData && userData) {
       setCurrentTenant(tenantData);
       setCurrentUser(userData);
-      setIsAuthenticated(true);
+      // Show welcome experience for new users
+      setShowWelcome(true);
       localStorage.setItem('tenant_onboarded', 'true');
     }
     // Otherwise (real Supabase), user needs to verify email and login
@@ -1381,6 +1409,11 @@ export default function RegIntels() {
     return <TenantOnboardingWizard onComplete={handleOnboardingComplete} />;
   }
 
+  // If showing welcome experience
+  if (showWelcome) {
+    return <WelcomeExperience onComplete={handleWelcomeComplete} />;
+  }
+
   // main render
   return (
     <div className="app">
@@ -1414,7 +1447,7 @@ export default function RegIntels() {
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <div className="logo">
-            <img src="/logo.png" alt="REGINTELS" style={{width: '32px', height: '32px'}} />
+            <img src="/logo.png" alt="REGINTELS" style={{width: '48px', height: '48px'}} />
             <div>
               <div className="logo-title">REG<span>INTELS</span></div>
               <div className="logo-subtitle">{currentTenant?.name || 'Regulatory Intelligence'}</div>
