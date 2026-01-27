@@ -19,6 +19,17 @@ import AuditTrailBoard from './components/AuditTrailBoard';
 import DecisionRegisterBoard from './components/DecisionRegisterBoard';
 import ApprovalsBoard from './components/ApprovalsBoard';
 
+// Regulatory Feed Service - Live feed from FCA, PRA, CBI, ESMA
+import {
+  fetchRegulatoryUpdates,
+  scanForNewUpdates,
+  getRegulatoryStatistics,
+  calculateImpactScore,
+  getLastScanTimestamp,
+  formatRelativeTime,
+  REGULATORY_SOURCES
+} from './services/regulatoryFeedService';
+
 // ============================================================================
 // SUPABASE CONFIGURATION
 // ============================================================================
@@ -1613,64 +1624,59 @@ function DataTable({ headers, rows }) {
 // SOLUTION 1: REGULATORY HORIZON - CHANGE INTELLIGENCE
 // ============================================================================
 function ChangeFeedPage({ tenantId, isReadOnly }) {
-  const { data: changes, loading, refetch } = useRegChanges(tenantId);
-  const [impactScores, setImpactScores] = useState([]);
-  const [loadingScores, setLoadingScores] = useState(true);
+  // Use local regulatory feed service instead of Supabase
+  const [changes, setChanges] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [scanning, setScanning] = useState(false);
-  const [lastScan, setLastScan] = useState(null);
+  const [lastScan, setLastScan] = useState(getLastScanTimestamp());
   const [filterSource, setFilterSource] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [scanResult, setScanResult] = useState(null);
 
-  // Fetch Impact Scores from strategic view
+  // Fetch regulatory updates on mount
   useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchImpactScores = async (signal) => {
-      setLoadingScores(true);
+    const loadUpdates = async () => {
+      setLoading(true);
       try {
-        const scores = await supabase.query('v_regulatory_impact_score', {
-          tenantId: tenantId
-        }, signal);
-
-        if (!signal?.aborted) {
-          setImpactScores(scores || []);
-        }
+        const updates = await fetchRegulatoryUpdates('all');
+        // Add impact scores to each change
+        const changesWithScores = updates.map(change => ({
+          ...change,
+          impactScore: calculateImpactScore(change)
+        }));
+        setChanges(changesWithScores);
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          console.error('Error loading impact scores:', error);
-        }
+        console.error('Error loading regulatory updates:', error);
       } finally {
-        if (!signal?.aborted) {
-          setLoadingScores(false);
-        }
+        setLoading(false);
       }
     };
 
-    if (tenantId) {
-      fetchImpactScores(controller.signal);
-    }
-
-    return () => controller.abort('Component unmounted');
-  }, [tenantId]);
+    loadUpdates();
+  }, []);
 
   // Scan for new regulatory updates
   const handleScanForUpdates = async () => {
     setScanning(true);
-    // Simulate scanning regulatory feeds (FCA, PRA, CBI, ESMA)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    await refetch();
-    setLastScan(new Date().toISOString());
-    setScanning(false);
+    try {
+      const result = await scanForNewUpdates();
+      // Add impact scores to each change
+      const changesWithScores = result.updates.map(change => ({
+        ...change,
+        impactScore: calculateImpactScore(change)
+      }));
+      setChanges(changesWithScores);
+      setLastScan(result.scanTime);
+      setScanResult(result);
+    } catch (error) {
+      console.error('Error scanning for updates:', error);
+    } finally {
+      setScanning(false);
+    }
   };
 
-  // Merge impact scores with changes
-  const changesWithScores = changes?.map(change => {
-    const score = impactScores.find(s => s.change_id === change.id);
-    return { ...change, impactScore: score };
-  }) || [];
-
   // Apply filters
-  const filteredChanges = changesWithScores.filter(change => {
+  const filteredChanges = changes.filter(change => {
     if (filterSource !== 'all' && change.source !== filterSource) return false;
     if (filterStatus !== 'all' && change.status !== filterStatus) return false;
     return true;
@@ -1678,16 +1684,16 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
 
   // Calculate statistics
   const stats = {
-    total: changesWithScores.length,
-    highPriority: changesWithScores.filter(c => c.impact_rating === 'high' || c.materiality === 'high').length,
-    pending: changesWithScores.filter(c => c.status === 'pending').length,
-    inReview: changesWithScores.filter(c => c.status === 'in_review').length,
-    actioned: changesWithScores.filter(c => c.status === 'actioned').length,
+    total: changes.length,
+    highPriority: changes.filter(c => c.impact_rating === 'high' || c.materiality === 'high').length,
+    pending: changes.filter(c => c.status === 'pending').length,
+    inReview: changes.filter(c => c.status === 'in_review').length,
+    actioned: changes.filter(c => c.status === 'actioned').length,
     bySource: {
-      FCA: changesWithScores.filter(c => c.source === 'FCA').length,
-      PRA: changesWithScores.filter(c => c.source === 'PRA').length,
-      CBI: changesWithScores.filter(c => c.source === 'CBI').length,
-      ESMA: changesWithScores.filter(c => c.source === 'ESMA').length
+      FCA: changes.filter(c => c.source === 'FCA').length,
+      PRA: changes.filter(c => c.source === 'PRA').length,
+      CBI: changes.filter(c => c.source === 'CBI').length,
+      ESMA: changes.filter(c => c.source === 'ESMA').length
     }
   };
 
@@ -1775,10 +1781,34 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
         )}
       </div>
 
+      {/* Scan Result Notification */}
+      {scanResult && (
+        <div style={{
+          background: scanResult.hasHighPriority ? '#fef2f2' : '#f0fdf4',
+          border: `1px solid ${scanResult.hasHighPriority ? '#fecaca' : '#bbf7d0'}`,
+          borderRadius: '8px',
+          padding: '1rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem'
+        }}>
+          <span style={{ fontSize: '1.25rem' }}>{scanResult.hasHighPriority ? '⚠️' : '✅'}</span>
+          <div>
+            <strong>Scan Complete</strong> - Found {scanResult.totalCount} regulatory updates from {scanResult.sourcesScanned} sources.
+            {scanResult.liveDataFound && <span style={{ marginLeft: '0.5rem', color: '#059669' }}>(Live data available)</span>}
+          </div>
+          <button
+            onClick={() => setScanResult(null)}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+          >✕</button>
+        </div>
+      )}
+
       {/* Changes Grid */}
       <div className="card-grid">
         {filteredChanges.map(change => (
-          <div key={change.id} className="card" style={{ border: change.impact_rating === 'high' ? '2px solid #dc2626' : undefined }}>
+          <div key={change.id} className="card" style={{ border: change.materiality === 'high' ? '2px solid #dc2626' : undefined }}>
             <div className="card-badges">
               <span className="source-badge" style={{
                 background: change.source === 'FCA' ? '#1d4ed8' :
@@ -1787,39 +1817,57 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
                            change.source === 'ESMA' ? '#d97706' : '#64748b',
                 color: 'white', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600'
               }}>{change.source}</span>
-              <span className="date-badge">{change.published_at}</span>
+              <span className="date-badge" style={{ background: '#f1f5f9', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>
+                {formatRelativeTime(change.published_at)}
+              </span>
               <StatusBadge status={change.status} />
-              {change.impactScore && !loadingScores ? (
+              {change.impactScore ? (
                 <ImpactScoreCard
-                  score={change.impactScore.total_impact_score}
-                  riskBand={change.impactScore.risk_band}
-                  primaryDriver={change.impactScore.primary_driver}
+                  score={change.impactScore.totalScore}
+                  riskBand={change.impactScore.riskBand}
+                  primaryDriver={change.impactScore.primaryDriver}
                   compact={true}
                 />
               ) : (
-                <ImpactBadge impact={change.impact_rating} />
+                <ImpactBadge impact={change.materiality || change.impact_rating} />
+              )}
+              {change.isLive && (
+                <span style={{ background: '#dcfce7', color: '#166534', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>LIVE</span>
               )}
             </div>
             <h3 className="card-title">{change.title}</h3>
             <p className="card-text">{change.summary}</p>
 
-            {/* Effective Date & Affected Controls */}
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', fontSize: '0.75rem', color: '#64748b' }}>
+            {/* Affected Regimes */}
+            {change.affected_regimes && change.affected_regimes.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginTop: '0.5rem' }}>
+                {change.affected_regimes.slice(0, 4).map((regime, idx) => (
+                  <span key={idx} style={{ background: '#e0e7ff', color: '#3730a3', padding: '0.125rem 0.375rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>
+                    {regime}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Effective Date & Document Link */}
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', fontSize: '0.75rem', color: '#64748b', flexWrap: 'wrap' }}>
               {change.effective_date && (
-                <span>Effective: {change.effective_date}</span>
+                <span>📅 Effective: {new Date(change.effective_date).toLocaleDateString()}</span>
               )}
-              {change.affected_controls && (
-                <span>Affected Controls: {change.affected_controls}</span>
+              {change.document_url && change.document_url !== '#' && (
+                <a href={change.document_url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
+                  🔗 Source Document
+                </a>
               )}
             </div>
 
             {/* Show detailed impact score if available */}
-            {change.impactScore && !loadingScores && (
+            {change.impactScore && (
               <div style={{ marginTop: '12px' }}>
                 <ImpactScoreCard
-                  score={change.impactScore.total_impact_score}
-                  riskBand={change.impactScore.risk_band}
-                  primaryDriver={change.impactScore.primary_driver}
+                  score={change.impactScore.totalScore}
+                  riskBand={change.impactScore.riskBand}
+                  primaryDriver={change.impactScore.primaryDriver}
                   changeTitle={null}
                   compact={false}
                 />
@@ -1846,7 +1894,23 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
 }
 
 function ChangeRegisterPage({ tenantId }) {
-  const { data: changes, loading } = useRegChanges(tenantId);
+  const [changes, setChanges] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUpdates = async () => {
+      setLoading(true);
+      try {
+        const updates = await fetchRegulatoryUpdates('all');
+        setChanges(updates);
+      } catch (error) {
+        console.error('Error loading regulatory updates:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUpdates();
+  }, []);
 
   if (loading) return <LoadingSpinner />;
 
@@ -1856,16 +1920,16 @@ function ChangeRegisterPage({ tenantId }) {
         <h1>Change Register</h1>
         <p className="page-subtitle">Full register of regulatory changes with impact assessments</p>
       </div>
-      
-      <DataTable 
+
+      <DataTable
         headers={['ID', 'Source', 'Title', 'Published', 'Status', 'Impact']}
         rows={changes?.map(c => [
-          c.id,
+          c.id?.slice(0, 8) || '-',
           c.source,
           c.title,
-          c.published_at,
+          formatRelativeTime(c.published_at),
           <StatusBadge key={c.id} status={c.status} />,
-          <ImpactBadge key={c.id} impact={c.impact_rating} />
+          <ImpactBadge key={c.id} impact={c.materiality || c.impact_rating} />
         ]) || []}
       />
     </div>
