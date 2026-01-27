@@ -313,38 +313,78 @@ class SupabaseClient {
 const supabase = new SupabaseClient();
 
 // ============================================================================
-// MOCK DATABASE
+// MOCK DATABASE - Comprehensive Sample Data for End-to-End Testing
 // ============================================================================
 const mockDatabase = {
   tenants: [
-    { id: '5925873a-2119-444c-93b5-e0cd6ed1bdad', name: 'Fintech Solutions Ltd', regime: 'API', frn: 'FRN123456', status: 'active', created_at: '2024-01-01' }
+    { id: '10c39831-0918-42d7-b435-bacfab214091', name: 'Diamond Cube Limited', regime: 'FCA', frn: 'FRN987654', status: 'active', created_at: '2025-01-01' },
+    { id: '20c39831-0918-42d7-b435-bacfab214092', name: 'Acme Financial Services', regime: 'FCA', frn: 'FRN654321', status: 'active', created_at: '2025-02-15' },
+    { id: '30c39831-0918-42d7-b435-bacfab214093', name: 'Global Invest Partners', regime: 'PRA', frn: 'FRN112233', status: 'active', created_at: '2025-03-01' }
   ],
   user_profiles: [
-    { id: 1, user_id: 'user1', tenant_id: 1, email: 'admin@fintech.com', display_name: 'Sarah Johnson', role: 'Admin', department: 'Compliance', smf_designation: 'SMF16' },
-    { id: 2, user_id: 'user2', tenant_id: 1, email: 'compliance@fintech.com', display_name: 'Mike Chen', role: 'Compliance', department: 'Compliance', smf_designation: null },
-    { id: 3, user_id: 'user3', tenant_id: 1, email: 'board@fintech.com', display_name: 'Emma Williams', role: 'Board', department: 'Board', smf_designation: 'SMF1' }
+    { id: 1, user_id: '1bc72979-b961-4b75-a740-7b54485a5faf', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', email: 'mark.lington@diamondcube.com', display_name: 'Mark Lington', role: 'Admin', department: 'Management', smf_designation: 'SMF16' },
+    { id: 2, user_id: '2bc72979-b961-4b75-a740-7b54485a5fa2', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', email: 'sarah.chen@diamondcube.com', display_name: 'Sarah Chen', role: 'Compliance', department: 'Compliance', smf_designation: 'SMF17' },
+    { id: 3, user_id: '3bc72979-b961-4b75-a740-7b54485a5fa3', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', email: 'james.wilson@diamondcube.com', display_name: 'James Wilson', role: 'Board', department: 'Board', smf_designation: 'SMF1' }
   ],
   policies: [
-    { id: 1, tenant_id: 1, title: 'Anti-Money Laundering Policy', version: '2.1', status: 'active', owner_user_id: 1, regulator_regime: 'API', created_at: '2024-01-15' },
-    { id: 2, tenant_id: 1, title: 'Conflicts of Interest Policy', version: '1.5', status: 'active', owner_user_id: 2, regulator_regime: 'API', created_at: '2024-02-01' },
-    { id: 3, tenant_id: 1, title: 'Data Protection & Privacy Policy', version: '3.0', status: 'active', owner_user_id: 1, regulator_regime: 'API', created_at: '2024-03-10' }
+    { id: 1, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Consumer Duty Policy', version: '2.1', status: 'approved', owner: 'Sarah Chen', category: 'Consumer Duty', created_at: '2025-12-01', next_review_date: '2026-12-01' },
+    { id: 2, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Operational Resilience Framework', version: '1.5', status: 'approved', owner: 'Mark Lington', category: 'Operational Resilience', created_at: '2025-11-15', next_review_date: '2026-11-15' },
+    { id: 3, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Anti-Money Laundering Policy', version: '3.0', status: 'approved', owner: 'Sarah Chen', category: 'Financial Crime', created_at: '2026-01-10', next_review_date: '2027-01-10' },
+    { id: 4, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Climate Risk Management Policy', version: '1.2', status: 'under_review', owner: 'James Wilson', category: 'Climate Risk', created_at: '2025-09-01', next_review_date: '2026-06-30' }
   ],
   reg_changes: [
-    { id: 1, tenant_id: 1, source: 'FCA', title: 'Consumer Duty - Outcomes Testing', summary: 'New requirements for evidencing consumer outcomes', published_at: '2025-01-10', status: 'in_review', impact_rating: 'high' },
-    { id: 2, tenant_id: 1, source: 'FCA', title: 'PS24/3 - Operational Resilience', summary: 'Updated operational resilience requirements', published_at: '2025-01-08', status: 'actioned', impact_rating: 'medium' }
+    { id: 1, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'FCA', title: 'Consumer Duty - Board Reporting Requirements (PS26/1)', summary: 'Final rules requiring firms to submit annual board reports on consumer outcomes, including quantitative metrics.', published_at: '2026-01-15', effective_date: '2026-07-31', status: 'in_review', impact_rating: 'high', materiality: 'high', affected_controls: 8 },
+    { id: 2, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'FCA', title: 'Operational Resilience - Third Party Risk Management (CP26/2)', summary: 'Enhanced requirements for managing critical third-party providers including cloud services.', published_at: '2026-01-20', effective_date: '2026-12-31', status: 'pending', impact_rating: 'high', materiality: 'high', affected_controls: 12 },
+    { id: 3, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'PRA', title: 'Climate Risk Stress Testing (SS1/26)', summary: 'New supervisory statement on climate-related financial risk stress testing requirements.', published_at: '2026-01-18', effective_date: '2026-06-30', status: 'in_review', impact_rating: 'high', materiality: 'high', affected_controls: 6 },
+    { id: 4, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'FCA', title: 'AI and Machine Learning Guidance (FG26/1)', summary: 'Guidance on responsible use of AI/ML in customer-facing processes and creditworthiness.', published_at: '2026-01-22', effective_date: '2026-04-01', status: 'pending', impact_rating: 'medium', materiality: 'medium', affected_controls: 4 },
+    { id: 5, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'FCA', title: 'AML Transaction Monitoring (PS26/3)', summary: 'Updated requirements for transaction monitoring systems and enhanced SAR reporting.', published_at: '2026-01-25', effective_date: '2026-09-30', status: 'pending', impact_rating: 'high', materiality: 'high', affected_controls: 10 },
+    { id: 6, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', source: 'CBI', title: 'Cross-Industry Outsourcing Guidance', summary: 'Updated guidance on outsourcing arrangements for Irish-regulated firms.', published_at: '2026-01-16', effective_date: '2026-07-01', status: 'actioned', impact_rating: 'medium', materiality: 'medium', affected_controls: 5 }
   ],
   controls: [
-    { id: 1, tenant_id: 1, control_code: 'AML-001', title: 'Customer Due Diligence Review', description: 'Monthly review of CDD completeness', owner_user_id: 2, frequency: 'Monthly', status: 'active', test_method: 'Sample testing', evidence_required: 'CDD completion report' },
-    { id: 2, tenant_id: 1, control_code: 'COI-001', title: 'Conflicts Register Review', description: 'Quarterly review of conflicts register', owner_user_id: 1, frequency: 'Quarterly', status: 'active', test_method: 'Full review', evidence_required: 'Conflicts register' },
-    { id: 3, tenant_id: 1, control_code: 'DATA-001', title: 'DSAR Response Time', description: 'Monitor DSAR response within 30 days', owner_user_id: 2, frequency: 'Monthly', status: 'active', test_method: 'Report review', evidence_required: 'DSAR log' }
+    { id: 'CTRL-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-001', title: 'Consumer Outcomes Monitoring', description: 'Regular monitoring and reporting of consumer outcomes across all product lines.', owner: 'Sarah Chen', frequency: 'Monthly', status: 'active', effectiveness_rating: 85, risk_rating: 'medium', next_review_date: '2026-02-15' },
+    { id: 'CTRL-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-002', title: 'Third-Party Due Diligence', description: 'Comprehensive due diligence process for all critical third-party service providers.', owner: 'Mark Lington', frequency: 'Annual', status: 'active', effectiveness_rating: 78, risk_rating: 'high', next_review_date: '2026-12-01' },
+    { id: 'CTRL-003', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-003', title: 'AML Transaction Screening', description: 'Real-time screening of all transactions against sanctions and PEP lists.', owner: 'Sarah Chen', frequency: 'Continuous', status: 'active', effectiveness_rating: 92, risk_rating: 'high', next_review_date: '2026-04-10' },
+    { id: 'CTRL-004', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-004', title: 'Climate Risk Assessment', description: 'Annual assessment of climate-related financial risks across portfolios.', owner: 'James Wilson', frequency: 'Annual', status: 'active', effectiveness_rating: 72, risk_rating: 'medium', next_review_date: '2026-11-15' },
+    { id: 'CTRL-005', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-005', title: 'Fair Value Assessment', description: 'Quarterly assessment of product fair value under Consumer Duty requirements.', owner: 'Sarah Chen', frequency: 'Quarterly', status: 'active', effectiveness_rating: 88, risk_rating: 'medium', next_review_date: '2026-04-05' },
+    { id: 'CTRL-006', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-006', title: 'Important Business Service Mapping', description: 'Mapping and tolerance setting for all important business services.', owner: 'Mark Lington', frequency: 'Annual', status: 'active', effectiveness_rating: 81, risk_rating: 'high', next_review_date: '2026-10-01' },
+    { id: 'CTRL-007', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-007', title: 'Model Governance', description: 'Governance framework for AI/ML models including validation and monitoring.', owner: 'Mark Lington', frequency: 'Quarterly', status: 'active', effectiveness_rating: 75, risk_rating: 'medium', next_review_date: '2026-03-15' },
+    { id: 'CTRL-008', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_code: 'CTRL-008', title: 'Complaints Handling', description: 'Process for handling, escalating and resolving customer complaints.', owner: 'Sarah Chen', frequency: 'Continuous', status: 'active', effectiveness_rating: 90, risk_rating: 'low', next_review_date: '2026-04-20' }
+  ],
+  attestations: [
+    { id: 'ATT-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_id: 'CTRL-001', control_title: 'Consumer Outcomes Monitoring', attestor: 'Sarah Chen', period: 'Q4 2025', status: 'approved', confidence_score: 92, submitted_at: '2026-01-05', approved_at: '2026-01-06', approved_by: 'Mark Lington' },
+    { id: 'ATT-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_id: 'CTRL-002', control_title: 'Third-Party Due Diligence', attestor: 'Mark Lington', period: 'Q4 2025', status: 'approved', confidence_score: 85, submitted_at: '2026-01-08', approved_at: '2026-01-09', approved_by: 'James Wilson' },
+    { id: 'ATT-003', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_id: 'CTRL-003', control_title: 'AML Transaction Screening', attestor: 'Sarah Chen', period: 'Q4 2025', status: 'approved', confidence_score: 95, submitted_at: '2026-01-10', approved_at: '2026-01-10', approved_by: 'Mark Lington' },
+    { id: 'ATT-004', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_id: 'CTRL-004', control_title: 'Climate Risk Assessment', attestor: 'James Wilson', period: 'Q4 2025', status: 'pending', confidence_score: 78, submitted_at: '2026-01-25', approved_at: null, approved_by: null },
+    { id: 'ATT-005', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', control_id: 'CTRL-005', control_title: 'Fair Value Assessment', attestor: 'Sarah Chen', period: 'Q4 2025', status: 'approved', confidence_score: 88, submitted_at: '2026-01-12', approved_at: '2026-01-13', approved_by: 'Mark Lington' }
   ],
   exceptions: [
-    { id: 1, tenant_id: 1, source_type: 'control', source_id: 1, title: 'Late CDD completion for 3 customers', description: 'CDD not completed within required timeframe', severity: 'medium', status: 'open', opened_at: '2025-01-12' },
-    { id: 2, tenant_id: 1, source_type: 'incident', source_id: null, title: 'DSAR breach - 35 day response', description: 'DSAR responded to in 35 days instead of 30', severity: 'high', status: 'remediation', opened_at: '2025-01-09' }
+    { id: 'EXC-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Delayed Third-Party Risk Assessment', description: 'Annual risk assessment for cloud provider XYZ Corp not completed within scheduled timeframe.', category: 'Control Failure', severity: 'high', status: 'open', control_id: 'CTRL-002', owner: 'Mark Lington', identified_date: '2026-01-15', due_date: '2026-02-15', materiality_score: 72, recurrence_count: 0 },
+    { id: 'EXC-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Consumer Complaints Spike', description: 'Complaints related to fee disclosures increased by 35% in December 2025.', category: 'Consumer Outcome', severity: 'medium', status: 'in_progress', control_id: 'CTRL-008', owner: 'Sarah Chen', identified_date: '2026-01-10', due_date: '2026-02-28', materiality_score: 58, recurrence_count: 0 },
+    { id: 'EXC-003', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Model Validation Overdue', description: 'Credit risk model validation past due by 3 months.', category: 'Model Risk', severity: 'high', status: 'open', control_id: 'CTRL-007', owner: 'Mark Lington', identified_date: '2026-01-20', due_date: '2026-03-31', materiality_score: 68, recurrence_count: 1 },
+    { id: 'EXC-004', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'AML Alert Backlog', description: 'Backlog of 150 AML alerts exceeding 5-day SLA.', category: 'Financial Crime', severity: 'high', status: 'in_progress', control_id: 'CTRL-003', owner: 'Sarah Chen', identified_date: '2026-01-22', due_date: '2026-02-05', materiality_score: 85, recurrence_count: 2 },
+    { id: 'EXC-005', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'IBS Tolerance Breach', description: 'Payment processing service exceeded 4-hour recovery tolerance during incident.', category: 'Operational Resilience', severity: 'high', status: 'closed', control_id: 'CTRL-006', owner: 'Mark Lington', identified_date: '2026-01-05', due_date: '2026-01-20', closed_date: '2026-01-18', materiality_score: 75, recurrence_count: 0 }
   ],
   risks: [
-    { id: 1, tenant_id: 1, name: 'AML/CTF Risk', category: 'Financial Crime', inherent_score: 9, residual_score: 4, owner_user_id: 1, status: 'active' },
-    { id: 2, tenant_id: 1, name: 'Data Protection Risk', category: 'Information Security', inherent_score: 6, residual_score: 3, owner_user_id: 2, status: 'active' }
+    { id: 1, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', name: 'Operational Resilience - Third Party', category: 'Operational Risk', inherent_score: 85, residual_score: 78, trend: 'increasing', owner: 'Mark Lington', status: 'active' },
+    { id: 2, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', name: 'Consumer Duty Compliance', category: 'Conduct Risk', inherent_score: 75, residual_score: 85, trend: 'stable', owner: 'Sarah Chen', status: 'active' },
+    { id: 3, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', name: 'AML Control Effectiveness', category: 'Financial Crime', inherent_score: 90, residual_score: 72, trend: 'improving', owner: 'Sarah Chen', status: 'active' },
+    { id: 4, tenant_id: '10c39831-0918-42d7-b435-bacfab214091', name: 'Climate Risk Exposure', category: 'Strategic Risk', inherent_score: 65, residual_score: 60, trend: 'stable', owner: 'James Wilson', status: 'active' }
+  ],
+  decisions: [
+    { id: 'DEC-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Approve Temporary AML Threshold Increase', decision_type: 'Risk Acceptance', status: 'approved', requested_by: 'Sarah Chen', approved_by: 'Mark Lington', approval_date: '2026-01-15', expiry_date: '2026-03-31' },
+    { id: 'DEC-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Defer Model Validation to Q1 2026', decision_type: 'Timeline Extension', status: 'approved', requested_by: 'Mark Lington', approved_by: 'James Wilson', approval_date: '2026-01-20', expiry_date: '2026-03-31' },
+    { id: 'DEC-003', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', title: 'Accept Residual Climate Data Gap', decision_type: 'Risk Acceptance', status: 'pending', requested_by: 'James Wilson', approved_by: null, approval_date: null, expiry_date: '2026-12-31' }
+  ],
+  approvals: [
+    { id: 'APR-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', item_type: 'attestation', item_id: 'ATT-004', title: 'Climate Risk Assessment Attestation', status: 'pending', requested_by: 'James Wilson', assigned_to: 'Mark Lington', due_date: '2026-01-31' },
+    { id: 'APR-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', item_type: 'decision', item_id: 'DEC-003', title: 'Accept Climate Data Gap Decision', status: 'pending', requested_by: 'James Wilson', assigned_to: 'Board', due_date: '2026-02-15' }
+  ],
+  audit_trail: [
+    { id: 'AUD-001', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', action: 'CREATE', entity_type: 'exception', entity_id: 'EXC-004', description: 'Exception created: AML Alert Backlog', user: 'Sarah Chen', timestamp: '2026-01-22T09:15:00Z' },
+    { id: 'AUD-002', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', action: 'APPROVE', entity_type: 'attestation', entity_id: 'ATT-003', description: 'Attestation approved: AML Transaction Screening Q4 2025', user: 'Mark Lington', timestamp: '2026-01-10T15:00:00Z' },
+    { id: 'AUD-003', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', action: 'UPDATE', entity_type: 'control', entity_id: 'CTRL-001', description: 'Control effectiveness rating updated from 82 to 85', user: 'Sarah Chen', timestamp: '2026-01-15T14:30:00Z' },
+    { id: 'AUD-004', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', action: 'SIGNOFF', entity_type: 'regulatory_change', entity_id: '3', description: 'Regulatory change signed off: Climate Risk Stress Testing', user: 'James Wilson', timestamp: '2026-01-19T10:00:00Z' },
+    { id: 'AUD-005', tenant_id: '10c39831-0918-42d7-b435-bacfab214091', action: 'CLOSE', entity_type: 'exception', entity_id: 'EXC-005', description: 'Exception closed: IBS Tolerance Breach', user: 'Mark Lington', timestamp: '2026-01-18T16:45:00Z' }
   ]
 };
 
@@ -1401,12 +1441,16 @@ function DataTable({ headers, rows }) {
 }
 
 // ============================================================================
-// SOLUTION 1: REGULATORY CHANGE INTELLIGENCE
+// SOLUTION 1: REGULATORY HORIZON - CHANGE INTELLIGENCE
 // ============================================================================
 function ChangeFeedPage({ tenantId, isReadOnly }) {
   const { data: changes, loading, refetch } = useRegChanges(tenantId);
   const [impactScores, setImpactScores] = useState([]);
   const [loadingScores, setLoadingScores] = useState(true);
+  const [scanning, setScanning] = useState(false);
+  const [lastScan, setLastScan] = useState(null);
+  const [filterSource, setFilterSource] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   // Fetch Impact Scores from strategic view
   useEffect(() => {
@@ -1440,11 +1484,43 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
     return () => controller.abort('Component unmounted');
   }, [tenantId]);
 
+  // Scan for new regulatory updates
+  const handleScanForUpdates = async () => {
+    setScanning(true);
+    // Simulate scanning regulatory feeds (FCA, PRA, CBI, ESMA)
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    await refetch();
+    setLastScan(new Date().toISOString());
+    setScanning(false);
+  };
+
   // Merge impact scores with changes
   const changesWithScores = changes?.map(change => {
     const score = impactScores.find(s => s.change_id === change.id);
     return { ...change, impactScore: score };
   }) || [];
+
+  // Apply filters
+  const filteredChanges = changesWithScores.filter(change => {
+    if (filterSource !== 'all' && change.source !== filterSource) return false;
+    if (filterStatus !== 'all' && change.status !== filterStatus) return false;
+    return true;
+  });
+
+  // Calculate statistics
+  const stats = {
+    total: changesWithScores.length,
+    highPriority: changesWithScores.filter(c => c.impact_rating === 'high' || c.materiality === 'high').length,
+    pending: changesWithScores.filter(c => c.status === 'pending').length,
+    inReview: changesWithScores.filter(c => c.status === 'in_review').length,
+    actioned: changesWithScores.filter(c => c.status === 'actioned').length,
+    bySource: {
+      FCA: changesWithScores.filter(c => c.source === 'FCA').length,
+      PRA: changesWithScores.filter(c => c.source === 'PRA').length,
+      CBI: changesWithScores.filter(c => c.source === 'CBI').length,
+      ESMA: changesWithScores.filter(c => c.source === 'ESMA').length
+    }
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -1455,20 +1531,95 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
         <p className="page-subtitle">Regulatory updates with quantified impact scoring</p>
       </div>
 
-      {!isReadOnly && (
-        <button onClick={() => refetch()} className="btn-primary">
-          Scan for Updates
-        </button>
-      )}
+      {/* Statistics Dashboard */}
+      <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.total}</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Total Changes</div>
+        </div>
+        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.highPriority}</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>High Priority</div>
+        </div>
+        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.pending}</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Pending Review</div>
+        </div>
+        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.inReview}</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>In Review</div>
+        </div>
+        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.actioned}</div>
+          <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Actioned</div>
+        </div>
+      </div>
 
+      {/* Actions Bar */}
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        {!isReadOnly && (
+          <button
+            onClick={handleScanForUpdates}
+            disabled={scanning}
+            className="btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            {scanning ? (
+              <>
+                <span className="spinner" style={{ width: '16px', height: '16px', border: '2px solid transparent', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                Scanning FCA, PRA, CBI, ESMA...
+              </>
+            ) : (
+              'Scan for Updates'
+            )}
+          </button>
+        )}
+
+        {/* Filters */}
+        <select
+          value={filterSource}
+          onChange={(e) => setFilterSource(e.target.value)}
+          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white' }}
+        >
+          <option value="all">All Sources ({stats.total})</option>
+          <option value="FCA">FCA ({stats.bySource.FCA})</option>
+          <option value="PRA">PRA ({stats.bySource.PRA})</option>
+          <option value="CBI">CBI ({stats.bySource.CBI})</option>
+          <option value="ESMA">ESMA ({stats.bySource.ESMA})</option>
+        </select>
+
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white' }}
+        >
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="in_review">In Review</option>
+          <option value="actioned">Actioned</option>
+        </select>
+
+        {lastScan && (
+          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+            Last scan: {new Date(lastScan).toLocaleTimeString()}
+          </span>
+        )}
+      </div>
+
+      {/* Changes Grid */}
       <div className="card-grid">
-        {changesWithScores.map(change => (
-          <div key={change.id} className="card">
+        {filteredChanges.map(change => (
+          <div key={change.id} className="card" style={{ border: change.impact_rating === 'high' ? '2px solid #dc2626' : undefined }}>
             <div className="card-badges">
-              <span className="source-badge">{change.source}</span>
+              <span className="source-badge" style={{
+                background: change.source === 'FCA' ? '#1d4ed8' :
+                           change.source === 'PRA' ? '#7c3aed' :
+                           change.source === 'CBI' ? '#059669' :
+                           change.source === 'ESMA' ? '#d97706' : '#64748b',
+                color: 'white', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600'
+              }}>{change.source}</span>
               <span className="date-badge">{change.published_at}</span>
               <StatusBadge status={change.status} />
-              {/* Replace old impact badge with strategic Impact Score */}
               {change.impactScore && !loadingScores ? (
                 <ImpactScoreCard
                   score={change.impactScore.total_impact_score}
@@ -1482,6 +1633,16 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
             </div>
             <h3 className="card-title">{change.title}</h3>
             <p className="card-text">{change.summary}</p>
+
+            {/* Effective Date & Affected Controls */}
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', fontSize: '0.75rem', color: '#64748b' }}>
+              {change.effective_date && (
+                <span>Effective: {change.effective_date}</span>
+              )}
+              {change.affected_controls && (
+                <span>Affected Controls: {change.affected_controls}</span>
+              )}
+            </div>
 
             {/* Show detailed impact score if available */}
             {change.impactScore && !loadingScores && (
@@ -1505,6 +1666,12 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
           </div>
         ))}
       </div>
+
+      {filteredChanges.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+          <p>No regulatory changes match your filters.</p>
+        </div>
+      )}
     </div>
   );
 }
