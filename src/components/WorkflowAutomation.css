@@ -17,7 +17,7 @@
 .wa-title h1 {
   margin: 0;
   font-size: 28px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .wa-title svg {
@@ -37,7 +37,7 @@
 }
 
 .wa-subtitle {
-  color: #64748b;
+  color: #9FA4A9;
   margin: 8px 0 0 0;
 }
 
@@ -53,9 +53,9 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: white;
+  background: #1a1e22;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 212, 228, 0.2);
 }
 
 .wa-stat-icon {
@@ -72,19 +72,19 @@
 .wa-stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .wa-stat-label {
   font-size: 13px;
-  color: #64748b;
+  color: #9FA4A9;
 }
 
 .wa-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid rgba(0, 212, 228, 0.2);
 }
 
 .wa-tab {
@@ -97,7 +97,7 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: #9FA4A9;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s;
@@ -113,9 +113,9 @@
 }
 
 .wa-content {
-  background: white;
+  background: #1a1e22;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 212, 228, 0.2);
   min-height: 500px;
 }
 
@@ -134,7 +134,7 @@
 .workflows-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .create-workflow-btn {
@@ -163,15 +163,16 @@
 }
 
 .workflow-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(0, 212, 228, 0.2);
   border-radius: 12px;
   padding: 20px;
   transition: all 0.2s;
+  background: #12151a;
 }
 
 .workflow-card:hover {
-  border-color: #a7f3d0;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  border-color: rgba(0, 212, 228, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 212, 228, 0.1);
 }
 
 .workflow-card-header {
@@ -201,12 +202,12 @@
 .workflow-name {
   margin: 0 0 4px 0;
   font-size: 16px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .workflow-type {
   font-size: 12px;
-  color: #64748b;
+  color: #9FA4A9;
 }
 
 .workflow-status {
@@ -237,7 +238,7 @@
 .workflow-description {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #64748b;
+  color: #F5F7F8;
   line-height: 1.5;
 }
 
@@ -246,8 +247,9 @@
   gap: 24px;
   margin-bottom: 16px;
   padding: 12px 16px;
-  background: #f8fafc;
+  background: rgba(0, 212, 228, 0.05);
   border-radius: 8px;
+  border: 1px solid rgba(0, 212, 228, 0.1);
 }
 
 .meta-item {
@@ -255,11 +257,11 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #475569;
+  color: #F5F7F8;
 }
 
 .meta-item svg {
-  color: #94a3b8;
+  color: #00D4E4;
 }
 
 .workflow-actions {
@@ -334,7 +336,7 @@
 .reminders-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .reminder-filters {
@@ -373,24 +375,24 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: #12151a;
   border-radius: 10px;
   border-left: 4px solid #10b981;
   transition: all 0.2s;
 }
 
 .reminder-item:hover {
-  background: #f1f5f9;
+  background: #1a1e22;
 }
 
 .reminder-item.due-today {
   border-left-color: #f59e0b;
-  background: #fffbeb;
+  background: rgba(245, 158, 11, 0.1);
 }
 
 .reminder-item.overdue {
   border-left-color: #ef4444;
-  background: #fef2f2;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .reminder-icon {
@@ -399,7 +401,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: #1a1e22;
   border-radius: 8px;
   color: #10b981;
 }
@@ -418,13 +420,13 @@
 
 .reminder-title {
   font-weight: 600;
-  color: #1a1a2e;
+  color: #F5F7F8;
   margin-bottom: 4px;
 }
 
 .reminder-details {
   font-size: 13px;
-  color: #64748b;
+  color: #9FA4A9;
 }
 
 .reminder-due {
@@ -475,12 +477,12 @@
 .templates-header h2 {
   margin: 0 0 8px 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .templates-header p {
   margin: 0;
-  color: #64748b;
+  color: #9FA4A9;
 }
 
 .templates-grid {
@@ -490,15 +492,16 @@
 }
 
 .template-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(0, 212, 228, 0.2);
   border-radius: 12px;
   padding: 24px;
   transition: all 0.2s;
+  background: #12151a;
 }
 
 .template-card:hover {
-  border-color: #a7f3d0;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  border-color: rgba(0, 212, 228, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 212, 228, 0.1);
 }
 
 .template-icon {
@@ -516,13 +519,13 @@
 .template-name {
   margin: 0 0 8px 0;
   font-size: 16px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .template-desc {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #64748b;
+  color: #9FA4A9;
   line-height: 1.5;
 }
 
@@ -538,7 +541,7 @@
   gap: 8px;
   padding: 6px 0;
   font-size: 13px;
-  color: #475569;
+  color: #F5F7F8;
 }
 
 .template-features li svg {
@@ -581,12 +584,13 @@
 }
 
 .workflow-modal {
-  background: white;
+  background: #1a1e22;
   border-radius: 16px;
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  border: 1px solid rgba(0, 212, 228, 0.2);
 }
 
 .modal-header {
@@ -594,13 +598,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(0, 212, 228, 0.2);
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 20px;
-  color: #1a1a2e;
+  color: #F5F7F8;
 }
 
 .close-modal-btn {
@@ -635,7 +639,7 @@
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #475569;
+  color: #F5F7F8;
 }
 
 .form-group input,
@@ -643,10 +647,11 @@
 .form-group textarea {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(0, 212, 228, 0.2);
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
+  color: #F5F7F8;
+  background: #12151a;
   transition: border-color 0.2s;
 }
 
@@ -673,7 +678,7 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(0, 212, 228, 0.2);
 }
 
 .cancel-btn {
