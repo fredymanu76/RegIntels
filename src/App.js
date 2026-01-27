@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, Clock, FileText, Shield, Users, BarChart3, AlertTriangle, FileCheck, Settings, Menu, X, Bell, Database, Loader, Plus, Download, Upload, UserPlus, Building, Grid, CreditCard, Calendar, Mail, Send, MessageSquare } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, FileText, Shield, Users, BarChart3, AlertTriangle, FileCheck, Settings, Menu, X, Bell, Database, Loader, Plus, Download, Upload, UserPlus, Building, Grid, CreditCard, Calendar, Mail, Send, MessageSquare, Sun, Moon } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import './App.css';
 
@@ -1054,6 +1054,25 @@ export default function RegIntels() {
   const [authLoading, setAuthLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
 
+  // Theme state - persisted in localStorage
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('regintels-theme') || 'dark';
+    }
+    return 'dark';
+  });
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('regintels-theme', theme);
+  }, [theme]);
+
+  // Toggle theme function
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  };
+
   // Global handler for unhandled promise rejections (abort errors)
   useEffect(() => {
     const handleUnhandledRejection = (event) => {
@@ -1468,6 +1487,14 @@ export default function RegIntels() {
               {currentUser?.role} • {currentUser?.department}
             </div>
           </div>
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            <Sun size={20} className="sun-icon" />
+            <Moon size={20} className="moon-icon" />
+          </button>
           <button
             onClick={() => setShowSetup(true)}
             className="nav-button-secondary"
