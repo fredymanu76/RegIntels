@@ -194,7 +194,7 @@
 .template-description {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #64748b;
+  color: #1a1a2e;
   line-height: 1.5;
 }
 
@@ -537,7 +537,7 @@
 .schedule-details p {
   margin: 0;
   font-size: 13px;
-  color: #64748b;
+  color: #1a1a2e;
 }
 
 .schedule-config {
@@ -624,7 +624,7 @@
 
 .distribution-option span {
   font-size: 14px;
-  color: #475569;
+  color: #1a1a2e;
 }
 
 .schedule-actions {

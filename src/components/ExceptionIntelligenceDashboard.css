@@ -138,7 +138,7 @@
 
 .metric-sublabel {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #475569;
   margin-top: 0.25rem;
 }
 
@@ -274,7 +274,7 @@
 
 .score-label {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #475569;
 }
 
 .score-breakdown {
@@ -320,7 +320,7 @@
   display: flex;
   justify-content: space-between;
   font-size: 0.75rem;
-  color: #64748b;
+  color: #1e293b;
 }
 
 .breakdown-item span:last-child {
@@ -672,7 +672,7 @@
 
 .cell-exception-item {
   padding: 0.25rem 0;
-  color: #64748b;
+  color: #1e293b;
 }
 
 .x-axis {
@@ -713,7 +713,7 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: #1e293b;
 }
 
 .legend-color {

@@ -95,7 +95,7 @@
 
 .kpi-label {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #1e293b;
   margin-top: 0.25rem;
 }
 
@@ -158,7 +158,7 @@
   display: flex;
   gap: 1rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: #1e293b;
 }
 
 .alert-age-band {
@@ -310,7 +310,7 @@
 .bar-value {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #64748b;
+  color: #1e293b;
   text-align: right;
 }
 
@@ -351,7 +351,7 @@
   display: flex;
   gap: 1rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: #1e293b;
 }
 
 /* Controls Grid */
@@ -432,7 +432,7 @@
 
 .stat-label {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #1e293b;
   margin-bottom: 0.25rem;
 }
 

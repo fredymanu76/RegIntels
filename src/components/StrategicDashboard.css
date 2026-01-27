@@ -117,7 +117,7 @@
 .metric-content h3 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #64748b;
+  color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -133,7 +133,7 @@
 
 .metric-subtitle {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Dashboard Sections */
@@ -235,7 +235,7 @@
 
 .driver {
   max-width: 200px;
-  color: #64748b;
+  color: #1e293b;
 }
 
 /* Score Cells */
@@ -497,7 +497,7 @@
 
 .summary-detail {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 
@@ -515,7 +515,7 @@
 .no-data {
   padding: 3rem;
   text-align: center;
-  color: #94a3b8;
+  color: #475569;
 }
 
 .no-data svg {
