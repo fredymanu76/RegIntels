@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  calculateReadinessScore,
+  getRegChangesWithDeadlines,
+  calculateControlDriftScores
+} from '../services/boardMetricsService';
 import './RegulatoryReadinessBoard.css';
 
-const RegulatoryReadinessBoard = () => {
+const RegulatoryReadinessBoard = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(true);
   const [readinessScore, setReadinessScore] = useState({
     totalControls: 0,
@@ -11,78 +15,169 @@ const RegulatoryReadinessBoard = () => {
     controlsWithEvidence: 0,
     totalOpenExceptions: 0,
     testingCoveragePercent: 0,
-    activeControlPercent: 0
+    activeControlPercent: 0,
+    overallScore: 0
   });
   const [controlsStatus, setControlsStatus] = useState([]);
   const [controlsWithExceptions, setControlsWithExceptions] = useState([]);
-  const [testingCompliance, setTestingCompliance] = useState([]);
+  const [regChangesData, setRegChangesData] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchReadinessData();
-  }, []);
-
-  const fetchReadinessData = async () => {
+  const fetchAndCalculateMetrics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch readiness score
-      const { data: scoreData, error: scoreError } = await supabase
-        .from('regulatory_readiness_score')
-        .select('*')
-        .limit(1)
-        .single();
+      let controlsData = [];
+      let exceptionsData = [];
+      let attestationsData = [];
+      let regChanges = [];
 
-      if (scoreError && scoreError.code !== 'PGRST116') throw scoreError;
+      // Try to fetch from Supabase if available
+      if (supabase) {
+        try {
+          // Try to fetch from views first (production mode)
+          const { data: scoreData, error: scoreError } = await supabase
+            .from('regulatory_readiness_score')
+            .select('*')
+            .limit(1)
+            .single();
 
-      if (scoreData) {
-        setReadinessScore({
-          totalControls: scoreData.total_controls || 0,
-          activeControls: scoreData.active_controls || 0,
-          testedControls: scoreData.tested_controls || 0,
-          controlsWithEvidence: scoreData.controls_with_evidence || 0,
-          totalOpenExceptions: scoreData.total_open_exceptions || 0,
-          testingCoveragePercent: scoreData.testing_coverage_percent || 0,
-          activeControlPercent: scoreData.active_control_percent || 0
-        });
+          if (!scoreError && scoreData) {
+            // Views exist, use them directly
+            setReadinessScore({
+              totalControls: scoreData.total_controls || 0,
+              activeControls: scoreData.active_controls || 0,
+              testedControls: scoreData.tested_controls || 0,
+              controlsWithEvidence: scoreData.controls_with_evidence || 0,
+              totalOpenExceptions: scoreData.total_open_exceptions || 0,
+              testingCoveragePercent: scoreData.testing_coverage_percent || 0,
+              activeControlPercent: scoreData.active_control_percent || 0,
+              overallScore: scoreData.overall_score || 0
+            });
+
+            const { data: statusData } = await supabase
+              .from('controls_status_summary')
+              .select('*');
+            setControlsStatus(statusData || []);
+
+            const { data: exceptionsDataView } = await supabase
+              .from('controls_with_exceptions_count')
+              .select('*')
+              .gt('open_exception_count', 0)
+              .order('open_exception_count', { ascending: false })
+              .limit(10);
+            setControlsWithExceptions(exceptionsDataView || []);
+
+            setLoading(false);
+            return;
+          }
+
+          // Views don't exist, fetch raw data
+          const { data: ctrlData } = await supabase.from('controls').select('*');
+          controlsData = ctrlData || [];
+
+          const { data: excData } = await supabase.from('exceptions').select('*');
+          exceptionsData = excData || [];
+
+          const { data: attData } = await supabase.from('attestations').select('*');
+          attestationsData = attData || [];
+
+          const { data: regData } = await supabase.from('reg_changes').select('*');
+          regChanges = regData || [];
+        } catch (err) {
+          console.log('Supabase fetch failed, using mock data:', err.message);
+        }
       }
 
-      // Fetch controls status summary
-      const { data: statusData, error: statusError } = await supabase
-        .from('controls_status_summary')
-        .select('*');
+      // If no data yet, try to get from window.mockDatabase
+      if (controlsData.length === 0 && typeof window !== 'undefined' && window.mockDatabase) {
+        controlsData = window.mockDatabase.controls || [];
+        exceptionsData = window.mockDatabase.exceptions || [];
+        attestationsData = window.mockDatabase.attestations || [];
+        regChanges = window.mockDatabase.reg_changes || [];
+      }
 
-      if (statusError) throw statusError;
-      setControlsStatus(statusData || []);
+      // Filter by tenant if tenantId provided
+      if (tenantId) {
+        controlsData = controlsData.filter(c => c.tenant_id === tenantId);
+        exceptionsData = exceptionsData.filter(e => e.tenant_id === tenantId);
+        attestationsData = attestationsData.filter(a => a.tenant_id === tenantId);
+        regChanges = regChanges.filter(r => r.tenant_id === tenantId);
+      }
 
-      // Fetch controls with exceptions
-      const { data: exceptionsData, error: exceptionsError } = await supabase
-        .from('controls_with_exceptions_count')
-        .select('*')
-        .gt('open_exception_count', 0)
-        .order('open_exception_count', { ascending: false })
-        .limit(10);
+      // Calculate readiness metrics
+      const activeControls = controlsData.filter(c => c.status === 'active');
+      const openExceptions = exceptionsData.filter(e => e.status !== 'closed');
+      const approvedAttestations = attestationsData.filter(a => a.status === 'approved');
 
-      if (exceptionsError) throw exceptionsError;
-      setControlsWithExceptions(exceptionsData || []);
+      // Calculate overall readiness score using boardMetricsService
+      const overallScore = calculateReadinessScore(regChanges, controlsData, attestationsData);
 
-      // Fetch testing compliance
-      const { data: complianceData, error: complianceError } = await supabase
-        .from('controls_testing_compliance')
-        .select('*')
-        .limit(15);
+      setReadinessScore({
+        totalControls: controlsData.length,
+        activeControls: activeControls.length,
+        testedControls: approvedAttestations.length,
+        controlsWithEvidence: approvedAttestations.length,
+        totalOpenExceptions: openExceptions.length,
+        testingCoveragePercent: controlsData.length > 0
+          ? Math.round((approvedAttestations.length / controlsData.length) * 100)
+          : 0,
+        activeControlPercent: controlsData.length > 0
+          ? Math.round((activeControls.length / controlsData.length) * 100)
+          : 0,
+        overallScore
+      });
 
-      if (complianceError) throw complianceError;
-      setTestingCompliance(complianceData || []);
+      // Calculate controls by status
+      const statusCounts = {};
+      controlsData.forEach(c => {
+        const status = c.status || 'unknown';
+        statusCounts[status] = (statusCounts[status] || 0) + 1;
+      });
+      setControlsStatus(Object.entries(statusCounts).map(([status, count]) => ({
+        status,
+        control_count: count
+      })));
+
+      // Calculate controls with exceptions using drift scores
+      const driftScores = calculateControlDriftScores(controlsData, attestationsData, exceptionsData);
+      const controlsWithExc = driftScores
+        .filter(d => d.open_exceptions_count > 0)
+        .map(d => {
+          const controlExceptions = exceptionsData.filter(
+            e => (e.control_id === d.control_code || e.control_id === d.control_id) && e.status !== 'closed'
+          );
+          return {
+            control_id: d.control_id,
+            control_code: d.control_code,
+            title: d.control_title,
+            status: 'active',
+            open_exception_count: d.open_exceptions_count,
+            critical_exceptions: controlExceptions.filter(e => e.severity === 'critical').length,
+            high_exceptions: controlExceptions.filter(e => e.severity === 'high').length,
+            medium_exceptions: controlExceptions.filter(e => e.severity === 'medium').length,
+            low_exceptions: controlExceptions.filter(e => e.severity === 'low').length
+          };
+        })
+        .slice(0, 10);
+      setControlsWithExceptions(controlsWithExc);
+
+      // Get regulatory changes with deadlines
+      const regChangesWithDeadlines = getRegChangesWithDeadlines(regChanges);
+      setRegChangesData(regChangesWithDeadlines);
 
     } catch (err) {
-      console.error('Error fetching readiness data:', err);
+      console.error('Error calculating readiness metrics:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId, supabase]);
+
+  useEffect(() => {
+    fetchAndCalculateMetrics();
+  }, [fetchAndCalculateMetrics]);
 
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
@@ -97,14 +192,18 @@ const RegulatoryReadinessBoard = () => {
     }
   };
 
-  const getTestingBadgeClass = (testingStatus) => {
-    switch (testingStatus) {
-      case 'tested':
-        return 'testing-badge testing-tested';
-      case 'not_tested':
-        return 'testing-badge testing-not-tested';
+  const getUrgencyBadgeClass = (urgency) => {
+    switch (urgency) {
+      case 'OVERDUE':
+        return 'urgency-badge urgency-overdue';
+      case 'CRITICAL':
+        return 'urgency-badge urgency-critical';
+      case 'HIGH':
+        return 'urgency-badge urgency-high';
+      case 'MEDIUM':
+        return 'urgency-badge urgency-medium';
       default:
-        return 'testing-badge testing-inactive';
+        return 'urgency-badge urgency-low';
     }
   };
 
@@ -125,7 +224,7 @@ const RegulatoryReadinessBoard = () => {
         <div className="error-state">
           <h2>Error Loading Data</h2>
           <p>{error}</p>
-          <button onClick={fetchReadinessData} className="retry-button">
+          <button onClick={fetchAndCalculateMetrics} className="retry-button">
             Retry
           </button>
         </div>
@@ -142,6 +241,17 @@ const RegulatoryReadinessBoard = () => {
 
       {/* KPI Cards */}
       <div className="kpi-grid">
+        <div className="kpi-card kpi-highlight">
+          <div className="kpi-label">Readiness Score</div>
+          <div className="kpi-value">{readinessScore.overallScore}%</div>
+          <div className="kpi-progress">
+            <div
+              className="kpi-progress-bar"
+              style={{ width: `${readinessScore.overallScore}%` }}
+            ></div>
+          </div>
+        </div>
+
         <div className="kpi-card">
           <div className="kpi-label">Total Controls</div>
           <div className="kpi-value">{readinessScore.totalControls}</div>
@@ -156,11 +266,6 @@ const RegulatoryReadinessBoard = () => {
         <div className="kpi-card">
           <div className="kpi-label">Tested Controls</div>
           <div className="kpi-value kpi-info">{readinessScore.testedControls}</div>
-        </div>
-
-        <div className="kpi-card">
-          <div className="kpi-label">With Evidence</div>
-          <div className="kpi-value">{readinessScore.controlsWithEvidence}</div>
         </div>
 
         <div className="kpi-card">
@@ -228,10 +333,10 @@ const RegulatoryReadinessBoard = () => {
                       </span>
                     </td>
                     <td className="exception-count">{control.open_exception_count}</td>
-                    <td className="severity-count critical-count">{control.critical_exceptions}</td>
-                    <td className="severity-count high-count">{control.high_exceptions}</td>
-                    <td className="severity-count medium-count">{control.medium_exceptions}</td>
-                    <td className="severity-count low-count">{control.low_exceptions}</td>
+                    <td className="severity-count critical-count">{control.critical_exceptions || 0}</td>
+                    <td className="severity-count high-count">{control.high_exceptions || 0}</td>
+                    <td className="severity-count medium-count">{control.medium_exceptions || 0}</td>
+                    <td className="severity-count low-count">{control.low_exceptions || 0}</td>
                   </tr>
                 ))
               ) : (
@@ -246,54 +351,64 @@ const RegulatoryReadinessBoard = () => {
         </div>
       </div>
 
-      {/* Testing Compliance */}
+      {/* Upcoming Regulatory Deadlines */}
       <div className="data-section">
-        <h2>Control Testing Compliance</h2>
+        <h2>Upcoming Regulatory Deadlines</h2>
         <div className="table-container">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Control Code</th>
-                <th>Control Title</th>
+                <th>Source</th>
+                <th>Title</th>
+                <th>Effective Date</th>
+                <th>Days Until</th>
+                <th>Urgency</th>
                 <th>Status</th>
-                <th>Frequency</th>
-                <th>Test Method</th>
-                <th>Testing Status</th>
-                <th>Evidence Required</th>
               </tr>
             </thead>
             <tbody>
-              {testingCompliance.length > 0 ? (
-                testingCompliance.map((control) => (
-                  <tr key={control.control_id}>
-                    <td className="control-code">{control.control_code || 'N/A'}</td>
-                    <td>{control.title || 'Untitled Control'}</td>
+              {regChangesData.length > 0 ? (
+                regChangesData.slice(0, 10).map((change) => (
+                  <tr key={change.id}>
+                    <td className="source-cell">{change.source}</td>
+                    <td className="title-cell">{change.title}</td>
+                    <td className="date-cell">
+                      {new Date(change.effective_date).toLocaleDateString()}
+                    </td>
+                    <td className="days-cell">
+                      {change.days_until_deadline < 0
+                        ? `${Math.abs(change.days_until_deadline)} days overdue`
+                        : `${change.days_until_deadline} days`}
+                    </td>
                     <td>
-                      <span className={getStatusBadgeClass(control.status)}>
-                        {control.status}
+                      <span className={getUrgencyBadgeClass(change.urgency)}>
+                        {change.urgency}
                       </span>
                     </td>
-                    <td>{control.frequency || 'N/A'}</td>
-                    <td>{control.test_method || 'Not defined'}</td>
                     <td>
-                      <span className={getTestingBadgeClass(control.testing_status)}>
-                        {control.testing_status === 'tested' ? 'Tested' :
-                         control.testing_status === 'not_tested' ? 'Not Tested' : 'Inactive'}
+                      <span className={`status-badge status-${change.status}`}>
+                        {change.status}
                       </span>
                     </td>
-                    <td>{control.has_evidence_requirements ? 'Yes' : 'No'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="empty-state">
-                    No testing compliance data available
+                  <td colSpan="6" className="empty-state">
+                    No regulatory changes tracked
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Refresh Button */}
+      <div className="board-actions">
+        <button onClick={fetchAndCalculateMetrics} className="refresh-button">
+          Refresh Data
+        </button>
       </div>
     </div>
   );

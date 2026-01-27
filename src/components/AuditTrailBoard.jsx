@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  getEnrichedAuditTrail,
+  calculateAuditSummary
+} from '../services/boardMetricsService';
 import './AuditTrailBoard.css';
 
-const AuditTrailBoard = () => {
+const AuditTrailBoard = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(true);
   const [auditStats, setAuditStats] = useState({
     totalEvents: 0,
@@ -15,11 +18,7 @@ const AuditTrailBoard = () => {
   const [error, setError] = useState(null);
   const [filterPeriod, setFilterPeriod] = useState('7days');
 
-  useEffect(() => {
-    fetchAuditData();
-  }, [filterPeriod]);
-
-  const fetchAuditData = async () => {
+  const fetchAndCalculateMetrics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -34,23 +33,62 @@ const AuditTrailBoard = () => {
       if (filterPeriod === '24hours') dateFilter = last24h;
       if (filterPeriod === '30days') dateFilter = last30d;
 
-      // Fetch audit logs
-      const { data: auditData, error: auditError } = await supabase
-        .from('audit_logs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
+      let auditData = [];
 
-      if (auditError) throw auditError;
+      // Try to fetch from Supabase if available
+      if (supabase) {
+        try {
+          const { data, error: auditError } = await supabase
+            .from('audit_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(100);
 
-      const audits = auditData || [];
+          if (!auditError && data && data.length > 0) {
+            auditData = data;
+          } else {
+            // Try audit_trail table
+            const { data: trailData } = await supabase
+              .from('audit_trail')
+              .select('*')
+              .order('timestamp', { ascending: false })
+              .limit(100);
+
+            if (trailData) {
+              auditData = trailData.map(a => ({
+                ...a,
+                created_at: a.timestamp,
+                action_type: a.action,
+                user_email: a.user
+              }));
+            }
+          }
+        } catch (err) {
+          console.log('Supabase fetch failed, using mock data:', err.message);
+        }
+      }
+
+      // If no data yet, try to get from window.mockDatabase
+      if (auditData.length === 0 && typeof window !== 'undefined' && window.mockDatabase) {
+        auditData = (window.mockDatabase.audit_trail || []).map(a => ({
+          ...a,
+          created_at: a.timestamp,
+          action_type: a.action,
+          user_email: a.user
+        }));
+      }
+
+      // Filter by tenant if tenantId provided
+      if (tenantId) {
+        auditData = auditData.filter(a => a.tenant_id === tenantId);
+      }
 
       // Calculate stats
-      const totalEvents = audits.length;
-      const last24Hours = audits.filter(a => new Date(a.created_at) >= last24h).length;
-      const last7Days = audits.filter(a => new Date(a.created_at) >= last7d).length;
-      const criticalEvents = audits.filter(a =>
-        a.action_type === 'delete' || a.action_type === 'critical_change'
+      const totalEvents = auditData.length;
+      const last24Hours = auditData.filter(a => new Date(a.created_at || a.timestamp) >= last24h).length;
+      const last7Days = auditData.filter(a => new Date(a.created_at || a.timestamp) >= last7d).length;
+      const criticalEvents = auditData.filter(a =>
+        a.action_type === 'DELETE' || a.action_type === 'CLOSE' || a.action === 'DELETE'
       ).length;
 
       setAuditStats({
@@ -60,26 +98,24 @@ const AuditTrailBoard = () => {
         criticalEvents
       });
 
-      // Filter recent audits based on period
-      const filteredAudits = audits
-        .filter(a => new Date(a.created_at) >= dateFilter)
-        .slice(0, 20);
+      // Filter and enrich audits based on period
+      const filteredAudits = auditData
+        .filter(a => new Date(a.created_at || a.timestamp) >= dateFilter);
 
-      setRecentAudits(filteredAudits);
+      const enrichedAudits = getEnrichedAuditTrail(filteredAudits.map(a => ({
+        ...a,
+        timestamp: a.created_at || a.timestamp
+      }))).slice(0, 20);
 
-      // Group by action type
-      const actionGroups = audits
-        .filter(a => new Date(a.created_at) >= dateFilter)
-        .reduce((acc, audit) => {
-          const action = audit.action_type || 'unknown';
-          if (!acc[action]) {
-            acc[action] = { action_type: action, count: 0 };
-          }
-          acc[action].count++;
-          return acc;
-        }, {});
+      setRecentAudits(enrichedAudits);
 
-      setAuditsByAction(Object.values(actionGroups).sort((a, b) => b.count - a.count));
+      // Group by action type using boardMetricsService
+      const actionSummary = calculateAuditSummary(filteredAudits.map(a => ({
+        ...a,
+        action: a.action_type || a.action
+      })));
+
+      setAuditsByAction(actionSummary.sort((a, b) => b.count - a.count));
 
     } catch (err) {
       console.error('Error fetching audit data:', err);
@@ -87,39 +123,32 @@ const AuditTrailBoard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId, supabase, filterPeriod]);
+
+  useEffect(() => {
+    fetchAndCalculateMetrics();
+  }, [fetchAndCalculateMetrics]);
 
   const getActionBadgeClass = (actionType) => {
-    switch (actionType?.toLowerCase()) {
-      case 'create':
+    switch (actionType?.toUpperCase()) {
+      case 'CREATE':
         return 'action-badge action-create';
-      case 'update':
+      case 'UPDATE':
         return 'action-badge action-update';
-      case 'delete':
+      case 'DELETE':
         return 'action-badge action-delete';
-      case 'login':
+      case 'APPROVE':
+      case 'SIGNOFF':
+        return 'action-badge action-approve';
+      case 'CLOSE':
+        return 'action-badge action-close';
+      case 'LOGIN':
         return 'action-badge action-login';
-      case 'logout':
+      case 'LOGOUT':
         return 'action-badge action-logout';
       default:
         return 'action-badge action-default';
     }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
   };
 
   if (loading) {
@@ -139,7 +168,7 @@ const AuditTrailBoard = () => {
         <div className="error-state">
           <h2>Error Loading Data</h2>
           <p>{error}</p>
-          <button onClick={fetchAuditData} className="retry-button">
+          <button onClick={fetchAndCalculateMetrics} className="retry-button">
             Retry
           </button>
         </div>
@@ -197,8 +226,8 @@ const AuditTrailBoard = () => {
           {auditsByAction.length > 0 ? (
             auditsByAction.map((item, index) => (
               <div key={index} className="action-summary-card">
-                <span className={getActionBadgeClass(item.action_type)}>
-                  {item.action_type}
+                <span className={getActionBadgeClass(item.action)}>
+                  {item.action}
                 </span>
                 <div className="action-count">{item.count}</div>
               </div>
@@ -229,19 +258,19 @@ const AuditTrailBoard = () => {
                 recentAudits.map((audit) => (
                   <tr key={audit.id}>
                     <td className="timestamp-cell">
-                      {formatTimestamp(audit.created_at)}
+                      {audit.time_ago || audit.formatted_timestamp}
                     </td>
                     <td className="user-cell">
-                      {audit.user_email || audit.user_id || 'System'}
+                      {audit.user_email || audit.user || 'System'}
                     </td>
                     <td>
-                      <span className={getActionBadgeClass(audit.action_type)}>
-                        {audit.action_type}
+                      <span className={getActionBadgeClass(audit.action_type || audit.action)}>
+                        {audit.action_type || audit.action}
                       </span>
                     </td>
                     <td>{audit.entity_type || 'N/A'}</td>
                     <td className="entity-id-cell">
-                      {audit.entity_id ? audit.entity_id.substring(0, 8) + '...' : 'N/A'}
+                      {audit.entity_id ? String(audit.entity_id).substring(0, 8) + '...' : 'N/A'}
                     </td>
                     <td className="details-cell">
                       {audit.details || audit.description || 'No details'}
@@ -258,6 +287,13 @@ const AuditTrailBoard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Refresh Button */}
+      <div className="board-actions">
+        <button onClick={fetchAndCalculateMetrics} className="refresh-button">
+          Refresh Data
+        </button>
       </div>
     </div>
   );

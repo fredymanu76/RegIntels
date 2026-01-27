@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  calculateAttestationSummary,
+  calculateAttestationConfidenceBands,
+  getEnrichedAttestations
+} from '../services/boardMetricsService';
 import './AttestationsBoard.css';
 
-const AttestationsBoard = () => {
+const AttestationsBoard = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(true);
   const [attestationStats, setAttestationStats] = useState({
     total: 0,
@@ -15,55 +19,125 @@ const AttestationsBoard = () => {
   const [confidenceSummary, setConfidenceSummary] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchAttestationData();
-  }, []);
-
-  const fetchAttestationData = async () => {
+  const fetchAndCalculateMetrics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Use the view that we know works (same as StrategicDashboard)
-      const { data: confidenceData, error: confidenceError } = await supabase
-        .from('v_attestation_confidence_index')
-        .select('*')
-        .order('confidence_score', { ascending: true });
+      let attestationsData = [];
+      let controlsData = [];
 
-      if (confidenceError) throw confidenceError;
+      // Try to fetch from Supabase if available
+      if (supabase) {
+        try {
+          // Try to fetch from views first (production mode)
+          const { data: confidenceData, error: confidenceError } = await supabase
+            .from('v_attestation_confidence_index')
+            .select('*')
+            .order('confidence_score', { ascending: true });
 
-      // Fetch confidence summary
-      const { data: summaryData, error: summaryError } = await supabase
-        .from('v_attestation_confidence_summary')
-        .select('*');
+          if (!confidenceError && confidenceData && confidenceData.length > 0) {
+            // Views exist, use them directly
+            const { data: summaryData } = await supabase
+              .from('v_attestation_confidence_summary')
+              .select('*');
 
-      if (summaryError) throw summaryError;
+            const total = confidenceData.length;
+            const completed = confidenceData.filter(a => a.status === 'approved').length;
+            const pending = confidenceData.filter(a => a.status === 'pending').length;
+            const overdue = confidenceData.filter(a => a.days_delta > 0 && a.status !== 'approved').length;
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-      // Calculate stats from the confidence data
-      const total = confidenceData?.length || 0;
-      const completed = confidenceData?.filter(a => a.status === 'approved').length || 0;
-      const pending = confidenceData?.filter(a => a.status === 'pending').length || 0;
-      const overdue = confidenceData?.filter(a => a.days_delta > 0 && a.status !== 'approved').length || 0;
-      const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            setAttestationStats({ total, pending, completed, overdue, completionRate });
+            setAttestationsByControl(confidenceData);
+            setConfidenceSummary(summaryData || []);
+
+            setLoading(false);
+            return;
+          }
+
+          // Views don't exist, fetch raw data
+          const { data: attData } = await supabase.from('attestations').select('*');
+          attestationsData = attData || [];
+
+          const { data: ctrlData } = await supabase.from('controls').select('*');
+          controlsData = ctrlData || [];
+        } catch (err) {
+          console.log('Supabase fetch failed, using mock data:', err.message);
+        }
+      }
+
+      // If no data yet, try to get from window.mockDatabase
+      if (attestationsData.length === 0 && typeof window !== 'undefined' && window.mockDatabase) {
+        attestationsData = window.mockDatabase.attestations || [];
+        controlsData = window.mockDatabase.controls || [];
+      }
+
+      // Filter by tenant if tenantId provided
+      if (tenantId) {
+        attestationsData = attestationsData.filter(a => a.tenant_id === tenantId);
+        controlsData = controlsData.filter(c => c.tenant_id === tenantId);
+      }
+
+      // Calculate attestation summary using boardMetricsService
+      const summary = calculateAttestationSummary(attestationsData);
+      const completionRate = summary.total > 0
+        ? Math.round((summary.approved / summary.total) * 100)
+        : 0;
 
       setAttestationStats({
-        total,
-        pending,
-        completed,
-        overdue,
+        total: summary.total,
+        pending: summary.pending,
+        completed: summary.approved,
+        overdue: summary.overdue,
         completionRate
       });
 
-      setAttestationsByControl(confidenceData || []);
-      setConfidenceSummary(summaryData || []);
+      // Calculate confidence bands
+      const confidenceBands = calculateAttestationConfidenceBands(attestationsData);
+      setConfidenceSummary(confidenceBands.map(band => ({
+        confidence_band: band.band,
+        attestation_count: band.count,
+        avg_confidence_score: band.avg_score,
+        late_count: 0 // Would need more data to calculate
+      })));
+
+      // Get enriched attestations with control data
+      const enrichedAttestations = getEnrichedAttestations(attestationsData, controlsData);
+
+      // Add confidence scoring to each attestation
+      const attestationsWithScores = enrichedAttestations.map(att => {
+        const score = att.confidence_score || 0;
+        let band;
+        if (score >= 85) band = 'HIGH_CONFIDENCE';
+        else if (score >= 70) band = 'MEDIUM_CONFIDENCE';
+        else band = 'LOW_CONFIDENCE';
+
+        let driver;
+        if (score >= 85) driver = 'Strong attestation';
+        else if (score >= 70) driver = 'Adequate coverage';
+        else driver = 'Needs review';
+
+        return {
+          ...att,
+          confidence_band: band,
+          confidence_driver: driver
+        };
+      });
+
+      setAttestationsByControl(attestationsWithScores);
 
     } catch (err) {
-      console.error('Error fetching attestation data:', err);
+      console.error('Error calculating attestation metrics:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId, supabase]);
+
+  useEffect(() => {
+    fetchAndCalculateMetrics();
+  }, [fetchAndCalculateMetrics]);
 
   const getStatusBadgeClass = (status, confidenceBand) => {
     if (status === 'approved') return 'status-badge status-completed';
@@ -97,7 +171,7 @@ const AttestationsBoard = () => {
         <div className="error-state">
           <h2>Error Loading Data</h2>
           <p>{error}</p>
-          <button onClick={fetchAttestationData} className="retry-button">
+          <button onClick={fetchAndCalculateMetrics} className="retry-button">
             Retry
           </button>
         </div>
@@ -154,8 +228,8 @@ const AttestationsBoard = () => {
             {confidenceSummary.map((summary, index) => (
               <div key={index} className={`confidence-card ${summary.confidence_band?.toLowerCase().replace('_', '-')}`}>
                 <h4>{summary.confidence_band?.replace(/_/g, ' ')}</h4>
-                <div className="confidence-value">{summary.attestation_count || 0}</div>
-                <p className="confidence-detail">Avg Score: {Math.round(summary.avg_confidence_score || 0)}</p>
+                <div className="confidence-value">{summary.attestation_count || summary.count || 0}</div>
+                <p className="confidence-detail">Avg Score: {Math.round(summary.avg_confidence_score || summary.avg_score || 0)}</p>
                 {summary.late_count > 0 && (
                   <p className="confidence-warning">{summary.late_count} late submissions</p>
                 )}
@@ -185,7 +259,7 @@ const AttestationsBoard = () => {
                 attestationsByControl.slice(0, 15).map((attestation, index) => (
                   <tr key={index}>
                     <td className="control-code">
-                      {attestation.control_code || 'N/A'}
+                      {attestation.control_code || attestation.control_id || 'N/A'}
                     </td>
                     <td>{attestation.control_title || 'Unknown Control'}</td>
                     <td>
@@ -222,6 +296,13 @@ const AttestationsBoard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Refresh Button */}
+      <div className="board-actions">
+        <button onClick={fetchAndCalculateMetrics} className="refresh-button">
+          Refresh Data
+        </button>
       </div>
     </div>
   );

@@ -568,6 +568,11 @@ const mockDatabase = {
   ]
 };
 
+// Expose mockDatabase on window for board components in mock mode
+if (typeof window !== 'undefined') {
+  window.mockDatabase = mockDatabase;
+}
+
 // ============================================================================
 // DATA HOOKS
 // ============================================================================
@@ -1530,12 +1535,12 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Governance & Board Assurance' && page === 'Risk Posture') return <RiskPosturePage tenantId={tenantId} />;
   if (solution === 'Governance & Board Assurance' && page === 'Control Effectiveness') return <ControlEffectivenessPage tenantId={tenantId} />;
   if (solution === 'Governance & Board Assurance' && page === 'API Health') return <APIHealthPage tenantId={tenantId} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard supabase={supabase.client} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Regulatory Readiness') return <RegulatoryReadinessBoard supabase={supabase.client} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Attestations') return <AttestationsBoard supabase={supabase.client} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Audit Trail') return <AuditTrailBoard supabase={supabase.client} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Decision Register') return <DecisionRegisterBoard supabase={supabase.client} />;
-  if (solution === 'Governance & Board Assurance' && page === 'Approvals') return <ApprovalsBoard supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Exceptions Overview') return <ExceptionsOverviewBoard tenantId={tenantId} supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Regulatory Readiness') return <RegulatoryReadinessBoard tenantId={tenantId} supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Attestations') return <AttestationsBoard tenantId={tenantId} supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Audit Trail') return <AuditTrailBoard tenantId={tenantId} supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Decision Register') return <DecisionRegisterBoard tenantId={tenantId} supabase={supabase.client} />;
+  if (solution === 'Governance & Board Assurance' && page === 'Approvals') return <ApprovalsBoard tenantId={tenantId} supabase={supabase.client} />;
   if (solution === 'Governance & Board Assurance') return <BoardPagePlaceholder page={page} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'User Management') return <TenantUserManagementPage currentUser={currentUser} tenantId={tenantId} />;
   if (solution === 'Tenant Admin' && page === 'Firm Settings') return <TenantFirmSettingsPage currentUser={currentUser} tenantId={tenantId} />;

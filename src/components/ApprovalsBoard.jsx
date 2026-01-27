@@ -1,62 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  getEnrichedApprovals,
+  calculateApprovalSummary
+} from '../services/boardMetricsService';
 import './ApprovalsBoard.css';
 
-const ApprovalsBoard = () => {
+const ApprovalsBoard = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(true);
   const [approvalStats, setApprovalStats] = useState({
     total: 0,
     pending: 0,
     approved: 0,
     rejected: 0,
-    approvalRate: 0
+    approvalRate: 0,
+    overdue: 0
   });
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [recentApprovals, setRecentApprovals] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchApprovalData();
-  }, []);
-
-  const fetchApprovalData = async () => {
+  const fetchAndCalculateMetrics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch all approvals
-      const { data: approvalsData, error: approvalsError } = await supabase
-        .from('approvals')
-        .select('*')
-        .order('created_at', { ascending: false });
+      let approvalsData = [];
 
-      if (approvalsError) throw approvalsError;
+      // Try to fetch from Supabase if available
+      if (supabase) {
+        try {
+          const { data, error: approvalsError } = await supabase
+            .from('approvals')
+            .select('*')
+            .order('due_date', { ascending: true });
 
-      const approvals = approvalsData || [];
+          if (!approvalsError && data) {
+            approvalsData = data;
+          }
+        } catch (err) {
+          console.log('Supabase fetch failed, using mock data:', err.message);
+        }
+      }
 
-      // Calculate stats
-      const total = approvals.length;
-      const pending = approvals.filter(a => a.status === 'pending').length;
-      const approved = approvals.filter(a => a.status === 'approved').length;
-      const rejected = approvals.filter(a => a.status === 'rejected').length;
-      const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+      // If no data yet, try to get from window.mockDatabase
+      if (approvalsData.length === 0 && typeof window !== 'undefined' && window.mockDatabase) {
+        approvalsData = window.mockDatabase.approvals || [];
+      }
+
+      // Filter by tenant if tenantId provided
+      if (tenantId) {
+        approvalsData = approvalsData.filter(a => a.tenant_id === tenantId);
+      }
+
+      // Calculate summary using boardMetricsService
+      const summary = calculateApprovalSummary(approvalsData);
+      const approvalRate = summary.total > 0
+        ? Math.round((summary.approved / summary.total) * 100)
+        : 0;
 
       setApprovalStats({
-        total,
-        pending,
-        approved,
-        rejected,
+        total: summary.total,
+        pending: summary.pending,
+        approved: summary.approved,
+        rejected: summary.rejected,
+        overdue: summary.overdue,
         approvalRate
       });
 
-      // Pending approvals
+      // Get enriched approvals
+      const enrichedApprovals = getEnrichedApprovals(approvalsData);
+
+      // Pending approvals (sorted by urgency)
       setPendingApprovals(
-        approvals.filter(a => a.status === 'pending').slice(0, 10)
+        enrichedApprovals.filter(a => a.status === 'pending').slice(0, 10)
       );
 
       // Recent approvals (approved or rejected)
       setRecentApprovals(
-        approvals.filter(a => a.status !== 'pending').slice(0, 10)
+        enrichedApprovals.filter(a => a.status !== 'pending').slice(0, 10)
       );
 
     } catch (err) {
@@ -65,7 +86,11 @@ const ApprovalsBoard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId, supabase]);
+
+  useEffect(() => {
+    fetchAndCalculateMetrics();
+  }, [fetchAndCalculateMetrics]);
 
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
@@ -80,17 +105,16 @@ const ApprovalsBoard = () => {
     }
   };
 
-  const getPriorityBadgeClass = (priority) => {
-    switch (priority?.toLowerCase()) {
-      case 'critical':
-      case 'high':
-        return 'priority-badge priority-high';
-      case 'medium':
-        return 'priority-badge priority-medium';
-      case 'low':
-        return 'priority-badge priority-low';
+  const getUrgencyBadgeClass = (urgency) => {
+    switch (urgency) {
+      case 'OVERDUE':
+        return 'urgency-badge urgency-overdue';
+      case 'URGENT':
+        return 'urgency-badge urgency-urgent';
+      case 'HIGH':
+        return 'urgency-badge urgency-high';
       default:
-        return 'priority-badge';
+        return 'urgency-badge urgency-normal';
     }
   };
 
@@ -111,7 +135,7 @@ const ApprovalsBoard = () => {
         <div className="error-state">
           <h2>Error Loading Data</h2>
           <p>{error}</p>
-          <button onClick={fetchApprovalData} className="retry-button">
+          <button onClick={fetchAndCalculateMetrics} className="retry-button">
             Retry
           </button>
         </div>
@@ -144,8 +168,8 @@ const ApprovalsBoard = () => {
         </div>
 
         <div className="kpi-card">
-          <div className="kpi-label">Rejected</div>
-          <div className="kpi-value kpi-danger">{approvalStats.rejected}</div>
+          <div className="kpi-label">Overdue</div>
+          <div className="kpi-value kpi-danger">{approvalStats.overdue}</div>
         </div>
 
         <div className="kpi-card">
@@ -167,41 +191,39 @@ const ApprovalsBoard = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Requested</th>
-                <th>Request Type</th>
-                <th>Requester</th>
-                <th>Approver</th>
-                <th>Priority</th>
-                <th>Status</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Requested By</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
+                <th>Urgency</th>
               </tr>
             </thead>
             <tbody>
               {pendingApprovals.length > 0 ? (
                 pendingApprovals.map((approval) => (
                   <tr key={approval.id}>
+                    <td className="id-cell">{approval.id}</td>
+                    <td className="title-cell">{approval.title || 'Untitled'}</td>
+                    <td className="type-cell">{approval.item_type || 'Unknown'}</td>
+                    <td>{approval.requested_by || 'N/A'}</td>
+                    <td>{approval.assigned_to || 'Not assigned'}</td>
                     <td className="date-cell">
-                      {approval.created_at
-                        ? new Date(approval.created_at).toLocaleDateString()
-                        : 'N/A'}
-                    </td>
-                    <td className="type-cell">{approval.request_type || 'Unknown'}</td>
-                    <td>{approval.requester_name || approval.requester_id || 'N/A'}</td>
-                    <td>{approval.approver_name || approval.approver_id || 'Not assigned'}</td>
-                    <td>
-                      <span className={getPriorityBadgeClass(approval.priority)}>
-                        {approval.priority || 'medium'}
-                      </span>
+                      {approval.due_date
+                        ? new Date(approval.due_date).toLocaleDateString()
+                        : 'No due date'}
                     </td>
                     <td>
-                      <span className={getStatusBadgeClass(approval.status)}>
-                        {approval.status}
+                      <span className={getUrgencyBadgeClass(approval.urgency)}>
+                        {approval.urgency || 'NORMAL'}
                       </span>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="empty-state">
+                  <td colSpan="7" className="empty-state">
                     No pending approvals
                   </td>
                 </tr>
@@ -218,33 +240,27 @@ const ApprovalsBoard = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Decision Date</th>
-                <th>Request Type</th>
-                <th>Requester</th>
-                <th>Approver</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Requested By</th>
+                <th>Assigned To</th>
                 <th>Status</th>
-                <th>Comments</th>
               </tr>
             </thead>
             <tbody>
               {recentApprovals.length > 0 ? (
                 recentApprovals.map((approval) => (
                   <tr key={approval.id}>
-                    <td className="date-cell">
-                      {approval.approved_at || approval.rejected_at
-                        ? new Date(approval.approved_at || approval.rejected_at).toLocaleDateString()
-                        : 'N/A'}
-                    </td>
-                    <td className="type-cell">{approval.request_type || 'Unknown'}</td>
-                    <td>{approval.requester_name || approval.requester_id || 'N/A'}</td>
-                    <td>{approval.approver_name || approval.approver_id || 'N/A'}</td>
+                    <td className="id-cell">{approval.id}</td>
+                    <td className="title-cell">{approval.title || 'Untitled'}</td>
+                    <td className="type-cell">{approval.item_type || 'Unknown'}</td>
+                    <td>{approval.requested_by || 'N/A'}</td>
+                    <td>{approval.assigned_to || 'N/A'}</td>
                     <td>
                       <span className={getStatusBadgeClass(approval.status)}>
                         {approval.status}
                       </span>
-                    </td>
-                    <td className="comments-cell">
-                      {approval.comments || '-'}
                     </td>
                   </tr>
                 ))
@@ -258,6 +274,13 @@ const ApprovalsBoard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Refresh Button */}
+      <div className="board-actions">
+        <button onClick={fetchAndCalculateMetrics} className="refresh-button">
+          Refresh Data
+        </button>
       </div>
     </div>
   );

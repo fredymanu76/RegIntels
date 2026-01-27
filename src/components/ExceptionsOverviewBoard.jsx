@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabaseClient';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  calculateExceptionSeveritySummary,
+  calculateExceptionAgingAnalysis,
+  calculateExceptionsByControl
+} from '../services/boardMetricsService';
 import './ExceptionsOverviewBoard.css';
 
-const ExceptionsOverviewBoard = () => {
+const ExceptionsOverviewBoard = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(true);
   const [exceptionStats, setExceptionStats] = useState({
     total: 0,
@@ -16,58 +20,107 @@ const ExceptionsOverviewBoard = () => {
   const [exceptionsByControl, setExceptionsByControl] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchExceptionData();
-  }, []);
-
-  const fetchExceptionData = async () => {
+  const fetchAndCalculateMetrics = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch severity summary from view
-      const { data: severityData, error: severityError } = await supabase
-        .from('v_exceptions_severity_summary')
-        .select('*');
+      let exceptionsData = [];
+      let controlsData = [];
 
-      if (severityError) throw severityError;
+      // Try to fetch from Supabase if available
+      if (supabase) {
+        try {
+          // Try to fetch from views first (for production with actual Supabase)
+          const { data: severityData, error: severityError } = await supabase
+            .from('v_exceptions_severity_summary')
+            .select('*');
 
-      setSeveritySummary(severityData || []);
+          if (!severityError && severityData) {
+            // Views exist, use them directly
+            setSeveritySummary(severityData);
 
-      // Calculate total stats
-      const total = (severityData || []).reduce((sum, item) => sum + (item.exception_count || 0), 0);
-      const critical = (severityData || []).find(item => item.severity === 'critical')?.exception_count || 0;
-      const high = (severityData || []).find(item => item.severity === 'high')?.exception_count || 0;
-      const medium = (severityData || []).find(item => item.severity === 'medium')?.exception_count || 0;
-      const low = (severityData || []).find(item => item.severity === 'low')?.exception_count || 0;
+            const total = severityData.reduce((sum, item) => sum + (item.exception_count || 0), 0);
+            const critical = severityData.find(item => item.severity === 'critical')?.exception_count || 0;
+            const high = severityData.find(item => item.severity === 'high')?.exception_count || 0;
+            const medium = severityData.find(item => item.severity === 'medium')?.exception_count || 0;
+            const low = severityData.find(item => item.severity === 'low')?.exception_count || 0;
+            setExceptionStats({ total, critical, high, medium, low });
 
+            const { data: agingData } = await supabase
+              .from('v_exceptions_aging_analysis')
+              .select('*')
+              .limit(20);
+            setAgingAnalysis(agingData || []);
+
+            const { data: controlData } = await supabase
+              .from('v_exceptions_by_control')
+              .select('*')
+              .limit(15);
+            setExceptionsByControl(controlData || []);
+
+            setLoading(false);
+            return;
+          }
+
+          // Views don't exist, fetch raw data
+          const { data: excData } = await supabase
+            .from('exceptions')
+            .select('*');
+          exceptionsData = excData || [];
+
+          const { data: ctrlData } = await supabase
+            .from('controls')
+            .select('*');
+          controlsData = ctrlData || [];
+        } catch (err) {
+          console.log('Supabase fetch failed, using mock data:', err.message);
+        }
+      }
+
+      // If no data yet, try to get from window.mockDatabase (for development)
+      if (exceptionsData.length === 0 && typeof window !== 'undefined' && window.mockDatabase) {
+        exceptionsData = window.mockDatabase.exceptions || [];
+        controlsData = window.mockDatabase.controls || [];
+      }
+
+      // Filter by tenant if tenantId provided
+      if (tenantId) {
+        exceptionsData = exceptionsData.filter(e => e.tenant_id === tenantId);
+        controlsData = controlsData.filter(c => c.tenant_id === tenantId);
+      }
+
+      // Calculate metrics using boardMetricsService
+      const severityData = calculateExceptionSeveritySummary(exceptionsData);
+      setSeveritySummary(severityData);
+
+      // Calculate total stats from severity data
+      const total = exceptionsData.length;
+      const critical = severityData.find(item => item.severity === 'critical')?.exception_count || 0;
+      const high = severityData.find(item => item.severity === 'high')?.exception_count || 0;
+      const medium = severityData.find(item => item.severity === 'medium')?.exception_count || 0;
+      const low = severityData.find(item => item.severity === 'low')?.exception_count || 0;
       setExceptionStats({ total, critical, high, medium, low });
 
-      // Fetch aging analysis
-      const { data: agingData, error: agingError } = await supabase
-        .from('v_exceptions_aging_analysis')
-        .select('*')
-        .limit(20);
+      // Calculate aging analysis
+      const agingData = calculateExceptionAgingAnalysis(exceptionsData);
+      setAgingAnalysis(agingData.slice(0, 20));
 
-      if (agingError) throw agingError;
-      setAgingAnalysis(agingData || []);
-
-      // Fetch exceptions by control
-      const { data: controlData, error: controlError } = await supabase
-        .from('v_exceptions_by_control')
-        .select('*')
-        .limit(15);
-
-      if (controlError) throw controlError;
-      setExceptionsByControl(controlData || []);
+      // Calculate exceptions by control
+      const controlData = calculateExceptionsByControl(exceptionsData, controlsData);
+      setExceptionsByControl(controlData.slice(0, 15));
 
     } catch (err) {
-      console.error('Error fetching exception data:', err);
+      console.error('Error calculating exception metrics:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [tenantId, supabase]);
+
+  useEffect(() => {
+    fetchAndCalculateMetrics();
+  }, [fetchAndCalculateMetrics]);
 
   const getSeverityBadgeClass = (severity) => {
     switch (severity?.toLowerCase()) {
@@ -108,7 +161,7 @@ const ExceptionsOverviewBoard = () => {
         <div className="error-state">
           <h2>Error Loading Data</h2>
           <p>{error}</p>
-          <button onClick={fetchExceptionData} className="retry-button">
+          <button onClick={fetchAndCalculateMetrics} className="retry-button">
             Retry
           </button>
         </div>
@@ -278,6 +331,13 @@ const ExceptionsOverviewBoard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Refresh Button */}
+      <div className="board-actions">
+        <button onClick={fetchAndCalculateMetrics} className="refresh-button">
+          Refresh Data
+        </button>
       </div>
     </div>
   );
