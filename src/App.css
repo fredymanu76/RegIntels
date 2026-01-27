@@ -40,9 +40,6 @@
   --shadow-glow-strong: 0 0 40px rgba(0, 212, 228, 0.4);
 }
 
-/* Import Google Fonts - Space Grotesk for headings, Inter for body */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-
 /* RESET */
 * {
   margin: 0;
