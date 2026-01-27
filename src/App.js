@@ -1189,13 +1189,12 @@ export default function RegIntels() {
 
         setCurrentUser({ ...userProfile, is_platform_admin: false });
         setCurrentTenant(tenant);
+        setIsAuthenticated(true);
 
         // Check if user has seen the welcome experience
         const hasSeenWelcome = localStorage.getItem(`welcome_seen_${userProfile.id}`);
         if (!hasSeenWelcome) {
           setShowWelcome(true);
-        } else {
-          setIsAuthenticated(true);
         }
         setShowOnboarding(false);
         console.log('[LOAD_USER_DATA] ✅ Regular user login complete');
@@ -1212,13 +1211,12 @@ export default function RegIntels() {
   const handleLoginSuccess = (tenant, userProfile) => {
     setCurrentTenant(tenant);
     setCurrentUser(userProfile);
+    setIsAuthenticated(true);
 
     // Check if user has seen the welcome experience
     const hasSeenWelcome = localStorage.getItem(`welcome_seen_${userProfile?.id || tenant?.id}`);
     if (!hasSeenWelcome) {
       setShowWelcome(true);
-    } else {
-      setIsAuthenticated(true);
     }
     localStorage.setItem('tenant_onboarded', 'true');
   };
@@ -1229,7 +1227,6 @@ export default function RegIntels() {
       localStorage.setItem(`welcome_seen_${userId}`, 'true');
     }
     setShowWelcome(false);
-    setIsAuthenticated(true);
   };
 
   const handleSignOut = async () => {
@@ -1399,19 +1396,19 @@ export default function RegIntels() {
     );
   }
 
-  // If not authenticated and not in onboarding or welcome, show login page
-  if (!isAuthenticated && !showOnboarding && !showWelcome) {
+  // If showing welcome experience (check first before other screens)
+  if (showWelcome) {
+    return <WelcomeExperience onComplete={handleWelcomeComplete} />;
+  }
+
+  // If not authenticated and not in onboarding, show login page
+  if (!isAuthenticated && !showOnboarding) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} onStartOnboarding={handleStartOnboarding} />;
   }
 
   // If onboarding, show onboarding wizard
   if (showOnboarding) {
     return <TenantOnboardingWizard onComplete={handleOnboardingComplete} />;
-  }
-
-  // If showing welcome experience
-  if (showWelcome) {
-    return <WelcomeExperience onComplete={handleWelcomeComplete} />;
   }
 
   // main render
