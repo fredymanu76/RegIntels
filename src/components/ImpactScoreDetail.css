@@ -1,9 +1,11 @@
-/* Impact Score Detail Styles */
+/* Impact Score Detail Styles - Glassmorphism Dark Theme */
 
 .impact-score-detail {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: transparent;
+  min-height: 100vh;
 }
 
 .back-button {
@@ -11,34 +13,37 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: 1.5rem;
 }
 
 .back-button:hover {
-  background: #f8fafc;
-  color: #3b82f6;
-  border-color: #3b82f6;
+  background: rgba(0, 229, 255, 0.1);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .detail-header {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   margin-bottom: 2rem;
 }
 
 .detail-header h1 {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
@@ -51,16 +56,16 @@
 
 .regulator-badge {
   padding: 0.25rem 0.75rem;
-  background: #f1f5f9;
+  background: var(--color-info-light);
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-accent);
 }
 
 .date {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .score-overview {
@@ -71,10 +76,12 @@
 }
 
 .total-score-card {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   text-align: center;
 }
 
@@ -93,13 +100,13 @@
 .score-circle .score-value {
   font-size: 3rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   line-height: 1;
 }
 
 .score-circle .score-label {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.5rem;
@@ -117,23 +124,26 @@
   justify-content: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-muted);
   padding: 0.75rem;
-  background: #f8fafc;
+  background: rgba(10, 15, 20, 0.5);
   border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
 
 .score-breakdown {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
 }
 
 .score-breakdown h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
@@ -145,8 +155,9 @@
 
 .breakdown-item {
   padding: 1rem;
-  background: #f8fafc;
+  background: rgba(10, 15, 20, 0.5);
   border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
 
 .breakdown-header {
@@ -158,19 +169,19 @@
 
 .breakdown-label {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-text);
   font-size: 0.875rem;
 }
 
 .breakdown-value {
   font-weight: 700;
-  color: #3b82f6;
+  color: var(--color-accent);
   font-size: 0.875rem;
 }
 
 .breakdown-bar {
   height: 12px;
-  background: #e2e8f0;
+  background: var(--color-border);
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 0.5rem;
@@ -178,14 +189,14 @@
 
 .breakdown-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
   border-radius: 6px;
   transition: width 0.3s ease;
 }
 
 .breakdown-desc {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .detail-stats {
@@ -196,17 +207,26 @@
 }
 
 .stat-card {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: var(--color-accent);
 }
 
 .stat-card svg {
-  color: #3b82f6;
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
 }
 
 .stat-content {
@@ -216,27 +236,29 @@
 .stat-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   line-height: 1;
   margin-bottom: 0.25rem;
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .recommendations {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
 }
 
 .recommendations h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
@@ -255,42 +277,42 @@
 }
 
 .recommendation.urgent {
-  background: #fef2f2;
-  border-color: #dc2626;
+  background: rgba(255, 71, 87, 0.1);
+  border-color: var(--color-danger);
 }
 
 .recommendation.urgent svg {
-  color: #dc2626;
+  color: var(--color-danger);
   flex-shrink: 0;
 }
 
 .recommendation.warning {
-  background: #fffbeb;
-  border-color: #f59e0b;
+  background: rgba(255, 184, 0, 0.1);
+  border-color: var(--color-warning);
 }
 
 .recommendation.warning svg {
-  color: #f59e0b;
+  color: var(--color-warning);
   flex-shrink: 0;
 }
 
 .recommendation.info {
-  background: #f0fdf4;
-  border-color: #10b981;
+  background: rgba(0, 230, 118, 0.1);
+  border-color: var(--color-success);
 }
 
 .recommendation.info svg {
-  color: #10b981;
+  color: var(--color-success);
   flex-shrink: 0;
 }
 
 .recommendation strong {
-  color: #1e293b;
+  color: var(--color-text);
 }
 
 .recommendation div {
   font-size: 0.875rem;
-  color: #334155;
+  color: var(--color-text);
   line-height: 1.6;
 }
 

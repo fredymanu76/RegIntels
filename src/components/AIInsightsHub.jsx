@@ -186,7 +186,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
     // Match based on title or category
     for (const [key, template] of Object.entries(summaryTemplates)) {
       if (change.title?.toLowerCase().includes(key.toLowerCase()) ||
-          change.affected_controls?.some(c => c.toLowerCase().includes(key.toLowerCase()))) {
+          (Array.isArray(change.affected_controls) && change.affected_controls.some(c => c.toLowerCase().includes(key.toLowerCase())))) {
         return {
           ...template,
           generatedAt: new Date().toISOString(),

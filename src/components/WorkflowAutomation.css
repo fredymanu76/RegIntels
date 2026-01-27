@@ -1,7 +1,10 @@
+/* Workflow Automation Styles - Glassmorphism Dark Theme */
 .workflow-automation {
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
+  background: transparent;
+  min-height: 100vh;
 }
 
 .wa-header {
@@ -17,11 +20,12 @@
 .wa-title h1 {
   margin: 0;
   font-size: 28px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .wa-title svg {
-  color: #10b981;
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
 }
 
 .automation-badge {
@@ -29,15 +33,15 @@
   align-items: center;
   gap: 4px;
   padding: 4px 12px;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: #000000;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .wa-subtitle {
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 8px 0 0 0;
 }
 
@@ -53,9 +57,17 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.wa-stat-card:hover {
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: var(--color-accent);
 }
 
 .wa-stat-icon {
@@ -64,20 +76,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  background: var(--color-info-light);
   border-radius: 12px;
-  color: #059669;
+  color: var(--color-accent);
 }
 
 .wa-stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .wa-stat-label {
   font-size: 13px;
-  color: #1a1a2e;
+  color: var(--color-text);
   font-weight: 500;
 }
 
@@ -85,7 +97,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .wa-tab {
@@ -98,25 +110,27 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--color-text-muted);
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s;
 }
 
 .wa-tab:hover {
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .wa-tab.active {
-  color: #10b981;
-  border-bottom-color: #10b981;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 .wa-content {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   min-height: 500px;
 }
 
@@ -135,7 +149,7 @@
 .workflows-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .create-workflow-btn {
@@ -143,18 +157,20 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #10b981;
-  color: white;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-glow);
 }
 
 .create-workflow-btn:hover {
-  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-strong);
 }
 
 .workflows-list {
@@ -169,15 +185,15 @@
   align-items: flex-start;
   gap: 16px;
   padding: 20px;
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: rgba(10, 15, 20, 0.5);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   transition: all 0.2s;
 }
 
 .workflow-card:hover {
-  border-color: #a7f3d0;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
 }
 
 .workflow-card.disabled {
@@ -206,19 +222,19 @@
 }
 
 .toggle-btn.on {
-  background: #10b981;
+  background: var(--color-success);
 }
 
 .toggle-btn.on:hover {
-  background: #059669;
+  background: #00c853;
 }
 
 .toggle-btn.off {
-  background: #94a3b8;
+  background: var(--color-text-muted);
 }
 
 .toggle-btn.off:hover {
-  background: #64748b;
+  background: var(--color-text-secondary);
 }
 
 .workflow-content {
@@ -237,7 +253,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .status-badge {
@@ -249,19 +265,19 @@
 }
 
 .status-badge.active {
-  background: #d1fae5;
-  color: #059669;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .status-badge.inactive {
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(176, 176, 176, 0.2);
+  color: var(--color-text-secondary);
 }
 
 .workflow-desc {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -271,8 +287,9 @@
   gap: 12px;
   margin-bottom: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: rgba(10, 15, 20, 0.7);
   border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
 
 .config-item {
@@ -284,20 +301,20 @@
 .config-label {
   font-size: 13px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
   min-width: 70px;
 }
 
 .config-value {
   font-size: 13px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .trigger-badge {
   display: inline-block;
   padding: 4px 10px;
-  background: #e0e7ff;
-  color: #4338ca;
+  background: var(--color-info-light);
+  color: var(--color-accent);
   border-radius: 6px;
   font-weight: 500;
 }
@@ -311,8 +328,8 @@
 .action-tag {
   display: inline-block;
   padding: 4px 10px;
-  background: #f0fdf4;
-  color: #166534;
+  background: var(--color-success-light);
+  color: var(--color-success);
   border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
@@ -322,7 +339,7 @@
   display: flex;
   gap: 20px;
   font-size: 13px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .workflow-stats span {
@@ -332,7 +349,7 @@
 }
 
 .workflow-stats svg {
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .workflow-actions {
@@ -347,30 +364,30 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(10, 15, 20, 0.7);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .action-btn.edit {
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .action-btn.edit:hover {
-  background: #e0e7ff;
-  border-color: #6366f1;
-  color: #4f46e5;
+  background: var(--color-info-light);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .action-btn.delete {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .action-btn.delete:hover {
-  background: #fef2f2;
-  border-color: #fecaca;
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
 }
 
 .workflow-meta {
@@ -378,8 +395,9 @@
   gap: 24px;
   margin-bottom: 16px;
   padding: 12px 16px;
-  background: #f1f5f9;
+  background: rgba(10, 15, 20, 0.7);
   border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
 
 .meta-item {
@@ -387,11 +405,11 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .meta-item svg {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 /* Reminders Panel */
@@ -409,7 +427,7 @@
 .reminders-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .reminder-filters {
@@ -419,22 +437,24 @@
 
 .filter-btn {
   padding: 8px 16px;
-  background: #f1f5f9;
-  border: none;
+  background: rgba(10, 15, 20, 0.7);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 13px;
-  color: #64748b;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .filter-btn:hover {
-  background: #e2e8f0;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .filter-btn.active {
-  background: #10b981;
-  color: white;
+  background: var(--color-accent);
+  color: #000000;
+  border-color: var(--color-accent);
 }
 
 .reminders-timeline {
@@ -448,24 +468,24 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: rgba(10, 15, 20, 0.5);
   border-radius: 10px;
-  border-left: 4px solid #10b981;
+  border-left: 4px solid var(--color-accent);
   transition: all 0.2s;
 }
 
 .reminder-item:hover {
-  background: #f1f5f9;
+  background: rgba(0, 229, 255, 0.05);
 }
 
 .reminder-item.due-today {
-  border-left-color: #f59e0b;
-  background: #fffbeb;
+  border-left-color: var(--color-warning);
+  background: rgba(255, 184, 0, 0.1);
 }
 
 .reminder-item.overdue {
-  border-left-color: #ef4444;
-  background: #fef2f2;
+  border-left-color: var(--color-danger);
+  background: rgba(255, 71, 87, 0.1);
 }
 
 .reminder-icon {
@@ -474,17 +494,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
   border-radius: 8px;
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .reminder-item.due-today .reminder-icon {
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .reminder-item.overdue .reminder-icon {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .reminder-content {
@@ -493,13 +513,13 @@
 
 .reminder-title {
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
   margin-bottom: 4px;
 }
 
 .reminder-details {
   font-size: 13px;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .reminder-due {
@@ -511,22 +531,22 @@
 }
 
 .reminder-due.today {
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .reminder-due.overdue {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .reminder-due.upcoming {
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .reminder-action {
   padding: 8px 16px;
-  background: white;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
@@ -534,8 +554,8 @@
 }
 
 .reminder-action:hover {
-  border-color: #10b981;
-  color: #10b981;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* Panel Header */
@@ -550,7 +570,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .create-btn {
@@ -558,18 +578,20 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #10b981;
-  color: white;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-glow);
 }
 
 .create-btn:hover {
-  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-strong);
 }
 
 /* Reminders Table */
@@ -586,26 +608,26 @@
 .reminders-table th {
   text-align: left;
   padding: 12px 16px;
-  background: #f8fafc;
+  background: rgba(0, 229, 255, 0.05);
   font-weight: 600;
-  color: #1a1a2e;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--color-accent);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .reminders-table td {
   padding: 16px;
-  color: #1a1a2e;
-  border-bottom: 1px solid #f1f5f9;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
   vertical-align: middle;
 }
 
 .reminders-table tbody tr:hover {
-  background: #f8fafc;
+  background: rgba(0, 229, 255, 0.05);
 }
 
 .item-cell {
   font-weight: 500;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .type-icon {
@@ -615,27 +637,27 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: #f1f5f9;
+  background: rgba(10, 15, 20, 0.7);
 }
 
 .type-icon.attestation {
-  background: #d1fae5;
-  color: #059669;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .type-icon.review {
-  background: #e0e7ff;
-  color: #4f46e5;
+  background: var(--color-info-light);
+  color: var(--color-accent);
 }
 
 .type-icon.exception {
-  background: #fef3c7;
-  color: #d97706;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .type-icon.deadline {
-  background: #fce7f3;
-  color: #db2777;
+  background: var(--color-danger-light);
+  color: var(--color-danger);
 }
 
 .days-badge {
@@ -644,24 +666,24 @@
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
-  background: #d1fae5;
-  color: #059669;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .days-badge.overdue {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--color-danger-light);
+  color: var(--color-danger);
 }
 
 .assignee {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .assignee svg {
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .priority-badge {
@@ -674,23 +696,23 @@
 }
 
 .priority-badge.priority-critical {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--color-danger-light);
+  color: var(--color-danger);
 }
 
 .priority-badge.priority-high {
-  background: #fff7ed;
-  color: #ea580c;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .priority-badge.priority-medium {
-  background: #fffbeb;
-  color: #d97706;
+  background: var(--color-warning-light);
+  color: #92400e;
 }
 
 .priority-badge.priority-low {
-  background: #f0fdf4;
-  color: #16a34a;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .send-reminder-btn {
@@ -698,34 +720,35 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: #10b981;
-  color: white;
+  background: var(--color-accent);
+  color: #000000;
   border: none;
   border-radius: 6px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .send-reminder-btn:hover {
-  background: #059669;
+  background: var(--color-accent-secondary);
+  box-shadow: var(--shadow-glow);
 }
 
 /* Filter Controls */
 .filter-controls select {
   padding: 8px 12px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
-  background: white;
+  color: var(--color-text);
+  background: rgba(10, 15, 20, 0.7);
   cursor: pointer;
 }
 
 .filter-controls select:focus {
   outline: none;
-  border-color: #10b981;
+  border-color: var(--color-accent);
 }
 
 /* Templates Panel */
@@ -740,12 +763,12 @@
 .templates-header h2 {
   margin: 0 0 8px 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .templates-header p {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .templates-grid {
@@ -755,28 +778,29 @@
 }
 
 .template-card {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
+  background: rgba(10, 15, 20, 0.5);
   transition: all 0.2s;
 }
 
 .template-card:hover {
-  border-color: #a7f3d0;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
 }
 
 .template-card h3 {
   margin: 0 0 8px 0;
   font-size: 16px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .template-card p {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -792,8 +816,8 @@
   gap: 8px;
   padding: 8px 0;
   font-size: 14px;
-  color: #1a1a2e;
-  border-bottom: 1px solid #f1f5f9;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .template-card li:last-child {
@@ -802,7 +826,7 @@
 
 .template-card li::before {
   content: "✓";
-  color: #10b981;
+  color: var(--color-accent);
   font-weight: bold;
 }
 
@@ -812,22 +836,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  background: var(--color-info-light);
   border-radius: 12px;
-  color: #059669;
+  color: var(--color-accent);
   margin-bottom: 16px;
 }
 
 .template-name {
   margin: 0 0 8px 0;
   font-size: 16px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .template-desc {
   margin: 0 0 16px 0;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
   line-height: 1.5;
 }
 
@@ -843,11 +867,11 @@
   gap: 8px;
   padding: 6px 0;
   font-size: 13px;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .template-features li svg {
-  color: #10b981;
+  color: var(--color-accent);
 }
 
 .use-template-btn {
@@ -857,18 +881,20 @@
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  background: #10b981;
-  color: white;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-glow);
 }
 
 .use-template-btn:hover {
-  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-strong);
 }
 
 /* Modal */
@@ -878,7 +904,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -886,12 +912,15 @@
 }
 
 .workflow-modal {
-  background: white;
+  background: rgba(10, 15, 20, 0.95);
+  backdrop-filter: blur(20px);
   border-radius: 16px;
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
 .modal-header {
@@ -899,13 +928,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 20px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .close-modal-btn {
@@ -914,17 +943,18 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: #f1f5f9;
-  border: none;
+  background: rgba(10, 15, 20, 0.7);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
-  color: #64748b;
+  color: var(--color-text-muted);
   transition: all 0.2s;
 }
 
 .close-modal-btn:hover {
-  background: #e2e8f0;
-  color: #1a1a2e;
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+  border-color: var(--color-accent);
 }
 
 .modal-body {
@@ -940,7 +970,7 @@
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .form-group input,
@@ -948,10 +978,11 @@
 .form-group textarea {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
+  background: rgba(10, 15, 20, 0.7);
   transition: border-color 0.2s;
 }
 
@@ -959,7 +990,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #10b981;
+  border-color: var(--color-accent);
 }
 
 .form-group textarea {
@@ -978,14 +1009,14 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .cancel-btn {
   padding: 12px 24px;
-  background: white;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -994,7 +1025,9 @@
 }
 
 .cancel-btn:hover {
-  background: #f1f5f9;
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .save-workflow-btn {
@@ -1002,18 +1035,20 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #10b981;
-  color: white;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  color: #000000;
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: var(--shadow-glow);
 }
 
 .save-workflow-btn:hover {
-  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-strong);
 }
 
 @media (max-width: 1024px) {

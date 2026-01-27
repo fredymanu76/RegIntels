@@ -17,15 +17,16 @@
 .nc-title h1 {
   margin: 0;
   font-size: 28px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .nc-title svg {
-  color: #6366f1;
+  color: var(--color-accent);
+  filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
 }
 
 .unread-badge {
-  background: #ef4444;
+  background: var(--color-danger);
   color: white;
   font-size: 12px;
   font-weight: 600;
@@ -34,7 +35,7 @@
 }
 
 .nc-subtitle {
-  color: #64748b;
+  color: var(--color-text-muted);
   margin: 8px 0 0 0;
 }
 
@@ -42,7 +43,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 0;
 }
 
@@ -56,25 +57,27 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #64748b;
+  color: var(--color-text-muted);
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s;
 }
 
 .nc-tab:hover {
-  color: #6366f1;
+  color: var(--color-accent);
 }
 
 .nc-tab.active {
-  color: #6366f1;
-  border-bottom-color: #6366f1;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 .nc-content {
-  background: white;
+  background: rgba(10, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
 }
 
 /* Alerts Panel */
@@ -92,7 +95,7 @@
 .alerts-header h2 {
   margin: 0;
   font-size: 18px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .mark-all-btn {
@@ -100,17 +103,17 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: #f1f5f9;
+  background: var(--color-background-alt);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
-  color: #475569;
+  color: var(--color-text-secondary);
   transition: all 0.2s;
 }
 
 .mark-all-btn:hover {
-  background: #e2e8f0;
+  background: var(--color-border);
 }
 
 .alerts-list {
@@ -124,24 +127,24 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: rgba(10, 15, 20, 0.5);
   border-radius: 8px;
-  border-left: 4px solid #94a3b8;
+  border-left: 4px solid var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
 }
 
 .alert-item:hover {
-  background: #f1f5f9;
+  background: rgba(0, 229, 255, 0.05);
 }
 
 .alert-item.unread {
-  background: #eff6ff;
+  background: rgba(0, 229, 255, 0.1);
 }
 
 .alert-item.severity-critical {
-  border-left-color: #dc2626;
+  border-left-color: var(--color-danger);
 }
 
 .alert-item.severity-high {
@@ -149,11 +152,11 @@
 }
 
 .alert-item.severity-warning {
-  border-left-color: #eab308;
+  border-left-color: var(--color-warning);
 }
 
 .alert-item.severity-medium {
-  border-left-color: #3b82f6;
+  border-left-color: var(--color-accent);
 }
 
 .alert-icon {
@@ -162,9 +165,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: var(--color-surface);
   border-radius: 8px;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .alert-content {
@@ -173,25 +176,25 @@
 
 .alert-title {
   font-weight: 600;
-  color: #1a1a2e;
+  color: var(--color-text);
   margin-bottom: 4px;
 }
 
 .alert-message {
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
   margin-bottom: 8px;
 }
 
 .alert-time {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--color-text-light);
 }
 
 .unread-dot {
   width: 8px;
   height: 8px;
-  background: #6366f1;
+  background: var(--color-accent);
   border-radius: 50%;
   position: absolute;
   top: 16px;
@@ -213,13 +216,13 @@
   gap: 10px;
   margin: 0 0 16px 0;
   font-size: 16px;
-  color: #1a1a2e;
+  color: var(--color-text);
   padding-bottom: 12px;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .settings-section h3 svg {
-  color: #6366f1;
+  color: var(--color-accent);
 }
 
 .settings-grid {
@@ -233,26 +236,26 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: #f8fafc;
+  background: var(--color-background-alt);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .setting-item:hover {
-  background: #f1f5f9;
+  background: var(--color-border);
 }
 
 .setting-item input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: #6366f1;
+  accent-color: var(--color-accent);
   cursor: pointer;
 }
 
 .setting-item span {
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .save-settings-btn {
@@ -260,7 +263,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #6366f1;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -271,7 +274,7 @@
 }
 
 .save-settings-btn:hover {
-  background: #4f46e5;
+  background: var(--color-accent-secondary);
 }
 
 /* Digest Panel */
@@ -284,7 +287,7 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: #f8fafc;
+  background: var(--color-background-alt);
   border-radius: 12px;
   margin-bottom: 24px;
 }
@@ -309,7 +312,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
+  background-color: var(--color-border);
   transition: 0.3s;
   border-radius: 28px;
 }
@@ -327,7 +330,7 @@
 }
 
 .toggle-switch input:checked + .toggle-slider {
-  background-color: #6366f1;
+  background-color: var(--color-accent);
 }
 
 .toggle-switch input:checked + .toggle-slider:before {
@@ -337,7 +340,7 @@
 .toggle-label {
   font-size: 16px;
   font-weight: 500;
-  color: #1a1a2e;
+  color: var(--color-text);
 }
 
 .digest-section {
@@ -348,7 +351,7 @@
   margin: 0 0 12px 0;
   font-size: 15px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .digest-schedule {
@@ -360,14 +363,15 @@
 .digest-schedule select,
 .digest-schedule input[type="time"] {
   padding: 10px 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
-  color: #1a1a2e;
+  color: var(--color-text);
+  background: var(--color-surface);
 }
 
 .digest-schedule span {
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .recipients-list {
@@ -382,8 +386,8 @@
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  background: #e0e7ff;
-  color: #4338ca;
+  background: var(--color-info-light);
+  color: var(--color-accent);
   border-radius: 20px;
   font-size: 13px;
 }
@@ -399,7 +403,7 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  color: #4338ca;
+  color: var(--color-accent);
 }
 
 .recipient-tag button:hover {
@@ -414,14 +418,16 @@
 .add-recipient input {
   flex: 1;
   padding: 10px 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .add-recipient button {
   padding: 10px 20px;
-  background: #6366f1;
+  background: var(--color-accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -430,7 +436,7 @@
 }
 
 .add-recipient button:hover {
-  background: #4f46e5;
+  background: var(--color-accent-secondary);
 }
 
 .digest-content-options {
@@ -443,7 +449,7 @@
   display: flex;
   gap: 12px;
   padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border);
   margin-top: 24px;
 }
 
@@ -462,34 +468,34 @@
 }
 
 .preview-btn {
-  background: #f1f5f9;
+  background: var(--color-background-alt);
   border: none;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 .preview-btn:hover {
-  background: #e2e8f0;
+  background: var(--color-border);
 }
 
 .send-test-btn {
-  background: white;
-  border: 1px solid #e2e8f0;
-  color: #475569;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
 }
 
 .send-test-btn:hover {
-  border-color: #6366f1;
-  color: #6366f1;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .save-digest-btn {
-  background: #6366f1;
+  background: var(--color-accent);
   border: none;
   color: white;
 }
 
 .save-digest-btn:hover {
-  background: #4f46e5;
+  background: var(--color-accent-secondary);
 }
 
 @media (max-width: 768px) {
