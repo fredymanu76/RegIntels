@@ -94,36 +94,6 @@ th {
   color: var(--color-text-muted);
 }
 
-/* Table rows with white backgrounds - override to dark */
-table tbody tr {
-  background: var(--color-surface) !important;
-}
-
-table tbody tr:hover {
-  background: var(--color-surface-light) !important;
-}
-
-table thead tr {
-  background: var(--color-surface-light) !important;
-}
-
-/* Fix any remaining white/light backgrounds */
-.bg-white, [style*="background: white"], [style*="background-color: white"] {
-  background: var(--color-surface) !important;
-}
-
-/* Ensure all card and panel text is readable */
-.card, .panel, .box, .container-box {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-/* Fix muted/gray text that's too dark */
-.text-muted, .text-gray, .text-secondary,
-[class*="text-gray"], [class*="text-muted"], [class*="text-secondary"] {
-  color: var(--color-text-muted) !important;
-}
-
 /* Links */
 a {
   color: var(--color-accent);
