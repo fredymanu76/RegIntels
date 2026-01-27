@@ -9,6 +9,16 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
   const [regulatoryChanges, setRegulatoryChanges] = useState([]);
   const [aiSummaries, setAiSummaries] = useState({});
   const [controlSuggestions, setControlSuggestions] = useState([]);
+  const [actionModal, setActionModal] = useState({ show: false, type: '', title: '' });
+
+  // Handle recommendation actions
+  const handleRecommendationAction = (actionType, title) => {
+    setActionModal({ show: true, type: actionType, title: title });
+  };
+
+  const closeActionModal = () => {
+    setActionModal({ show: false, type: '', title: '' });
+  };
 
   // Built-in sample regulatory changes for demonstration
   const sampleRegChanges = [
@@ -456,7 +466,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <div className="rec-title">Consumer Duty Implementation Gap</div>
                     <div className="rec-desc">3 controls require updates to meet new Consumer Duty requirements by Q2 2026</div>
                   </div>
-                  <button className="rec-action">Review</button>
+                  <button className="rec-action" onClick={() => handleRecommendationAction('review', 'Consumer Duty Implementation Gap')}>Review</button>
                 </div>
                 <div className="recommendation-item medium">
                   <div className="rec-icon"><Clock size={20} /></div>
@@ -464,7 +474,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <div className="rec-title">Operational Resilience Testing</div>
                     <div className="rec-desc">Scenario testing due within 60 days for 2 important business services</div>
                   </div>
-                  <button className="rec-action">Schedule</button>
+                  <button className="rec-action" onClick={() => handleRecommendationAction('schedule', 'Operational Resilience Testing')}>Schedule</button>
                 </div>
                 <div className="recommendation-item low">
                   <div className="rec-icon"><CheckCircle size={20} /></div>
@@ -472,13 +482,73 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <div className="rec-title">Climate Risk Disclosures</div>
                     <div className="rec-desc">Framework in place, minor enhancements recommended for TCFD alignment</div>
                   </div>
-                  <button className="rec-action">View</button>
+                  <button className="rec-action" onClick={() => handleRecommendationAction('view', 'Climate Risk Disclosures')}>View</button>
                 </div>
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* Action Modal */}
+      {actionModal.show && (
+        <div className="action-modal-overlay" onClick={closeActionModal}>
+          <div className="action-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="action-modal-header">
+              <h3>{actionModal.type === 'review' ? 'Review Recommendation' : actionModal.type === 'schedule' ? 'Schedule Action' : 'View Details'}</h3>
+              <button className="close-modal-btn" onClick={closeActionModal}>×</button>
+            </div>
+            <div className="action-modal-body">
+              <h4>{actionModal.title}</h4>
+              {actionModal.type === 'review' && (
+                <div className="modal-content">
+                  <p>This recommendation requires immediate attention. The following controls need updates:</p>
+                  <ul>
+                    <li>CTRL-CD-001: Customer Outcome Monitoring</li>
+                    <li>CTRL-CD-002: Fair Value Assessment</li>
+                    <li>CTRL-CD-003: Consumer Understanding Review</li>
+                  </ul>
+                  <div className="modal-actions">
+                    <button className="btn-primary" onClick={closeActionModal}>Create Action Plan</button>
+                    <button className="btn-secondary" onClick={closeActionModal}>Assign to Team</button>
+                  </div>
+                </div>
+              )}
+              {actionModal.type === 'schedule' && (
+                <div className="modal-content">
+                  <p>Schedule scenario testing for the following important business services:</p>
+                  <ul>
+                    <li>Payment Processing Service - Due: March 2026</li>
+                    <li>Customer Onboarding Platform - Due: April 2026</li>
+                  </ul>
+                  <div className="modal-actions">
+                    <button className="btn-primary" onClick={closeActionModal}>Schedule Now</button>
+                    <button className="btn-secondary" onClick={closeActionModal}>Add to Calendar</button>
+                  </div>
+                </div>
+              )}
+              {actionModal.type === 'view' && (
+                <div className="modal-content">
+                  <p>Current status of Climate Risk Disclosures:</p>
+                  <div className="status-indicator good">
+                    <CheckCircle size={16} /> Framework Implemented
+                  </div>
+                  <p><strong>Recommended Enhancements:</strong></p>
+                  <ul>
+                    <li>Add Scope 3 emissions data</li>
+                    <li>Expand scenario analysis to 2050</li>
+                    <li>Include transition risk metrics</li>
+                  </ul>
+                  <div className="modal-actions">
+                    <button className="btn-primary" onClick={closeActionModal}>View Full Report</button>
+                    <button className="btn-secondary" onClick={closeActionModal}>Close</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
