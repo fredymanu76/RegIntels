@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Sparkles, FileText, Target, AlertTriangle, CheckCircle, Clock, RefreshCw, ChevronRight, Zap, TrendingUp } from 'lucide-react';
+import { Brain, Sparkles, FileText, Target, AlertTriangle, CheckCircle, Clock, RefreshCw, ChevronRight, Zap, TrendingUp, Users, Calendar } from 'lucide-react';
 import './AIInsightsHub.css';
 
 const AIInsightsHub = ({ tenantId, supabase }) => {
@@ -10,6 +10,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
   const [aiSummaries, setAiSummaries] = useState({});
   const [controlSuggestions, setControlSuggestions] = useState([]);
   const [actionModal, setActionModal] = useState({ show: false, type: '', title: '' });
+  const [actionSuccess, setActionSuccess] = useState(null);
 
   // Handle recommendation actions
   const handleRecommendationAction = (actionType, title) => {
@@ -18,6 +19,27 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
 
   const closeActionModal = () => {
     setActionModal({ show: false, type: '', title: '' });
+    setActionSuccess(null);
+  };
+
+  const handleCreateActionPlan = () => {
+    setActionSuccess({ type: 'action-plan', message: 'Action plan created successfully! A new task has been added to your workflow queue.' });
+  };
+
+  const handleAssignToTeam = () => {
+    setActionSuccess({ type: 'assign', message: 'Task assigned to Compliance Team. They will receive an email notification shortly.' });
+  };
+
+  const handleScheduleNow = () => {
+    setActionSuccess({ type: 'schedule', message: 'Testing sessions scheduled successfully. Calendar invites have been sent to all participants.' });
+  };
+
+  const handleAddToCalendar = () => {
+    setActionSuccess({ type: 'calendar', message: 'Events added to your calendar. You will receive reminders 7 days and 1 day before each deadline.' });
+  };
+
+  const handleViewFullReport = () => {
+    setActionSuccess({ type: 'report', message: 'Full climate risk report generated. View the comprehensive analysis below.' });
   };
 
   // Built-in sample regulatory changes for demonstration
@@ -500,7 +522,17 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
             </div>
             <div className="action-modal-body">
               <h4>{actionModal.title}</h4>
-              {actionModal.type === 'review' && (
+
+              {/* Success Message */}
+              {actionSuccess && (
+                <div className="action-success-message">
+                  <CheckCircle size={24} />
+                  <p>{actionSuccess.message}</p>
+                  <button className="btn-primary" onClick={closeActionModal}>Done</button>
+                </div>
+              )}
+
+              {!actionSuccess && actionModal.type === 'review' && (
                 <div className="modal-content">
                   <p>This recommendation requires immediate attention. The following controls need updates:</p>
                   <ul>
@@ -509,12 +541,16 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <li>CTRL-CD-003: Consumer Understanding Review</li>
                   </ul>
                   <div className="modal-actions">
-                    <button className="btn-primary" onClick={closeActionModal}>Create Action Plan</button>
-                    <button className="btn-secondary" onClick={closeActionModal}>Assign to Team</button>
+                    <button className="btn-primary" onClick={handleCreateActionPlan}>
+                      <CheckCircle size={16} /> Create Action Plan
+                    </button>
+                    <button className="btn-secondary" onClick={handleAssignToTeam}>
+                      <Users size={16} /> Assign to Team
+                    </button>
                   </div>
                 </div>
               )}
-              {actionModal.type === 'schedule' && (
+              {!actionSuccess && actionModal.type === 'schedule' && (
                 <div className="modal-content">
                   <p>Schedule scenario testing for the following important business services:</p>
                   <ul>
@@ -522,12 +558,16 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <li>Customer Onboarding Platform - Due: April 2026</li>
                   </ul>
                   <div className="modal-actions">
-                    <button className="btn-primary" onClick={closeActionModal}>Schedule Now</button>
-                    <button className="btn-secondary" onClick={closeActionModal}>Add to Calendar</button>
+                    <button className="btn-primary" onClick={handleScheduleNow}>
+                      <Clock size={16} /> Schedule Now
+                    </button>
+                    <button className="btn-secondary" onClick={handleAddToCalendar}>
+                      <Calendar size={16} /> Add to Calendar
+                    </button>
                   </div>
                 </div>
               )}
-              {actionModal.type === 'view' && (
+              {!actionSuccess && actionModal.type === 'view' && (
                 <div className="modal-content">
                   <p>Current status of Climate Risk Disclosures:</p>
                   <div className="status-indicator good">
@@ -540,7 +580,9 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                     <li>Include transition risk metrics</li>
                   </ul>
                   <div className="modal-actions">
-                    <button className="btn-primary" onClick={closeActionModal}>View Full Report</button>
+                    <button className="btn-primary" onClick={handleViewFullReport}>
+                      <FileText size={16} /> View Full Report
+                    </button>
                     <button className="btn-secondary" onClick={closeActionModal}>Close</button>
                   </div>
                 </div>
