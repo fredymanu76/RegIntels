@@ -108,7 +108,7 @@ const WelcomeExperience = ({ onComplete }) => {
       </div>
 
       {/* Bouncing Logo */}
-      <div className={`welcome-logo ${logoAnimation ? 'bouncing' : ''}`}>
+      <div className="welcome-logo">
         <img src="/logo.png" alt="REGINTELS" />
       </div>
 

@@ -75,7 +75,7 @@
   50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
 }
 
-/* Bouncing Logo */
+/* Floating Logo */
 .welcome-logo {
   position: relative;
   z-index: 10;
@@ -86,17 +86,18 @@
   width: 120px;
   height: 120px;
   filter: drop-shadow(0 0 30px rgba(0, 212, 228, 0.5));
+  animation: logoFloat 3s ease-in-out infinite;
 }
 
-.welcome-logo.bouncing img {
-  animation: logoBounce 1s ease-in-out 3;
-}
-
-@keyframes logoBounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  25% { transform: translateY(-30px) scale(1.1); }
-  50% { transform: translateY(0) scale(1); }
-  75% { transform: translateY(-15px) scale(1.05); }
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 30px rgba(0, 212, 228, 0.5));
+  }
+  50% {
+    transform: translateY(-15px);
+    filter: drop-shadow(0 0 40px rgba(0, 212, 228, 0.7));
+  }
 }
 
 /* Brand Header */

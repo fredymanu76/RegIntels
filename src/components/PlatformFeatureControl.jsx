@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, AlertCircle, Upload, Play, Settings, Users, BarChart3, Shield, FileText, ClipboardCheck, History, BookOpen, ThumbsUp, TrendingUp, PieChart, Activity, Gauge, AlertTriangle, X, Check } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, Upload, Play, Settings, Users, BarChart3, Shield, FileText, ClipboardCheck, History, BookOpen, ThumbsUp, TrendingUp, PieChart, Activity, Gauge, AlertTriangle, X, Check, Bell, Brain, Workflow, FileBarChart } from 'lucide-react';
 import StrategicDashboard from './StrategicDashboard';
 import ExceptionsOverviewBoard from './ExceptionsOverviewBoard';
 import RegulatoryReadinessBoard from './RegulatoryReadinessBoard';
@@ -212,6 +212,59 @@ const PlatformFeatureControl = ({ supabase }) => {
       status: 'active',
       deployedAt: new Date().toISOString(),
       category: 'Technical'
+    },
+    // Automation & Intelligence (New Solution)
+    {
+      id: 'notification-center',
+      name: 'Notification Center',
+      description: 'Centralized notification hub for regulatory alerts, compliance deadlines, and system notifications with smart prioritization',
+      component: 'NotificationCenter',
+      version: '1.0.0',
+      solution: 'Automation & Intelligence',
+      page: 'Notifications',
+      icon: Bell,
+      status: 'active',
+      deployedAt: new Date().toISOString(),
+      category: 'Notifications'
+    },
+    {
+      id: 'ai-insights-hub',
+      name: 'AI Insights Hub',
+      description: 'AI-powered regulatory analysis and insights including automated summaries, impact predictions, and compliance recommendations',
+      component: 'AIInsightsHub',
+      version: '1.0.0',
+      solution: 'Automation & Intelligence',
+      page: 'AI Insights',
+      icon: Brain,
+      status: 'active',
+      deployedAt: new Date().toISOString(),
+      category: 'AI & Analytics'
+    },
+    {
+      id: 'workflow-automation',
+      name: 'Workflow Automation',
+      description: 'Automate compliance workflows with configurable triggers, actions, and approval chains for efficient operations',
+      component: 'WorkflowAutomation',
+      version: '1.0.0',
+      solution: 'Automation & Intelligence',
+      page: 'Workflows',
+      icon: Workflow,
+      status: 'active',
+      deployedAt: new Date().toISOString(),
+      category: 'Automation'
+    },
+    {
+      id: 'report-generator',
+      name: 'Report Generator',
+      description: 'Generate comprehensive compliance reports with customizable templates, scheduling, and automated distribution',
+      component: 'ReportGenerator',
+      version: '1.0.0',
+      solution: 'Automation & Intelligence',
+      page: 'Reports',
+      icon: FileBarChart,
+      status: 'active',
+      deployedAt: new Date().toISOString(),
+      category: 'Reporting'
     }
   ];
 
