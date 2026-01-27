@@ -1078,6 +1078,8 @@ export default function RegIntels() {
       console.log('Auth state changed:', event, session);
 
       if (event === 'SIGNED_IN' && session) {
+        // Fresh sign-in - clear welcome flag and show intro
+        localStorage.removeItem(`welcome_seen_${session.user.id}`);
         await loadUserData(session.user.id, session.access_token);
       }
       // Note: SIGNED_OUT is handled by handleSignOut directly
@@ -1231,10 +1233,17 @@ export default function RegIntels() {
 
   const handleSignOut = async () => {
     try {
+      // Clear welcome seen flags so intro shows on next login
+      const userId = currentUser?.id || currentTenant?.id;
+      if (userId) {
+        localStorage.removeItem(`welcome_seen_${userId}`);
+      }
+
       // Clear state first to prevent UI issues
       setCurrentUser(null);
       setCurrentTenant(null);
       setIsAuthenticated(false);
+      setShowWelcome(false);
       localStorage.removeItem('tenant_onboarded');
 
       // Then sign out from Supabase (this may trigger auth state change)
