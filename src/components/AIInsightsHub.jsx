@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, Sparkles, FileText, Target, AlertTriangle, CheckCircle, Clock, RefreshCw, ChevronRight, Zap, TrendingUp, Users, Calendar } from 'lucide-react';
+import { Shield, FileText, Target, AlertTriangle, CheckCircle, Clock, RefreshCw, ChevronRight, TrendingUp, Users, Calendar, Info } from 'lucide-react';
 import './AIInsightsHub.css';
 
 const AIInsightsHub = ({ tenantId, supabase }) => {
@@ -7,8 +7,8 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
   const [loading, setLoading] = useState(false);
   const [selectedChange, setSelectedChange] = useState(null);
   const [regulatoryChanges, setRegulatoryChanges] = useState([]);
-  const [aiSummaries, setAiSummaries] = useState({});
-  const [controlSuggestions, setControlSuggestions] = useState([]);
+  const [guidanceSummaries, setGuidanceSummaries] = useState({});
+  const [relatedControls, setRelatedControls] = useState([]);
   const [actionModal, setActionModal] = useState({ show: false, type: '', title: '' });
   const [actionSuccess, setActionSuccess] = useState(null);
 
@@ -39,13 +39,13 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
   };
 
   const handleViewFullReport = () => {
-    setActionSuccess({ type: 'report', message: 'Full climate risk report generated. View the comprehensive analysis below.' });
+    setActionSuccess({ type: 'report', message: 'Full climate risk report is available. View the detailed breakdown below.' });
   };
 
   // Built-in sample regulatory changes for demonstration
   const sampleRegChanges = [
     {
-      id: 'ai-reg-1',
+      id: 'reg-1',
       source: 'FCA',
       title: 'PS26/2: Consumer Duty - Annual Value Assessment Requirements',
       impact_rating: 'high',
@@ -54,7 +54,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       affected_controls: ['Consumer Duty', 'Product Governance', 'Fair Value']
     },
     {
-      id: 'ai-reg-2',
+      id: 'reg-2',
       source: 'PRA',
       title: 'SS2/26: Operational Resilience - Third-Party Concentration Risk',
       impact_rating: 'high',
@@ -63,7 +63,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       affected_controls: ['Operational Resilience', 'Third Party Risk', 'Business Continuity']
     },
     {
-      id: 'ai-reg-3',
+      id: 'reg-3',
       source: 'FCA',
       title: 'CP26/3: Anti-Money Laundering - Enhanced Customer Due Diligence',
       impact_rating: 'high',
@@ -72,7 +72,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       affected_controls: ['Financial Crime', 'AML', 'KYC']
     },
     {
-      id: 'ai-reg-4',
+      id: 'reg-4',
       source: 'PRA',
       title: 'SS1/26: Climate Risk - Stress Testing Requirements',
       impact_rating: 'medium',
@@ -81,7 +81,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       affected_controls: ['Climate Risk', 'Risk Management', 'Stress Testing']
     },
     {
-      id: 'ai-reg-5',
+      id: 'reg-5',
       source: 'ESMA',
       title: 'DORA - Final RTS on ICT Risk Management Framework',
       impact_rating: 'high',
@@ -106,7 +106,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
           changes = data;
         }
       } catch (err) {
-        console.log('Using sample data for AI Insights');
+        console.log('Using sample data for Compliance Guidance');
       }
     }
 
@@ -122,16 +122,16 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
 
     setRegulatoryChanges(changes);
 
-    // Generate AI summaries for each change
+    // Generate guidance summaries for each change
     const summaries = {};
     changes.forEach(change => {
-      summaries[change.id] = generateAISummary(change);
+      summaries[change.id] = generateGuidanceSummary(change);
     });
-    setAiSummaries(summaries);
+    setGuidanceSummaries(summaries);
   };
 
-  const generateAISummary = (change) => {
-    // Simulated AI-generated summaries based on the regulatory change
+  const generateGuidanceSummary = (change) => {
+    // Rule-based guidance derived from regime mapping and keyword analysis
     const summaryTemplates = {
       'Consumer Duty': {
         summary: `This regulatory update focuses on Consumer Duty requirements, emphasizing the need for firms to deliver good outcomes for retail customers. Key areas include product governance, price and value assessments, and consumer understanding.`,
@@ -183,14 +183,13 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       }
     };
 
-    // Match based on title or category
+    // Match based on title or category using keyword analysis
     for (const [key, template] of Object.entries(summaryTemplates)) {
       if (change.title?.toLowerCase().includes(key.toLowerCase()) ||
           (Array.isArray(change.affected_controls) && change.affected_controls.some(c => c.toLowerCase().includes(key.toLowerCase())))) {
         return {
           ...template,
-          generatedAt: new Date().toISOString(),
-          confidence: 0.92
+          generatedAt: new Date().toISOString()
         };
       }
     }
@@ -207,12 +206,11 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
       affectedAreas: ['Compliance', 'Operations', 'Risk Management'],
       implementationPriority: change.impact_rating === 'high' ? 'HIGH' : 'MEDIUM',
       estimatedEffort: '1-3 months',
-      generatedAt: new Date().toISOString(),
-      confidence: 0.85
+      generatedAt: new Date().toISOString()
     };
   };
 
-  const generateControlSuggestions = (change) => {
+  const suggestRelatedControls = (change) => {
     setLoading(true);
     setTimeout(() => {
       const suggestions = [
@@ -223,7 +221,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
           description: 'Automated monitoring control to track compliance with new requirements',
           frequency: 'Continuous',
           owner: 'Compliance Team',
-          matchScore: 95
+          basis: 'Related based on regime mapping'
         },
         {
           id: 2,
@@ -232,7 +230,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
           description: 'Periodic review to ensure ongoing adherence to regulatory expectations',
           frequency: 'Monthly',
           owner: 'Risk Management',
-          matchScore: 88
+          basis: 'Related based on regime mapping'
         },
         {
           id: 3,
@@ -241,17 +239,17 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
           description: 'Structured reporting mechanism for management and board oversight',
           frequency: 'Quarterly',
           owner: 'Compliance Team',
-          matchScore: 82
+          basis: 'Related based on regime mapping'
         }
       ];
-      setControlSuggestions(suggestions);
+      setRelatedControls(suggestions);
       setLoading(false);
     }, 1500);
   };
 
   const handleAnalyze = (change) => {
     setSelectedChange(change);
-    generateControlSuggestions(change);
+    suggestRelatedControls(change);
   };
 
   const getPriorityClass = (priority) => {
@@ -263,70 +261,115 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
     }
   };
 
+  // Compute stats
+  const areasAffected = new Set();
+  regulatoryChanges.forEach(change => {
+    if (Array.isArray(change.affected_controls)) {
+      change.affected_controls.forEach(c => areasAffected.add(c));
+    }
+  });
+
+  const pendingActions = regulatoryChanges.filter(c => c.impact_rating === 'high').length;
+
+  // Static change overview grouped by area
+  const changeOverviewByArea = [
+    {
+      area: 'Consumer Protection',
+      changes: regulatoryChanges.filter(c =>
+        c.affected_controls?.some(ctrl => ['Consumer Duty', 'Product Governance', 'Fair Value'].includes(ctrl))
+      ),
+      impact: 'high'
+    },
+    {
+      area: 'Operational Resilience',
+      changes: regulatoryChanges.filter(c =>
+        c.affected_controls?.some(ctrl => ['Operational Resilience', 'Business Continuity', 'ICT Risk', 'Cyber Security'].includes(ctrl))
+      ),
+      impact: 'high'
+    },
+    {
+      area: 'Financial Crime',
+      changes: regulatoryChanges.filter(c =>
+        c.affected_controls?.some(ctrl => ['Financial Crime', 'AML', 'KYC'].includes(ctrl))
+      ),
+      impact: 'high'
+    },
+    {
+      area: 'Risk Management',
+      changes: regulatoryChanges.filter(c =>
+        c.affected_controls?.some(ctrl => ['Climate Risk', 'Risk Management', 'Stress Testing', 'Third Party Risk'].includes(ctrl))
+      ),
+      impact: 'medium'
+    }
+  ].filter(group => group.changes.length > 0);
+
   return (
-    <div className="ai-insights-hub">
-      <header className="aih-header">
-        <div className="aih-title">
-          <Brain size={28} />
-          <h1>AI Insights Hub</h1>
-          <span className="ai-badge"><Sparkles size={14} /> AI-Powered</span>
+    <div className="compliance-guidance-engine">
+      <header className="cge-header">
+        <div className="cge-title">
+          <Shield size={28} />
+          <h1>Compliance Guidance Engine</h1>
         </div>
-        <p className="aih-subtitle">Intelligent regulatory analysis and control recommendations</p>
+        <p className="cge-subtitle">Regulatory analysis and control recommendations</p>
+        <div className="cge-transparency-note">
+          <Info size={16} />
+          <span>Guidance is rule-based, derived from regime mapping and keyword analysis. It does not constitute regulatory advice.</span>
+        </div>
       </header>
 
-      <div className="aih-stats">
+      <div className="cge-stats">
         <div className="stat-card">
           <div className="stat-icon"><FileText size={24} /></div>
           <div className="stat-content">
             <div className="stat-value">{regulatoryChanges.length}</div>
-            <div className="stat-label">Changes Analyzed</div>
+            <div className="stat-label">Changes Tracked</div>
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-icon"><Target size={24} /></div>
           <div className="stat-content">
-            <div className="stat-value">{Object.keys(aiSummaries).length}</div>
-            <div className="stat-label">AI Summaries</div>
+            <div className="stat-value">{Object.keys(guidanceSummaries).length}</div>
+            <div className="stat-label">Guidance Notes</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon"><Zap size={24} /></div>
+          <div className="stat-icon"><TrendingUp size={24} /></div>
           <div className="stat-content">
-            <div className="stat-value">92%</div>
-            <div className="stat-label">Avg Confidence</div>
+            <div className="stat-value">{areasAffected.size}</div>
+            <div className="stat-label">Areas Affected</div>
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-icon"><Clock size={24} /></div>
           <div className="stat-content">
-            <div className="stat-value">85%</div>
-            <div className="stat-label">Time Saved</div>
+            <div className="stat-value">{pendingActions}</div>
+            <div className="stat-label">Pending Actions</div>
           </div>
         </div>
       </div>
 
-      <div className="aih-tabs">
+      <div className="cge-tabs">
         <button
-          className={`aih-tab ${activeTab === 'summaries' ? 'active' : ''}`}
+          className={`cge-tab ${activeTab === 'summaries' ? 'active' : ''}`}
           onClick={() => setActiveTab('summaries')}
         >
-          <FileText size={18} /> AI Summaries
+          <FileText size={18} /> Guidance Summaries
         </button>
         <button
-          className={`aih-tab ${activeTab === 'suggestions' ? 'active' : ''}`}
+          className={`cge-tab ${activeTab === 'suggestions' ? 'active' : ''}`}
           onClick={() => setActiveTab('suggestions')}
         >
-          <Target size={18} /> Control Suggestions
+          <Target size={18} /> Related Controls
         </button>
         <button
-          className={`aih-tab ${activeTab === 'impact' ? 'active' : ''}`}
+          className={`cge-tab ${activeTab === 'impact' ? 'active' : ''}`}
           onClick={() => setActiveTab('impact')}
         >
-          <TrendingUp size={18} /> Impact Analysis
+          <TrendingUp size={18} /> Change Overview
         </button>
       </div>
 
-      <div className="aih-content">
+      <div className="cge-content">
         {activeTab === 'summaries' && (
           <div className="summaries-panel">
             <div className="changes-list">
@@ -340,22 +383,19 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                   </div>
                   <h3 className="change-title">{change.title}</h3>
 
-                  {aiSummaries[change.id] && (
-                    <div className="ai-summary">
+                  {guidanceSummaries[change.id] && (
+                    <div className="guidance-summary">
                       <div className="summary-header">
-                        <Sparkles size={16} />
-                        <span>AI Summary</span>
-                        <span className="confidence">
-                          {Math.round(aiSummaries[change.id].confidence * 100)}% confidence
-                        </span>
+                        <FileText size={16} />
+                        <span>Regulatory Guidance</span>
                       </div>
-                      <p className="summary-text">{aiSummaries[change.id].summary}</p>
+                      <p className="summary-text">{guidanceSummaries[change.id].summary}</p>
 
                       <div className="summary-details">
                         <div className="detail-section">
                           <h4>Key Requirements</h4>
                           <ul>
-                            {aiSummaries[change.id].keyRequirements.map((req, idx) => (
+                            {guidanceSummaries[change.id].keyRequirements.map((req, idx) => (
                               <li key={idx}><CheckCircle size={14} /> {req}</li>
                             ))}
                           </ul>
@@ -365,20 +405,20 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                           <div className="meta-item">
                             <span className="meta-label">Affected Areas:</span>
                             <div className="meta-tags">
-                              {aiSummaries[change.id].affectedAreas.map((area, idx) => (
+                              {guidanceSummaries[change.id].affectedAreas.map((area, idx) => (
                                 <span key={idx} className="area-tag">{area}</span>
                               ))}
                             </div>
                           </div>
                           <div className="meta-item">
                             <span className="meta-label">Priority:</span>
-                            <span className={`priority-badge ${getPriorityClass(aiSummaries[change.id].implementationPriority)}`}>
-                              {aiSummaries[change.id].implementationPriority}
+                            <span className={`priority-badge ${getPriorityClass(guidanceSummaries[change.id].implementationPriority)}`}>
+                              {guidanceSummaries[change.id].implementationPriority}
                             </span>
                           </div>
                           <div className="meta-item">
                             <span className="meta-label">Est. Effort:</span>
-                            <span>{aiSummaries[change.id].estimatedEffort}</span>
+                            <span>{guidanceSummaries[change.id].estimatedEffort}</span>
                           </div>
                         </div>
                       </div>
@@ -387,7 +427,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                         className="analyze-btn"
                         onClick={() => handleAnalyze(change)}
                       >
-                        <Target size={16} /> Generate Control Suggestions
+                        <Target size={16} /> Find Related Controls
                         <ChevronRight size={16} />
                       </button>
                     </div>
@@ -404,12 +444,12 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
               <div className="empty-state">
                 <Target size={48} />
                 <h3>Select a Regulatory Change</h3>
-                <p>Go to AI Summaries and click "Generate Control Suggestions" on any change to see AI-recommended controls.</p>
+                <p>Go to Guidance Summaries and click "Find Related Controls" on any change to see controls related to that regime.</p>
               </div>
             ) : (
               <div className="suggestions-content">
                 <div className="selected-change">
-                  <h3>Control Suggestions for:</h3>
+                  <h3>Related Controls for:</h3>
                   <div className="change-reference">
                     <span className="source-badge">{selectedChange.source}</span>
                     <span>{selectedChange.title}</span>
@@ -419,17 +459,17 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
                 {loading ? (
                   <div className="loading-state">
                     <RefreshCw size={32} className="spin" />
-                    <p>AI is analyzing and generating control suggestions...</p>
+                    <p>Loading related controls...</p>
                   </div>
                 ) : (
                   <div className="suggestions-list">
-                    {controlSuggestions.map(suggestion => (
+                    {relatedControls.map(suggestion => (
                       <div key={suggestion.id} className="suggestion-card">
                         <div className="suggestion-header">
                           <span className="control-code">{suggestion.controlCode}</span>
-                          <div className="match-score">
-                            <Sparkles size={14} />
-                            {suggestion.matchScore}% match
+                          <div className="control-basis">
+                            <Shield size={14} />
+                            {suggestion.basis}
                           </div>
                         </div>
                         <h4 className="suggestion-title">{suggestion.title}</h4>
@@ -456,31 +496,33 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
         {activeTab === 'impact' && (
           <div className="impact-panel">
             <div className="impact-overview">
-              <h3>AI-Powered Impact Analysis</h3>
-              <p>Comprehensive view of how regulatory changes affect your control framework</p>
+              <h3>Regulatory Change Overview</h3>
+              <p>Summary of regulatory changes grouped by compliance area</p>
             </div>
 
-            <div className="impact-matrix">
-              <div className="matrix-header">
-                <div className="matrix-title">Impact by Business Area</div>
-              </div>
-              <div className="matrix-grid">
-                {['Product', 'Operations', 'Technology', 'Risk', 'Finance', 'Compliance'].map(area => {
-                  const impactLevel = Math.random() > 0.5 ? 'high' : Math.random() > 0.5 ? 'medium' : 'low';
-                  const changeCount = Math.floor(Math.random() * 5) + 1;
-                  return (
-                    <div key={area} className={`matrix-cell ${impactLevel}`}>
-                      <div className="cell-area">{area}</div>
-                      <div className="cell-count">{changeCount} changes</div>
-                      <div className={`cell-impact impact-${impactLevel}`}>{impactLevel} impact</div>
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="change-overview-groups">
+              {changeOverviewByArea.map(group => (
+                <div key={group.area} className={`overview-group ${group.impact}`}>
+                  <div className="overview-group-header">
+                    <h4>{group.area}</h4>
+                    <span className={`impact-badge ${group.impact}`}>{group.impact} impact</span>
+                  </div>
+                  <div className="overview-group-changes">
+                    {group.changes.map(change => (
+                      <div key={change.id} className="overview-change-item">
+                        <span className="overview-change-source">{change.source}</span>
+                        <span className="overview-change-title">{change.title}</span>
+                        <span className="overview-change-date">Effective: {change.effective_date}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="overview-group-count">{group.changes.length} change{group.changes.length !== 1 ? 's' : ''} in this area</div>
+                </div>
+              ))}
             </div>
 
-            <div className="impact-recommendations">
-              <h4><AlertTriangle size={18} /> Priority Recommendations</h4>
+            <div className="flagged-items">
+              <h4><AlertTriangle size={18} /> Flagged Items</h4>
               <div className="recommendation-list">
                 <div className="recommendation-item high">
                   <div className="rec-icon"><AlertTriangle size={20} /></div>
@@ -517,7 +559,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
         <div className="action-modal-overlay" onClick={closeActionModal}>
           <div className="action-modal" onClick={(e) => e.stopPropagation()}>
             <div className="action-modal-header">
-              <h3>{actionModal.type === 'review' ? 'Review Recommendation' : actionModal.type === 'schedule' ? 'Schedule Action' : 'View Details'}</h3>
+              <h3>{actionModal.type === 'review' ? 'Review Item' : actionModal.type === 'schedule' ? 'Schedule Action' : 'View Details'}</h3>
               <button className="close-modal-btn" onClick={closeActionModal}>×</button>
             </div>
             <div className="action-modal-body">
@@ -534,7 +576,7 @@ const AIInsightsHub = ({ tenantId, supabase }) => {
 
               {!actionSuccess && actionModal.type === 'review' && (
                 <div className="modal-content">
-                  <p>This recommendation requires immediate attention. The following controls need updates:</p>
+                  <p>This item requires immediate attention. The following controls need updates:</p>
                   <ul>
                     <li>CTRL-CD-001: Customer Outcome Monitoring</li>
                     <li>CTRL-CD-002: Fair Value Assessment</li>

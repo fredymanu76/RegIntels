@@ -1,55 +1,43 @@
-.report-generator {
+.compliance-pack-builder {
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.rg-header {
+.cpb-header {
   margin-bottom: 24px;
 }
 
-.rg-title {
+.cpb-title {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.rg-title h1 {
+.cpb-title h1 {
   margin: 0;
   font-size: 28px;
   color: var(--color-text);
 }
 
-.rg-title svg {
+.cpb-title svg {
   color: var(--color-accent);
   filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
 }
 
-.docs-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
-  background: var(--reg-orange-500);
-  color: white;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.rg-subtitle {
+.cpb-subtitle {
   color: var(--color-text-muted);
   margin: 8px 0 0 0;
 }
 
-.rg-stats {
+.cpb-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.rg-stat-card {
+.cpb-stat-card {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -62,12 +50,12 @@
   transition: all 0.2s ease;
 }
 
-.rg-stat-card:hover {
+.cpb-stat-card:hover {
   box-shadow: var(--shadow-lg), var(--shadow-glow);
   border-color: var(--color-accent);
 }
 
-.rg-stat-icon {
+.cpb-stat-icon {
   width: 48px;
   height: 48px;
   display: flex;
@@ -78,25 +66,30 @@
   color: var(--color-accent);
 }
 
-.rg-stat-value {
+.cpb-stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.cpb-stat-value {
   font-size: 24px;
   font-weight: 700;
   color: var(--color-text);
 }
 
-.rg-stat-label {
+.cpb-stat-label {
   font-size: 13px;
   color: var(--color-text-muted);
 }
 
-.rg-tabs {
+.cpb-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
   border-bottom: 2px solid var(--color-border);
 }
 
-.rg-tab {
+.cpb-tab {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -112,22 +105,40 @@
   transition: all 0.2s;
 }
 
-.rg-tab:hover {
+.cpb-tab:hover {
   color: var(--color-accent);
 }
 
-.rg-tab.active {
+.cpb-tab.active {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
 }
 
-.rg-content {
+.cpb-content {
   background: rgba(15, 39, 71, 0.7);
   backdrop-filter: none;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   min-height: 500px;
   border: 1px solid var(--color-border);
+}
+
+/* Info Note */
+.cpb-info-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--color-info-light);
+  border: 1px solid var(--color-accent);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--color-accent);
+}
+
+.cpb-info-note svg {
+  flex-shrink: 0;
 }
 
 /* Generate Panel */
@@ -276,17 +287,8 @@
 }
 
 .generate-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
-}
-
-.generate-btn .spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* History Panel */
@@ -305,6 +307,26 @@
   margin: 0;
   font-size: 18px;
   color: var(--color-text);
+}
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.history-empty svg {
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.history-empty p {
+  margin: 0;
+  font-size: 14px;
 }
 
 .refresh-btn {
@@ -333,7 +355,7 @@
 
 .table-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 80px 80px 1fr;
+  grid-template-columns: 2fr 1fr 80px 80px 80px;
   gap: 16px;
   padding: 14px 20px;
   background: var(--color-background-alt);
@@ -346,7 +368,7 @@
 
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 80px 80px 1fr;
+  grid-template-columns: 2fr 1fr 80px 80px 80px;
   gap: 16px;
   padding: 16px 20px;
   border-top: 1px solid var(--color-border);
@@ -439,236 +461,9 @@
   color: var(--color-danger);
 }
 
-/* Schedule Panel */
-.schedule-panel {
-  padding: 24px;
-}
-
-.schedule-header {
-  margin-bottom: 24px;
-}
-
-.schedule-header h2 {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  color: var(--color-text);
-}
-
-.schedule-header p {
-  margin: 0;
-  color: var(--color-text-muted);
-}
-
-.schedule-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.schedule-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background: var(--color-background-alt);
-  border-radius: 12px;
-  transition: all 0.2s;
-}
-
-.schedule-item:hover {
-  background: var(--color-border);
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 26px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--color-border);
-  transition: 0.3s;
-  border-radius: 26px;
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
-  border-radius: 50%;
-}
-
-.toggle-switch input:checked + .toggle-slider {
-  background-color: var(--color-accent);
-}
-
-.toggle-switch input:checked + .toggle-slider:before {
-  transform: translateX(22px);
-}
-
-.schedule-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-}
-
-.schedule-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-surface);
-  border-radius: 8px;
-  color: var(--color-accent);
-}
-
-.schedule-details h3 {
-  margin: 0 0 4px 0;
-  font-size: 15px;
-  color: var(--color-text);
-}
-
-.schedule-details p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-text);
-}
-
-.schedule-config {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.schedule-config select {
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-
-.schedule-config select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.schedule-next {
-  font-size: 12px;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-}
-
-.schedule-settings-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--color-text-muted);
-  transition: all 0.2s;
-}
-
-.schedule-settings-btn:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.schedule-settings-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.distribution-settings {
-  background: var(--color-background-alt);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.distribution-settings h3 {
-  margin: 0 0 16px 0;
-  font-size: 15px;
-  color: var(--color-text);
-}
-
-.distribution-options {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.distribution-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.distribution-option input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-accent);
-}
-
-.distribution-option span {
-  font-size: 14px;
-  color: var(--color-text);
-}
-
-.schedule-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.save-schedule-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: var(--color-accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.save-schedule-btn:hover {
-  background: var(--color-accent-secondary);
-}
-
 @media (max-width: 1024px) {
-  .rg-stats {
-    grid-template-columns: repeat(2, 1fr);
+  .cpb-stats {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .report-templates-grid {
@@ -677,16 +472,16 @@
 
   .table-header,
   .table-row {
-    grid-template-columns: 1.5fr 1fr 70px 70px 120px;
+    grid-template-columns: 1.5fr 1fr 70px 70px 70px;
   }
 }
 
 @media (max-width: 768px) {
-  .rg-stats {
+  .cpb-stats {
     grid-template-columns: 1fr;
   }
 
-  .rg-tabs {
+  .cpb-tabs {
     flex-wrap: wrap;
   }
 
@@ -700,14 +495,5 @@
   .table-header > div,
   .table-row > div {
     flex: 1 1 auto;
-  }
-
-  .schedule-item {
-    flex-wrap: wrap;
-  }
-
-  .schedule-config {
-    width: 100%;
-    margin-top: 12px;
   }
 }

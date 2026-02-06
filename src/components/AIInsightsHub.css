@@ -1,5 +1,5 @@
-/* AI Insights Hub Styles - Glassmorphism Dark Theme */
-.ai-insights-hub {
+/* Compliance Guidance Engine Styles - Glassmorphism Dark Theme */
+.compliance-guidance-engine {
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
@@ -7,45 +7,52 @@
   min-height: 100vh;
 }
 
-.aih-header {
+.cge-header {
   margin-bottom: 24px;
 }
 
-.aih-title {
+.cge-title {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.aih-title h1 {
+.cge-title h1 {
   margin: 0;
   font-size: 28px;
   color: var(--color-text);
 }
 
-.aih-title svg {
+.cge-title svg {
   color: var(--color-accent);
   filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
 }
 
-.ai-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 12px;
-  background: var(--reg-orange-500);
-  color: #FFFFFF;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.aih-subtitle {
+.cge-subtitle {
   color: var(--color-text-muted);
   margin: 8px 0 0 0;
 }
 
-.aih-stats {
+.cge-transparency-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.cge-transparency-note svg {
+  color: rgba(59, 130, 246, 0.7);
+  flex-shrink: 0;
+}
+
+.cge-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
@@ -92,14 +99,14 @@
   color: var(--color-text-secondary);
 }
 
-.aih-tabs {
+.cge-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 24px;
   border-bottom: 2px solid var(--color-border);
 }
 
-.aih-tab {
+.cge-tab {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -115,16 +122,16 @@
   transition: all 0.2s;
 }
 
-.aih-tab:hover {
+.cge-tab:hover {
   color: var(--color-accent);
 }
 
-.aih-tab.active {
+.cge-tab.active {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
 }
 
-.aih-content {
+.cge-content {
   background: rgba(15, 39, 71, 0.7);
   backdrop-filter: none;
   border-radius: 12px;
@@ -200,7 +207,7 @@
   color: var(--color-text);
 }
 
-.ai-summary {
+.guidance-summary {
   background: rgba(249, 115, 22, 0.05);
   border-radius: 10px;
   padding: 16px;
@@ -215,13 +222,6 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--color-accent);
-}
-
-.confidence {
-  margin-left: auto;
-  font-size: 11px;
-  color: var(--color-text-muted);
-  font-weight: 500;
 }
 
 .summary-text {
@@ -461,12 +461,12 @@
   color: var(--color-accent);
 }
 
-.match-score {
+.control-basis {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: var(--color-accent);
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
@@ -537,7 +537,7 @@
   color: var(--color-accent);
 }
 
-/* Impact Panel */
+/* Impact / Change Overview Panel */
 .impact-panel {
   padding: 24px;
 }
@@ -557,80 +557,92 @@
   color: var(--color-text-muted);
 }
 
-.impact-matrix {
+/* Change Overview Groups */
+.change-overview-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.overview-group {
   background: rgba(15, 39, 71, 0.5);
   border-radius: 12px;
   padding: 20px;
-  margin-bottom: 24px;
   border: 1px solid var(--color-border);
-}
-
-.matrix-header {
-  margin-bottom: 16px;
-}
-
-.matrix-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.matrix-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-
-.matrix-cell {
-  padding: 16px;
-  background: rgba(15, 39, 71, 0.7);
-  border-radius: 8px;
   border-left: 4px solid var(--color-border);
 }
 
-.matrix-cell.high {
+.overview-group.high {
   border-left-color: var(--color-danger);
 }
 
-.matrix-cell.medium {
+.overview-group.medium {
   border-left-color: var(--color-warning);
 }
 
-.matrix-cell.low {
+.overview-group.low {
   border-left-color: var(--color-success);
 }
 
-.cell-area {
+.overview-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.overview-group-header h4 {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   color: var(--color-text);
-  margin-bottom: 4px;
 }
 
-.cell-count {
+.overview-group-changes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.overview-change-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: rgba(15, 39, 71, 0.7);
+  border-radius: 8px;
   font-size: 13px;
-  color: var(--color-text-secondary);
-  margin-bottom: 8px;
 }
 
-.cell-impact {
+.overview-change-source {
   font-size: 11px;
   font-weight: 600;
+  color: var(--color-accent);
   text-transform: uppercase;
+  min-width: 40px;
 }
 
-.cell-impact.impact-high {
-  color: var(--color-danger);
+.overview-change-title {
+  flex: 1;
+  color: var(--color-text);
 }
 
-.cell-impact.impact-medium {
-  color: var(--color-warning);
+.overview-change-date {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
-.cell-impact.impact-low {
-  color: var(--color-success);
+.overview-group-count {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
-.impact-recommendations h4 {
+/* Flagged Items */
+.flagged-items h4 {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -639,7 +651,7 @@
   color: var(--color-text);
 }
 
-.impact-recommendations h4 svg {
+.flagged-items h4 svg {
   color: var(--color-warning);
 }
 
@@ -727,26 +739,22 @@
 }
 
 @media (max-width: 1024px) {
-  .aih-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .matrix-grid {
+  .cge-stats {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .aih-stats {
+  .cge-stats {
     grid-template-columns: 1fr;
   }
 
-  .aih-tabs {
+  .cge-tabs {
     flex-wrap: wrap;
   }
 
-  .matrix-grid {
-    grid-template-columns: 1fr;
+  .overview-change-item {
+    flex-wrap: wrap;
   }
 }
 
@@ -839,7 +847,7 @@
 }
 
 .modal-content li::before {
-  content: "•";
+  content: "\2022";
   color: var(--color-accent);
   font-weight: bold;
 }

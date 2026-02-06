@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Bell, FileCheck, AlertTriangle, BarChart3, Brain, Workflow, FileText, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { Shield, Bell, FileCheck, AlertTriangle, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
 import './WelcomeExperience.css';
 
 const WelcomeExperience = ({ onComplete }) => {
@@ -13,9 +13,9 @@ const WelcomeExperience = ({ onComplete }) => {
       id: 'regulatory-horizon',
       icon: Bell,
       title: 'Regulatory Horizon',
-      subtitle: 'Regulatory Change Intelligence',
-      description: 'Stay ahead of regulatory changes with real-time monitoring of FCA, PRA, CBI, and ESMA updates. Our AI-powered impact scoring helps you prioritize what matters most.',
-      features: ['Live regulatory feed monitoring', 'Quantified impact scoring', 'Automated change detection', 'Deadline tracking'],
+      subtitle: 'Regulatory Change Monitoring',
+      description: 'Stay ahead of regulatory changes with real-time monitoring of FCA, PRA, CBI, and ESMA updates. Rule-based impact scoring helps you prioritize what matters most.',
+      features: ['Live regulatory feed monitoring', 'Quantified impact scoring', 'Change detection', 'Deadline tracking'],
       color: '#F97316'
     },
     {
@@ -23,8 +23,8 @@ const WelcomeExperience = ({ onComplete }) => {
       icon: Shield,
       title: 'Control Architecture',
       subtitle: 'Control Framework Core',
-      description: 'Build and maintain a robust control library mapped to regulatory requirements. Track control effectiveness and ensure complete coverage.',
-      features: ['Comprehensive control library', 'Regulatory requirement mapping', 'Control effectiveness tracking', 'Gap analysis'],
+      description: 'Build and maintain a robust control library with lifecycle tracking. Monitor control status and review coverage.',
+      features: ['Comprehensive control library', 'Policy-control linking', 'Control effectiveness tracking', 'Coverage indicators'],
       color: '#F97316'
     },
     {
@@ -32,8 +32,8 @@ const WelcomeExperience = ({ onComplete }) => {
       icon: FileCheck,
       title: 'Operational Assurance',
       subtitle: 'Control Execution & Monitoring',
-      description: 'Execute and monitor your control framework with attestations, evidence collection, and continuous compliance monitoring.',
-      features: ['Control attestations', 'Evidence management', 'Policy library', 'Compliance monitoring'],
+      description: 'Execute and monitor your control framework with attestations, evidence collection, and structured compliance workflows.',
+      features: ['Control attestations', 'Evidence management', 'Policy library', 'Compliance workflows'],
       color: '#F97316'
     },
     {
@@ -41,17 +41,17 @@ const WelcomeExperience = ({ onComplete }) => {
       icon: AlertTriangle,
       title: 'Issue & Breach Management',
       subtitle: 'Exceptions & Remediation',
-      description: 'Identify, track, and remediate control exceptions and breaches with intelligent risk prioritization and workflow automation.',
-      features: ['Exception tracking', 'Risk signal detection', 'Remediation workflows', 'Breach management'],
+      description: 'Identify, track, and remediate control exceptions and breaches with structured risk prioritization and workflow management.',
+      features: ['Exception tracking', 'Risk signal tracking', 'Remediation workflows', 'Breach management'],
       color: '#FB923C'
     },
     {
       id: 'automation-intelligence',
-      icon: Brain,
-      title: 'Automation & Intelligence',
-      subtitle: 'AI & Automation Hub',
-      description: 'Leverage AI-powered insights, automated workflows, and intelligent reporting to reduce manual effort and improve decision-making.',
-      features: ['AI regulatory summaries', 'Automated workflows', 'Smart notifications', 'Report generation'],
+      icon: FileCheck,
+      title: 'Operations & Automation',
+      subtitle: 'Workflow & Export Tools',
+      description: 'Streamline compliance operations with structured guidance, workflow automation, and real data exports to support decision-making.',
+      features: ['Regulatory guidance', 'Workflow automation', 'Notifications', 'Data exports'],
       color: '#F97316'
     },
     {
@@ -59,8 +59,8 @@ const WelcomeExperience = ({ onComplete }) => {
       icon: BarChart3,
       title: 'Governance & Board Assurance',
       subtitle: 'Board View',
-      description: 'Provide your board and senior management with clear, actionable compliance insights through strategic dashboards and reporting.',
-      features: ['Strategic scoring', 'Board-ready reports', 'Risk posture views', 'Regulatory readiness'],
+      description: 'Provide your board and senior management with clear compliance visibility through structured dashboards and management information.',
+      features: ['Strategic scoring', 'Management information', 'Risk posture views', 'Regulatory readiness'],
       color: '#F97316'
     }
   ];
@@ -118,7 +118,7 @@ const WelcomeExperience = ({ onComplete }) => {
           REG<span>INTELS</span>
           <sup>TM</sup>
         </h1>
-        <p className="welcome-tagline">Clarity. Control. Regulatory Confidence.</p>
+        <p className="welcome-tagline">Compliance Operations for FCA-Regulated Firms</p>
       </div>
 
       {/* Module Showcase */}
@@ -159,7 +159,6 @@ const WelcomeExperience = ({ onComplete }) => {
       {/* Enter Button */}
       <div className={`enter-section ${showEnterButton ? 'visible' : ''}`}>
         <button className="enter-button" onClick={onComplete}>
-          <Sparkles size={20} />
           <span>Now Let Me In</span>
           <ArrowRight size={20} />
         </button>

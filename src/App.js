@@ -19,7 +19,7 @@ import AuditTrailBoard from './components/AuditTrailBoard';
 import DecisionRegisterBoard from './components/DecisionRegisterBoard';
 import ApprovalsBoard from './components/ApprovalsBoard';
 
-// Automation & Intelligence Components
+// Operations & Automation Components
 import NotificationCenter from './components/NotificationCenter';
 import AIInsightsHub from './components/AIInsightsHub';
 import WorkflowAutomation from './components/WorkflowAutomation';
@@ -38,6 +38,9 @@ import {
   formatRelativeTime,
   REGULATORY_SOURCES
 } from './services/regulatoryFeedService';
+
+// Policy Assessment Engine
+import { assessPolicy } from './services/policyAssessmentEngine';
 
 // ============================================================================
 // SUPABASE CONFIGURATION
@@ -646,12 +649,59 @@ function useRisks(tenantId) {
 // CRUD OPERATIONS
 // ============================================================================
 async function createPolicy(tenantId, policyData) {
+  // Compute file hash for immutability if file provided
+  let fileHash = null;
+  let fileName = null;
+  let fileSize = null;
+  let fileType = null;
+  let assessmentResult = null;
+
+  if (policyData.policyFile) {
+    try {
+      const arrayBuffer = await policyData.policyFile.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      fileHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      fileName = policyData.policyFile.name;
+      fileSize = policyData.policyFile.size;
+      fileType = policyData.policyFile.type;
+
+      // Run policy assessment for .md and .txt files
+      const ext = fileName.split('.').pop().toLowerCase();
+      if (ext === 'md' || ext === 'txt') {
+        try {
+          const textContent = await policyData.policyFile.text();
+          assessmentResult = assessPolicy(textContent, {
+            document_id: fileHash,
+            licence_type: policyData.licence_type || null,
+          });
+          console.log('[POLICY_ASSESSMENT] Result:', assessmentResult.readiness_status,
+            'Score:', assessmentResult.overall_score,
+            'Type:', assessmentResult.document_type);
+        } catch (assessErr) {
+          console.error('[POLICY_ASSESSMENT] Assessment failed:', assessErr);
+        }
+      }
+    } catch (err) {
+      console.error('File hash computation failed:', err);
+    }
+  }
+
   return await supabase.insert('policies', {
     title: policyData.title,
     version: policyData.version || '1.0',
     status: policyData.status || 'draft',
-    // owner_user_id: null, // Remove for now - will add when user management is ready
     regulator_regime: policyData.regulator_regime,
+    category: policyData.policy_type || null,
+    licence_type: policyData.licence_type || null,
+    owner: policyData.owner || null,
+    file_name: fileName,
+    file_size: fileSize,
+    file_type: fileType,
+    file_hash: fileHash,
+    assessment_score: assessmentResult ? assessmentResult.overall_score : null,
+    assessment_status: assessmentResult ? assessmentResult.readiness_status : null,
+    assessment_result: assessmentResult ? JSON.stringify(assessmentResult) : null,
     created_at: new Date().toISOString()
   }, tenantId);
 }
@@ -862,7 +912,7 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
       <div className="login-card">
         <img src="/logo.png" alt="REGINTELS" className="login-logo" />
         <h1>REGINTELS<sup style={{fontSize: '0.5em', verticalAlign: 'super'}}>TM</sup></h1>
-        <p className="brand-tagline">Clarity. Control. Regulatory Confidence.</p>
+        <p className="brand-tagline">Compliance Operations for FCA-Regulated Firms</p>
         <p>Sign in to your account</p>
 
         <form onSubmit={handleLogin}>
@@ -1296,7 +1346,7 @@ export default function RegIntels() {
   // single solutions declaration
   const solutions = {
     'Regulatory Horizon': {
-      name: 'Regulatory Change Intelligence',
+      name: 'Regulatory Change Monitoring',
       icon: Bell,
       pages: ['Change Feed', 'Change Register'],
       accessRoles: ['Admin', 'Compliance'],
@@ -1310,7 +1360,7 @@ export default function RegIntels() {
     'Operational Assurance': {
       name: 'Control Execution & Monitoring',
       icon: FileCheck,
-      pages: ['Policy Library', 'Reg Mapping', 'Attestations', 'Exceptions'],
+      pages: ['Policy Library', 'Coverage & Readiness', 'Attestations', 'Exceptions'],
       accessRoles: ['Admin', 'Compliance'],
     },
     'Issue & Breach Management': {
@@ -1325,10 +1375,10 @@ export default function RegIntels() {
       pages: ['Evidence & Audit'],
       accessRoles: ['Admin', 'Compliance'],
     },
-    'Automation & Intelligence': {
-      name: 'AI & Automation Hub',
+    'Operations & Automation': {
+      name: 'Workflow & Export Tools',
       icon: Bell,
-      pages: ['Notification Center', 'AI Insights', 'Workflow Automation', 'Report Generator'],
+      pages: ['Notification Center', 'Compliance Guidance', 'Workflow Automation', 'Compliance Pack Builder'],
       accessRoles: ['Admin', 'Compliance'],
     },
     'Governance & Board Assurance': {
@@ -1480,7 +1530,7 @@ export default function RegIntels() {
             <img src="/logo.png" alt="REGINTELS" style={{width: '48px', height: '48px'}} />
             <div>
               <div className="logo-title">REG<span>INTELS</span></div>
-              <div className="logo-subtitle">{currentTenant?.name || 'Regulatory Intelligence'}</div>
+              <div className="logo-subtitle">{currentTenant?.name || 'Compliance Operations'}</div>
             </div>
           </div>
         </div>
@@ -1588,6 +1638,13 @@ export default function RegIntels() {
               isReadOnly={solutions[activeSolution].readOnly}
             />
           )}
+
+          {/* Disclaimer Footer */}
+          <footer style={{ padding: '1.5rem 0 1rem', marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
+            <p style={{ fontSize: '0.7rem', color: '#6B7280', maxWidth: '700px', margin: '0 auto', lineHeight: '1.5' }}>
+              RegIntels does not provide regulatory advice or legal interpretation. It is a compliance operations system designed to support regulated firms in meeting governance and audit expectations. Impact scores are rule-based and do not reflect firm-specific analysis.
+            </p>
+          </footer>
         </main>
       </div>
     </div>
@@ -1605,7 +1662,7 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Control Architecture' && page === 'Control Library') return <ControlLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   // Operational Assurance (formerly Solution 3)
   if (solution === 'Operational Assurance' && page === 'Policy Library') return <PolicyLibraryPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  if (solution === 'Operational Assurance' && page === 'Reg Mapping') return <RegMappingPage tenantId={tenantId} isReadOnly={isReadOnly} />;
+  if (solution === 'Operational Assurance' && page === 'Coverage & Readiness') return <RegMappingPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Operational Assurance' && page === 'Attestations') return <AttestationsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   if (solution === 'Operational Assurance' && page === 'Exceptions') return <ExceptionsLightPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   // Issue & Breach Management (formerly Solution 4)
@@ -1614,11 +1671,11 @@ function PageContent({ solution, page, tenantId, isReadOnly, currentUser }) {
   if (solution === 'Issue & Breach Management' && page === 'Unified Exceptions') return <UnifiedExceptionsPage tenantId={tenantId} isReadOnly={isReadOnly} />;
   // Evidence & Audit Readiness (formerly Solution 4B)
   if (solution === 'Evidence & Audit Readiness' && page === 'Evidence & Audit') return <EvidenceAuditPage tenantId={tenantId} isReadOnly={isReadOnly} />;
-  // Automation & Intelligence
-  if (solution === 'Automation & Intelligence' && page === 'Notification Center') return <NotificationCenter tenantId={tenantId} />;
-  if (solution === 'Automation & Intelligence' && page === 'AI Insights') return <AIInsightsHub tenantId={tenantId} supabase={supabase} />;
-  if (solution === 'Automation & Intelligence' && page === 'Workflow Automation') return <WorkflowAutomation tenantId={tenantId} />;
-  if (solution === 'Automation & Intelligence' && page === 'Report Generator') return <ReportGenerator tenantId={tenantId} />;
+  // Operations & Automation
+  if (solution === 'Operations & Automation' && page === 'Notification Center') return <NotificationCenter tenantId={tenantId} />;
+  if (solution === 'Operations & Automation' && page === 'Compliance Guidance') return <AIInsightsHub tenantId={tenantId} supabase={supabase} />;
+  if (solution === 'Operations & Automation' && page === 'Workflow Automation') return <WorkflowAutomation tenantId={tenantId} />;
+  if (solution === 'Operations & Automation' && page === 'Compliance Pack Builder') return <ReportGenerator tenantId={tenantId} />;
   // Governance & Board Assurance (formerly Solution 5)
   if (solution === 'Governance & Board Assurance' && page === 'Strategic Scoring') return <StrategicDashboard supabase={supabase.client} />;
   if (solution === 'Governance & Board Assurance' && page === 'Management Summary') return <ManagementSummaryPage tenantId={tenantId} />;
@@ -1716,7 +1773,7 @@ function DataTable({ headers, rows }) {
 }
 
 // ============================================================================
-// SOLUTION 1: REGULATORY HORIZON - CHANGE INTELLIGENCE
+// SOLUTION 1: REGULATORY HORIZON - CHANGE MONITORING
 // ============================================================================
 function ChangeFeedPage({ tenantId, isReadOnly }) {
   // Use local regulatory feed service instead of Supabase
@@ -1798,7 +1855,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
     <div>
       <div className="page-header">
         <h1>Change Feed</h1>
-        <p className="page-subtitle">Regulatory updates with quantified impact scoring</p>
+        <p className="page-subtitle">Regulatory updates with rule-based impact scoring</p>
       </div>
 
       {/* Statistics Dashboard */}
@@ -1956,7 +2013,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
               )}
             </div>
 
-            {/* Show detailed impact score if available */}
+            {/* Show detailed impact score with breakdown */}
             {change.impactScore && (
               <div style={{ marginTop: '12px' }}>
                 <ImpactScoreCard
@@ -1966,6 +2023,39 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
                   changeTitle={null}
                   compact={false}
                 />
+                {/* Score Breakdown - Why this score? */}
+                {change.impactScore.breakdown && (
+                  <details style={{ marginTop: '8px', fontSize: '0.75rem' }}>
+                    <summary style={{ cursor: 'pointer', color: '#F97316', fontWeight: '600', marginBottom: '6px' }}>
+                      Why this score?
+                    </summary>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', padding: '8px', background: 'rgba(15, 39, 71, 0.5)', borderRadius: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(249, 115, 22, 0.08)', borderRadius: '4px' }}>
+                        <span style={{ color: '#9CA3AF' }}>Materiality</span>
+                        <span style={{ fontWeight: '600' }}>{change.impactScore.breakdown.materiality || 0}/30</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(249, 115, 22, 0.08)', borderRadius: '4px' }}>
+                        <span style={{ color: '#9CA3AF' }}>Urgency</span>
+                        <span style={{ fontWeight: '600' }}>{change.impactScore.breakdown.urgency || 0}/25</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(249, 115, 22, 0.08)', borderRadius: '4px' }}>
+                        <span style={{ color: '#9CA3AF' }}>Regulator</span>
+                        <span style={{ fontWeight: '600' }}>{change.impactScore.breakdown.regulatorWeight || 0}/20</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(249, 115, 22, 0.08)', borderRadius: '4px' }}>
+                        <span style={{ color: '#9CA3AF' }}>Scope</span>
+                        <span style={{ fontWeight: '600' }}>{change.impactScore.breakdown.scope || 0}/15</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(249, 115, 22, 0.08)', borderRadius: '4px', gridColumn: 'span 2' }}>
+                        <span style={{ color: '#9CA3AF' }}>Status</span>
+                        <span style={{ fontWeight: '600' }}>{change.impactScore.breakdown.status || 0}/10</span>
+                      </div>
+                    </div>
+                    <div style={{ marginTop: '6px', color: '#9CA3AF', fontStyle: 'italic' }}>
+                      Score is rule-based: keyword materiality + deadline urgency + regulator weight + regime scope + action status. This does not assess impact on your specific policies.
+                    </div>
+                  </details>
+                )}
               </div>
             )}
 
@@ -2734,40 +2824,197 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
 function RegMappingPage({ tenantId }) {
   const { data: policies } = usePolicies(tenantId);
   const { data: controls } = useControls(tenantId);
+  const { data: exceptions } = useExceptions(tenantId);
+
+  // Required policy categories for FCA-regulated firms
+  const requiredCategories = [
+    'AML / Financial Crime',
+    'Consumer Duty',
+    'Operational Resilience',
+    'Data Protection / GDPR',
+    'Complaints Handling',
+    'Conflicts of Interest',
+    'Safeguarding',
+    'Risk Management',
+    'Governance & Oversight',
+    'Outsourcing / Third Party'
+  ];
+
+  // Map uploaded policies to categories
+  const uploadedCategories = (policies || []).map(p => p.category || p.regulator_regime);
+  const categoryStatus = requiredCategories.map(cat => {
+    const matched = (policies || []).find(p =>
+      (p.category && p.category.toLowerCase().includes(cat.split(' ')[0].toLowerCase())) ||
+      (p.title && p.title.toLowerCase().includes(cat.split(' ')[0].toLowerCase()))
+    );
+    return { category: cat, policy: matched || null, covered: !!matched };
+  });
+
+  // Overdue reviews
+  const now = new Date();
+  const overdueReviews = (policies || []).filter(p => {
+    if (!p.next_review_date) return false;
+    return new Date(p.next_review_date) < now;
+  });
+
+  // Policies pending approval
+  const pendingApprovals = (policies || []).filter(p => p.status === 'pending_approval');
+
+  // Open exceptions
+  const openExceptions = (exceptions || []).filter(e => e.status === 'open' || e.status === 'in_progress');
+
+  // Controls without linked policies (coverage gap)
+  const coveredCount = categoryStatus.filter(c => c.covered).length;
+  const totalRequired = requiredCategories.length;
+  const coveragePercent = Math.round((coveredCount / totalRequired) * 100);
 
   return (
     <div>
       <div className="page-header">
-        <h1>Regulatory Mapping</h1>
-        <p className="page-subtitle">Obligations ↔ Policies ↔ Controls mapping view</p>
+        <h1>Coverage & Readiness Indicators</h1>
+        <p className="page-subtitle">Policy coverage, review status, and operational readiness at a glance</p>
       </div>
 
-      <div className="mapping-grid">Continue22:39    <div className="mapping-column">
-      <h3>OBLIGATIONS</h3>
-      {['AML Customer Due Diligence', 'Conflicts of Interest Management', 'GDPR Data Subject Rights'].map((ob, i) => (
-        <div key={i} className="mapping-item">{ob}</div>
-      ))}
-    </div>
+      <div style={{ background: 'rgba(249, 115, 22, 0.08)', border: '1px solid rgba(249, 115, 22, 0.2)', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1.5rem', fontSize: '0.85rem', color: '#9CA3AF' }}>
+        Coverage indicators show which required policy categories are present. This does not verify policy content completeness or FCA requirement coverage.
+      </div>
 
-    <div className="mapping-column">
-      <h3>POLICIES</h3>
-      {policies?.map(p => (
-        <div key={p.id} className="mapping-item">{p.title}</div>
-      ))}
-    </div>
-
-    <div className="mapping-column">
-      <h3>CONTROLS</h3>
-      {controls?.map(c => (
-        <div key={c.id} className="mapping-item">
-          <div className="control-code-small">{c.control_code}</div>
-          <div>{c.title}</div>
+      {/* Summary Stats */}
+      <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: coveragePercent >= 70 ? '#22C55E' : coveragePercent >= 40 ? '#F97316' : '#EF4444' }}>{coveragePercent}%</div>
+          <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Category Coverage</div>
         </div>
-      ))}
+        <div className="stat-card" style={{ background: '#16365F', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700' }}>{(policies || []).length}</div>
+          <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Policies Uploaded</div>
+        </div>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: overdueReviews.length > 0 ? '#EF4444' : '#22C55E' }}>{overdueReviews.length}</div>
+          <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Overdue Reviews</div>
+        </div>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: pendingApprovals.length > 0 ? '#F97316' : '#22C55E' }}>{pendingApprovals.length}</div>
+          <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Pending Approvals</div>
+        </div>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1rem', borderRadius: '12px' }}>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: openExceptions.length > 0 ? '#F97316' : '#22C55E' }}>{openExceptions.length}</div>
+          <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Open Exceptions</div>
+        </div>
+      </div>
+
+      {/* Required Policy Categories */}
+      <div style={{ marginBottom: '2rem' }}>
+        <h3 style={{ marginBottom: '1rem' }}>Required Policy Categories</h3>
+        <div style={{ display: 'grid', gap: '0.5rem' }}>
+          {categoryStatus.map((item, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: '1rem',
+              padding: '0.75rem 1rem', borderRadius: '8px',
+              background: item.covered ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+              border: `1px solid ${item.covered ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`
+            }}>
+              <span style={{ fontSize: '1.1rem' }}>{item.covered ? '✓' : '✗'}</span>
+              <span style={{ flex: 1, fontWeight: '500' }}>{item.category}</span>
+              {item.policy ? (
+                <span style={{ fontSize: '0.8rem', color: '#22C55E' }}>{item.policy.title} (v{item.policy.version})</span>
+              ) : (
+                <span style={{ fontSize: '0.8rem', color: '#EF4444' }}>Not uploaded</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Overdue Reviews */}
+      {overdueReviews.length > 0 && (
+        <div style={{ marginBottom: '2rem' }}>
+          <h3 style={{ marginBottom: '1rem', color: '#EF4444' }}>Overdue Policy Reviews</h3>
+          {overdueReviews.map(p => (
+            <div key={p.id} style={{ padding: '0.75rem 1rem', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', marginBottom: '0.5rem' }}>
+              <div style={{ fontWeight: '500' }}>{p.title}</div>
+              <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Review due: {p.next_review_date} • Owner: {p.owner || 'Unassigned'}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Policy Assessment Scores */}
+      {(() => {
+        const assessedPolicies = (policies || []).filter(p => p.assessment_score != null);
+        if (assessedPolicies.length === 0) return null;
+
+        return (
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ marginBottom: '1rem' }}>Policy Assessment Scores</h3>
+            <div style={{ display: 'grid', gap: '0.5rem' }}>
+              {assessedPolicies.map((p, i) => {
+                const score = p.assessment_score;
+                const status = p.assessment_status || 'N/A';
+                const statusColor = status === 'READY' ? '#22C55E' : status === 'WARNING' ? '#F97316' : '#EF4444';
+                return (
+                  <div key={p.id || i} style={{
+                    display: 'flex', alignItems: 'center', gap: '1rem',
+                    padding: '0.75rem 1rem', borderRadius: '8px',
+                    background: 'rgba(249, 115, 22, 0.06)',
+                    border: '1px solid rgba(249, 115, 22, 0.15)'
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: '50%',
+                      background: `rgba(${status === 'READY' ? '34, 197, 94' : status === 'WARNING' ? '249, 115, 22' : '239, 68, 68'}, 0.15)`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: '700', fontSize: '0.85rem', color: statusColor
+                    }}>
+                      {score}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: '500' }}>{p.title}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>
+                        Licence: {p.licence_type || 'N/A'} • Type: {p.category || 'Auto-detected'}
+                      </div>
+                    </div>
+                    <span style={{
+                      padding: '0.25rem 0.75rem', borderRadius: '12px', fontSize: '0.75rem',
+                      fontWeight: '600', color: statusColor,
+                      background: `rgba(${status === 'READY' ? '34, 197, 94' : status === 'WARNING' ? '249, 115, 22' : '239, 68, 68'}, 0.12)`,
+                    }}>
+                      {status}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* Policies and Controls Summary */}
+      <div className="mapping-grid">
+        <div className="mapping-column">
+          <h3>POLICIES ({(policies || []).length})</h3>
+          {policies?.map(p => (
+            <div key={p.id} className="mapping-item">
+              <div>{p.title}</div>
+              <div style={{ fontSize: '0.7rem', color: '#9CA3AF' }}>
+                Status: {p.status} • v{p.version}
+                {p.assessment_score != null && ` • Score: ${p.assessment_score}`}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mapping-column">
+          <h3>CONTROLS ({(controls || []).length})</h3>
+          {controls?.map(c => (
+            <div key={c.id} className="mapping-item">
+              <div className="control-code-small">{c.control_code}</div>
+              <div>{c.title}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-);
+  );
 }
 function AttestationsPage({ tenantId, isReadOnly }) {
   const [attestationConfidence, setAttestationConfidence] = useState([]);
@@ -5549,9 +5796,11 @@ function CreatePolicyModal({ tenantId, onClose, onSuccess }) {
 const [formData, setFormData] = useState({
 title: '',
 version: '1.0',
-regulator_regime: 'API',
+regulator_regime: 'FCA',
+policy_type: '',
+licence_type: '',
+owner: '',
 status: 'draft',
-owner_user_id: 1,
 policyFile: null
 });
 const [loading, setLoading] = useState(false);
@@ -5570,6 +5819,9 @@ setLoading(false);
 return (
 <Modal title="Upload Policy" onClose={onClose}>
 <form onSubmit={handleSubmit} className="modal-form">
+<div style={{ background: 'rgba(249, 115, 22, 0.08)', border: '1px solid rgba(249, 115, 22, 0.2)', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: '#9CA3AF' }}>
+  Policy documents are securely stored for audit, evidence, and lifecycle management. Content analysis is workflow-driven, not automated.
+</div>
 <div className="form-group">
 <label>Policy Title *</label>
 <input
@@ -5580,27 +5832,87 @@ onChange={(e) => setFormData({ ...formData, title: e.target.value })}
 placeholder="e.g., Anti-Money Laundering Policy"
 />
 </div>
-    <div className="form-group">
-      <label>Version</label>
-      <input
-        type="text"
-        value={formData.version}
-        onChange={(e) => setFormData({ ...formData, version: e.target.value })}
-      />
+
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+      <div className="form-group">
+        <label>Version</label>
+        <input
+          type="text"
+          value={formData.version}
+          onChange={(e) => setFormData({ ...formData, version: e.target.value })}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Owner</label>
+        <input
+          type="text"
+          value={formData.owner}
+          onChange={(e) => setFormData({ ...formData, owner: e.target.value })}
+          placeholder="e.g., Sarah Chen"
+        />
+      </div>
     </div>
 
     <div className="form-group">
-      <label>Regime</label>
+      <label>Policy Type *</label>
       <select
-        value={formData.regulator_regime}
-        onChange={(e) => setFormData({ ...formData, regulator_regime: e.target.value })}
+        required
+        value={formData.policy_type}
+        onChange={(e) => setFormData({ ...formData, policy_type: e.target.value })}
       >
-        <option value="API">API</option>
-        <option value="SPI">SPI</option>
-        <option value="SEMI">SEMI</option>
-        <option value="AEMI">AEMI</option>
-        <option value="CCON">CCON</option>
+        <option value="">Select policy type...</option>
+        <option value="AML / Financial Crime">AML / Financial Crime</option>
+        <option value="Consumer Duty">Consumer Duty</option>
+        <option value="Operational Resilience">Operational Resilience</option>
+        <option value="Data Protection / GDPR">Data Protection / GDPR</option>
+        <option value="Complaints Handling">Complaints Handling</option>
+        <option value="Conflicts of Interest">Conflicts of Interest</option>
+        <option value="Safeguarding">Safeguarding</option>
+        <option value="Risk Management">Risk Management</option>
+        <option value="Governance & Oversight">Governance & Oversight</option>
+        <option value="Outsourcing / Third Party">Outsourcing / Third Party</option>
+        <option value="Remuneration">Remuneration</option>
+        <option value="Training & Competence">Training & Competence</option>
+        <option value="Vulnerable Clients">Vulnerable Clients</option>
+        <option value="Other">Other</option>
       </select>
+    </div>
+
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+      <div className="form-group">
+        <label>Regulator / Regime</label>
+        <select
+          value={formData.regulator_regime}
+          onChange={(e) => setFormData({ ...formData, regulator_regime: e.target.value })}
+        >
+          <option value="FCA">FCA</option>
+          <option value="PRA">PRA</option>
+          <option value="FCA/PRA">FCA/PRA</option>
+          <option value="FCA/MLR">FCA/MLR</option>
+          <option value="ICO/GDPR">ICO/GDPR</option>
+          <option value="CBI">CBI</option>
+          <option value="ESMA">ESMA</option>
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label>Licence Type</label>
+        <select
+          value={formData.licence_type}
+          onChange={(e) => setFormData({ ...formData, licence_type: e.target.value })}
+        >
+          <option value="">Select licence...</option>
+          <option value="API">API (Authorised Payment Institution)</option>
+          <option value="SPI">SPI (Small Payment Institution)</option>
+          <option value="EMI">EMI (E-Money Institution)</option>
+          <option value="SEMI">SEMI (Small EMI)</option>
+          <option value="AEMI">AEMI (Authorised EMI)</option>
+          <option value="RAISP">RAISP (Registered AISP)</option>
+          <option value="CCON">CCON (Consumer Credit)</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
     </div>
 
     <div className="form-group">
@@ -5608,7 +5920,7 @@ placeholder="e.g., Anti-Money Laundering Policy"
       <input
         type="file"
         id="policyFileUpload"
-        accept=".pdf,.doc,.docx"
+        accept=".pdf,.doc,.docx,.md,.txt"
         onChange={(e) => {
           const file = e.target.files[0];
           if (file) {
@@ -5624,8 +5936,13 @@ placeholder="e.g., Anti-Money Laundering Policy"
         style={{ width: '100%', marginTop: '0.5rem' }}
       >
         <Upload size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-        {formData.policyFile ? '✓ ' + formData.policyFile.name : 'Choose File (PDF, DOC, DOCX)'}
+        {formData.policyFile ? '✓ ' + formData.policyFile.name + ' (' + (formData.policyFile.size / 1024).toFixed(0) + ' KB)' : 'Choose File (PDF, DOC, DOCX, MD, TXT)'}
       </button>
+      {formData.policyFile && (
+        <div style={{ fontSize: '0.75rem', color: '#9CA3AF', marginTop: '0.25rem' }}>
+          File will be stored with SHA-256 hash for integrity verification.
+        </div>
+      )}
     </div>
 
     <div className="form-actions">
@@ -5633,7 +5950,7 @@ placeholder="e.g., Anti-Money Laundering Policy"
         Cancel
       </button>
       <button type="submit" disabled={loading} className="btn-primary">
-        {loading ? 'Uploading...' : 'Upload Policy'}
+        {loading ? 'Storing...' : 'Store Policy'}
       </button>
     </div>
   </form>
@@ -5936,10 +6253,11 @@ function TenantOnboardingWizard({ onComplete }) {
   const totalSteps = 5;
 
   const regimeOptions = [
-    { value: 'API', label: 'Appointed Representative (API)' },
+    { value: 'API', label: 'Authorised Payment Institution (API)' },
     { value: 'SPI', label: 'Small Payment Institution (SPI)' },
     { value: 'SEMI', label: 'Small E-Money Institution (SEMI)' },
     { value: 'AEMI', label: 'Authorised E-Money Institution (AEMI)' },
+    { value: 'RAISP', label: 'Registered Account Information Service Provider (RAISP)' },
     { value: 'CCON', label: 'Consumer Credit (CCON)' }
   ];
 
@@ -6102,7 +6420,7 @@ function TenantOnboardingWizard({ onComplete }) {
           <img src="/logo.png" alt="REGINTELS" style={{width: '64px', height: '64px'}} />
           <h1>REGINTELS<sup style={{fontSize: '0.4em', verticalAlign: 'super'}}>TM</sup></h1>
         </div>
-        <div className="onboarding-subtitle">Clarity. Control. Regulatory Confidence.</div>
+        <div className="onboarding-subtitle">Compliance Operations for FCA-Regulated Firms</div>
       </div>
 
       {/* Progress Bar */}
