@@ -40,10 +40,10 @@ const ImpactScoreDetail = ({ supabase, changeId, onBack }) => {
 
   const getRiskColor = (band) => {
     switch (band) {
-      case 'CRITICAL': return '#dc2626';
-      case 'HIGH': return '#f59e0b';
-      case 'MODERATE': return '#10b981';
-      default: return '#64748b';
+      case 'CRITICAL': return '#F97316';
+      case 'HIGH': return '#F97316';
+      case 'MODERATE': return '#F97316';
+      default: return '#9CA3AF';
     }
   };
 

@@ -53,7 +53,7 @@
 .period-filter:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
 /* KPI Grid */
@@ -168,13 +168,13 @@
 }
 
 .action-login {
-  background: #f3e8ff;
-  color: #6b21a8;
+  background: #16365F;
+  color: #F97316;
 }
 
 .action-logout {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .action-default {

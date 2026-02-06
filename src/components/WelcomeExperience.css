@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #050607;
+  background: #0F2747;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,8 +30,8 @@
   right: 0;
   bottom: 0;
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(0, 212, 228, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(0, 140, 140, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 20%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%);
   animation: gradientPulse 8s ease-in-out infinite;
 }
@@ -48,8 +48,8 @@
   right: 0;
   bottom: 0;
   background-image:
-    linear-gradient(rgba(0, 212, 228, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 212, 228, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: gridMove 20s linear infinite;
 }
@@ -66,7 +66,7 @@
   width: 600px;
   height: 600px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(0, 212, 228, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
   animation: glowPulse 4s ease-in-out infinite;
 }
 
@@ -85,18 +85,18 @@
 .welcome-logo img {
   width: 120px;
   height: 120px;
-  filter: drop-shadow(0 0 30px rgba(0, 212, 228, 0.5));
+  filter: drop-shadow(0 0 30px rgba(249, 115, 22, 0.5));
   animation: logoFloat 3s ease-in-out infinite;
 }
 
 @keyframes logoFloat {
   0%, 100% {
     transform: translateY(0);
-    filter: drop-shadow(0 0 30px rgba(0, 212, 228, 0.5));
+    filter: drop-shadow(0 0 30px rgba(249, 115, 22, 0.5));
   }
   50% {
     transform: translateY(-15px);
-    filter: drop-shadow(0 0 40px rgba(0, 212, 228, 0.7));
+    filter: drop-shadow(0 0 40px rgba(249, 115, 22, 0.7));
   }
 }
 
@@ -112,24 +112,24 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 3.5rem;
   font-weight: 700;
-  color: #F5F7F8;
+  color: var(--reg-slate-200);
   letter-spacing: -0.02em;
   margin: 0;
 }
 
 .welcome-brand span {
-  color: #00D4E4;
+  color: #F97316;
 }
 
 .welcome-brand sup {
   font-size: 0.3em;
-  color: #9FA4A9;
+  color: #9CA3AF;
   vertical-align: super;
 }
 
 .welcome-tagline {
   font-size: 1.1rem;
-  color: #00D4E4;
+  color: #F97316;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-top: 0.5rem;
@@ -162,37 +162,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(0, 212, 228, 0.2) 0%, rgba(0, 140, 140, 0.1) 100%);
-  border: 2px solid var(--module-color, #00D4E4);
+  background: rgba(249, 115, 22, 0.1);
+  border: 2px solid var(--module-color, #F97316);
   border-radius: 24px;
-  color: var(--module-color, #00D4E4);
-  box-shadow: 0 0 40px rgba(0, 212, 228, 0.3);
+  color: var(--module-color, #F97316);
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.3);
   animation: iconPulse 2s ease-in-out infinite;
 }
 
 @keyframes iconPulse {
-  0%, 100% { box-shadow: 0 0 40px rgba(0, 212, 228, 0.3); }
-  50% { box-shadow: 0 0 60px rgba(0, 212, 228, 0.5); }
+  0%, 100% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.3); }
+  50% { box-shadow: 0 0 60px rgba(249, 115, 22, 0.5); }
 }
 
 .module-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #F5F7F8;
+  color: var(--reg-slate-200);
   margin: 0 0 0.5rem 0;
 }
 
 .module-subtitle {
   font-size: 1rem;
-  color: #00D4E4;
+  color: #F97316;
   margin: 0 0 1.5rem 0;
   font-weight: 500;
 }
 
 .module-description {
   font-size: 1.1rem;
-  color: #9FA4A9;
+  color: #9CA3AF;
   line-height: 1.7;
   margin: 0 0 2rem 0;
 }
@@ -209,15 +209,15 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(0, 212, 228, 0.1);
-  border: 1px solid rgba(0, 212, 228, 0.2);
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.2);
   border-radius: 20px;
   font-size: 0.875rem;
-  color: #F5F7F8;
+  color: var(--reg-slate-200);
 }
 
 .feature-item svg {
-  color: #00D4E4;
+  color: #F97316;
 }
 
 /* Progress Dots */
@@ -247,12 +247,12 @@
 .progress-dot.active {
   width: 36px;
   border-radius: 6px;
-  background: var(--dot-color, #00D4E4);
-  box-shadow: 0 0 20px var(--dot-color, rgba(0, 212, 228, 0.5));
+  background: var(--dot-color, #F97316);
+  box-shadow: 0 0 20px var(--dot-color, rgba(249, 115, 22, 0.5));
 }
 
 .progress-dot.completed {
-  background: var(--dot-color, #00D4E4);
+  background: var(--dot-color, #F97316);
   opacity: 0.6;
 }
 
@@ -262,8 +262,8 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 0.5rem 1rem;
-  background: #1a1e22;
-  color: #F5F7F8;
+  background: #0F2747;
+  color: var(--reg-slate-200);
   font-size: 0.75rem;
   white-space: nowrap;
   border-radius: 6px;
@@ -300,8 +300,8 @@
   align-items: center;
   gap: 12px;
   padding: 1.25rem 2.5rem;
-  background: linear-gradient(135deg, #00D4E4 0%, #008C8C 100%);
-  color: #050607;
+  background: var(--reg-orange-500);
+  color: #FFFFFF;
   border: none;
   border-radius: 50px;
   font-family: 'Space Grotesk', sans-serif;
@@ -309,18 +309,18 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 40px rgba(0, 212, 228, 0.4);
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
   animation: buttonPulse 2s ease-in-out infinite;
 }
 
 @keyframes buttonPulse {
-  0%, 100% { box-shadow: 0 0 40px rgba(0, 212, 228, 0.4); }
-  50% { box-shadow: 0 0 60px rgba(0, 212, 228, 0.6); }
+  0%, 100% { box-shadow: 0 0 40px rgba(249, 115, 22, 0.4); }
+  50% { box-shadow: 0 0 60px rgba(249, 115, 22, 0.6); }
 }
 
 .enter-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 60px rgba(0, 212, 228, 0.6);
+  box-shadow: 0 0 60px rgba(249, 115, 22, 0.6);
 }
 
 .enter-button svg {
@@ -338,7 +338,7 @@
   right: 2rem;
   padding: 0.75rem 1.5rem;
   background: transparent;
-  color: #9FA4A9;
+  color: #9CA3AF;
   border: 1px solid rgba(159, 164, 169, 0.3);
   border-radius: 8px;
   font-size: 0.875rem;
@@ -348,9 +348,9 @@
 }
 
 .skip-button:hover {
-  color: #F5F7F8;
-  border-color: rgba(0, 212, 228, 0.5);
-  background: rgba(0, 212, 228, 0.1);
+  color: var(--reg-slate-200);
+  border-color: rgba(249, 115, 22, 0.5);
+  background: rgba(249, 115, 22, 0.1);
 }
 
 /* Responsive */

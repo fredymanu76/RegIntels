@@ -16,7 +16,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'Regulatory Change Intelligence',
       description: 'Stay ahead of regulatory changes with real-time monitoring of FCA, PRA, CBI, and ESMA updates. Our AI-powered impact scoring helps you prioritize what matters most.',
       features: ['Live regulatory feed monitoring', 'Quantified impact scoring', 'Automated change detection', 'Deadline tracking'],
-      color: '#00D4E4'
+      color: '#F97316'
     },
     {
       id: 'control-architecture',
@@ -25,7 +25,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'Control Framework Core',
       description: 'Build and maintain a robust control library mapped to regulatory requirements. Track control effectiveness and ensure complete coverage.',
       features: ['Comprehensive control library', 'Regulatory requirement mapping', 'Control effectiveness tracking', 'Gap analysis'],
-      color: '#008C8C'
+      color: '#F97316'
     },
     {
       id: 'operational-assurance',
@@ -34,7 +34,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'Control Execution & Monitoring',
       description: 'Execute and monitor your control framework with attestations, evidence collection, and continuous compliance monitoring.',
       features: ['Control attestations', 'Evidence management', 'Policy library', 'Compliance monitoring'],
-      color: '#00D4E4'
+      color: '#F97316'
     },
     {
       id: 'issue-management',
@@ -43,7 +43,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'Exceptions & Remediation',
       description: 'Identify, track, and remediate control exceptions and breaches with intelligent risk prioritization and workflow automation.',
       features: ['Exception tracking', 'Risk signal detection', 'Remediation workflows', 'Breach management'],
-      color: '#F5A623'
+      color: '#FB923C'
     },
     {
       id: 'automation-intelligence',
@@ -52,7 +52,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'AI & Automation Hub',
       description: 'Leverage AI-powered insights, automated workflows, and intelligent reporting to reduce manual effort and improve decision-making.',
       features: ['AI regulatory summaries', 'Automated workflows', 'Smart notifications', 'Report generation'],
-      color: '#8B5CF6'
+      color: '#F97316'
     },
     {
       id: 'governance-board',
@@ -61,7 +61,7 @@ const WelcomeExperience = ({ onComplete }) => {
       subtitle: 'Board View',
       description: 'Provide your board and senior management with clear, actionable compliance insights through strategic dashboards and reporting.',
       features: ['Strategic scoring', 'Board-ready reports', 'Risk posture views', 'Regulatory readiness'],
-      color: '#00D4E4'
+      color: '#F97316'
     }
   ];
 

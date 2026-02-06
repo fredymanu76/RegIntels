@@ -229,7 +229,7 @@
 
 .status-pending {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .status-rejected {

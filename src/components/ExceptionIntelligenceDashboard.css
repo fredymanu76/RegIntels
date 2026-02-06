@@ -31,8 +31,8 @@
 .view-switcher {
   display: flex;
   gap: 0.5rem;
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 0.5rem;
   border-radius: 12px;
   border: 1px solid var(--color-border);
@@ -54,13 +54,13 @@
 }
 
 .view-switcher button:hover {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   color: var(--color-accent);
 }
 
 .view-switcher button.active {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  color: #000000;
+  background: var(--reg-orange-500);
+  color: #FFFFFF;
 }
 
 /* Portfolio Metrics */
@@ -72,8 +72,8 @@
 }
 
 .metric-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -100,7 +100,7 @@
 }
 
 .metric-card.medium {
-  border-left-color: #fcd34d;
+  border-left-color: #FB923C;
 }
 
 .metric-card.score {
@@ -160,8 +160,8 @@
 }
 
 .exception-intelligence-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
@@ -235,7 +235,7 @@
 .intelligence-section {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   border: 1px solid var(--color-border);
 }
@@ -310,7 +310,7 @@
 
 .band-badge.medium {
   background: var(--color-warning-light);
-  color: #ca8a04;
+  color: #F97316;
 }
 
 .band-badge.low {
@@ -397,7 +397,7 @@
 
 .missing-evidence {
   padding: 0.5rem;
-  background: rgba(255, 184, 0, 0.1);
+  background: rgba(251, 146, 60, 0.1);
   border-left: 3px solid var(--color-warning);
   border-radius: 4px;
 }
@@ -421,7 +421,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 15, 20, 0.7);
+  background: rgba(15, 39, 71, 0.7);
   border-radius: 50%;
 }
 
@@ -444,7 +444,7 @@
 
 .trajectory-status.deteriorating {
   background: var(--color-warning-light);
-  color: #ca8a04;
+  color: #F97316;
 }
 
 .trajectory-status.stable {
@@ -525,8 +525,8 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  color: #000000;
+  background: var(--reg-orange-500);
+  color: #FFFFFF;
   box-shadow: var(--shadow-glow);
 }
 
@@ -542,7 +542,7 @@
 }
 
 .btn-secondary:hover {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-color: var(--color-accent);
 }
 
@@ -569,8 +569,8 @@
 }
 
 .heatmap-container {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -635,22 +635,22 @@
 }
 
 .heatmap-cell.critical {
-  background: rgba(255, 71, 87, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-color: var(--color-danger);
 }
 
 .heatmap-cell.high {
-  background: rgba(255, 184, 0, 0.1);
+  background: rgba(251, 146, 60, 0.1);
   border-color: var(--color-warning);
 }
 
 .heatmap-cell.medium {
   background: rgba(252, 211, 77, 0.1);
-  border-color: #fcd34d;
+  border-color: #FB923C;
 }
 
 .heatmap-cell.low {
-  background: rgba(0, 230, 118, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-color: var(--color-success);
 }
 
@@ -665,8 +665,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(10, 15, 20, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.95);
+  backdrop-filter: none;
   border: 2px solid var(--color-accent);
   border-radius: 8px;
   padding: 0.75rem;
@@ -763,8 +763,8 @@
 }
 
 .narrative-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
@@ -790,8 +790,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  color: #000000;
+  background: var(--reg-orange-500);
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -807,7 +807,7 @@
 }
 
 .narrative-content {
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -848,7 +848,7 @@
 
 .materiality-badge.medium {
   background: var(--color-warning-light);
-  color: #ca8a04;
+  color: #F97316;
 }
 
 .materiality-badge.low {
@@ -877,7 +877,7 @@
 .exception-intelligence-loading svg {
   color: var(--color-accent);
   margin-bottom: 1rem;
-  filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.6));
+  filter: drop-shadow(0 0 15px rgba(249, 115, 22, 0.6));
 }
 
 .spin {

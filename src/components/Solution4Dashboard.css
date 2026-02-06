@@ -55,8 +55,8 @@
 }
 
 .kpi-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -104,8 +104,8 @@
 
 /* Alerts Section */
 .alerts-section {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -127,7 +127,7 @@
 }
 
 .alert-item {
-  background: rgba(255, 71, 87, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-left: 4px solid;
   border-radius: 8px;
   padding: 1rem;
@@ -135,7 +135,7 @@
 }
 
 .alert-item:hover {
-  background: rgba(255, 71, 87, 0.15);
+  background: rgba(249, 115, 22, 0.15);
 }
 
 .alert-header {
@@ -168,7 +168,7 @@
 
 .alert-age-band {
   padding: 0.125rem 0.5rem;
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-radius: 4px;
   font-weight: 500;
   color: var(--color-accent);
@@ -182,8 +182,8 @@
 }
 
 .dashboard-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: var(--shadow-md);
@@ -214,7 +214,7 @@
 .exceptions-table th {
   text-align: left;
   padding: 0.75rem;
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
   font-weight: 600;
   color: var(--color-accent);
   font-size: 0.875rem;
@@ -229,7 +229,7 @@
 }
 
 .exceptions-table tr:hover {
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
 }
 
 .score-cell {
@@ -251,7 +251,7 @@
 
 .status-open {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .status-closed {
@@ -266,7 +266,7 @@
 
 .severity-medium {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .severity-high {
@@ -330,7 +330,7 @@
 }
 
 .timeline-item {
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--color-border);
@@ -371,7 +371,7 @@
 }
 
 .control-card {
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--color-border);
@@ -379,7 +379,7 @@
 }
 
 .control-card:hover {
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
   border-color: var(--color-accent);
 }
 
@@ -418,7 +418,7 @@
 
 .recurrence-occasional {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .recurrence-isolated {
@@ -437,7 +437,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0.5rem;
-  background: rgba(10, 15, 20, 0.7);
+  background: rgba(15, 39, 71, 0.7);
   border-radius: 6px;
 }
 

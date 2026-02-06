@@ -23,10 +23,10 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
   };
 
   const driftConfigs = {
-    CRITICAL_DRIFT: { color: '#dc2626', label: 'Critical', icon: AlertTriangle },
-    MATERIAL_DRIFT: { color: '#ea580c', label: 'Material', icon: TrendingUp },
-    EMERGING_DRIFT: { color: '#f59e0b', label: 'Emerging', icon: Activity },
-    STABLE: { color: '#16a34a', label: 'Stable', icon: Activity }
+    CRITICAL_DRIFT: { color: '#F97316', label: 'Critical', icon: AlertTriangle },
+    MATERIAL_DRIFT: { color: '#F97316', label: 'Material', icon: TrendingUp },
+    EMERGING_DRIFT: { color: '#F97316', label: 'Emerging', icon: Activity },
+    STABLE: { color: '#F97316', label: 'Stable', icon: Activity }
   };
 
   // Filter data based on selection
@@ -47,10 +47,10 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
     <div style={{ width: '100%' }}>
       {/* Header */}
       <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#0F2747', marginBottom: '8px' }}>
           Control Drift Heatmap
         </h2>
-        <p style={{ fontSize: '14px', color: '#6b7280' }}>
+        <p style={{ fontSize: '14px', color: '#9CA3AF' }}>
           Early-warning view of control responsiveness to regulatory changes
         </p>
       </div>
@@ -68,14 +68,14 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
           style={{
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: selectedStatus === 'ALL' ? '#f3f4f6' : 'white',
-            border: `2px solid ${selectedStatus === 'ALL' ? '#374151' : '#e5e7eb'}`,
+            backgroundColor: selectedStatus === 'ALL' ? '#0F2747' : 'white',
+            border: `2px solid ${selectedStatus === 'ALL' ? '#16365F' : 'rgba(255,255,255,0.06)'}`,
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>Total Controls</div>
-          <div style={{ fontSize: '28px', fontWeight: '800', color: '#1f2937' }}>{stats.total}</div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF', marginBottom: '4px' }}>Total Controls</div>
+          <div style={{ fontSize: '28px', fontWeight: '800', color: '#0F2747' }}>{stats.total}</div>
         </div>
 
         {/* Critical */}
@@ -84,14 +84,14 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
           style={{
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: selectedStatus === 'CRITICAL_DRIFT' ? '#fee2e2' : 'white',
-            border: `2px solid ${selectedStatus === 'CRITICAL_DRIFT' ? '#dc2626' : '#e5e7eb'}`,
+            backgroundColor: selectedStatus === 'CRITICAL_DRIFT' ? '#16365F' : 'white',
+            border: `2px solid ${selectedStatus === 'CRITICAL_DRIFT' ? '#F97316' : 'rgba(255,255,255,0.06)'}`,
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#dc2626', marginBottom: '4px' }}>Critical Drift</div>
-          <div style={{ fontSize: '28px', fontWeight: '800', color: '#dc2626' }}>{stats.critical}</div>
+          <div style={{ fontSize: '12px', color: '#F97316', marginBottom: '4px' }}>Critical Drift</div>
+          <div style={{ fontSize: '28px', fontWeight: '800', color: '#F97316' }}>{stats.critical}</div>
         </div>
 
         {/* Material */}
@@ -100,14 +100,14 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
           style={{
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: selectedStatus === 'MATERIAL_DRIFT' ? '#ffedd5' : 'white',
-            border: `2px solid ${selectedStatus === 'MATERIAL_DRIFT' ? '#ea580c' : '#e5e7eb'}`,
+            backgroundColor: selectedStatus === 'MATERIAL_DRIFT' ? '#16365F' : 'white',
+            border: `2px solid ${selectedStatus === 'MATERIAL_DRIFT' ? '#F97316' : 'rgba(255,255,255,0.06)'}`,
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#ea580c', marginBottom: '4px' }}>Material</div>
-          <div style={{ fontSize: '28px', fontWeight: '800', color: '#ea580c' }}>{stats.material}</div>
+          <div style={{ fontSize: '12px', color: '#F97316', marginBottom: '4px' }}>Material</div>
+          <div style={{ fontSize: '28px', fontWeight: '800', color: '#F97316' }}>{stats.material}</div>
         </div>
 
         {/* Emerging */}
@@ -116,14 +116,14 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
           style={{
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: selectedStatus === 'EMERGING_DRIFT' ? '#fef3c7' : 'white',
-            border: `2px solid ${selectedStatus === 'EMERGING_DRIFT' ? '#f59e0b' : '#e5e7eb'}`,
+            backgroundColor: selectedStatus === 'EMERGING_DRIFT' ? '#16365F' : 'white',
+            border: `2px solid ${selectedStatus === 'EMERGING_DRIFT' ? '#F97316' : 'rgba(255,255,255,0.06)'}`,
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#f59e0b', marginBottom: '4px' }}>Emerging</div>
-          <div style={{ fontSize: '28px', fontWeight: '800', color: '#f59e0b' }}>{stats.emerging}</div>
+          <div style={{ fontSize: '12px', color: '#F97316', marginBottom: '4px' }}>Emerging</div>
+          <div style={{ fontSize: '28px', fontWeight: '800', color: '#F97316' }}>{stats.emerging}</div>
         </div>
 
         {/* Stable */}
@@ -132,14 +132,14 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
           style={{
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: selectedStatus === 'STABLE' ? '#dcfce7' : 'white',
-            border: `2px solid ${selectedStatus === 'STABLE' ? '#16a34a' : '#e5e7eb'}`,
+            backgroundColor: selectedStatus === 'STABLE' ? '#16365F' : 'white',
+            border: `2px solid ${selectedStatus === 'STABLE' ? '#F97316' : 'rgba(255,255,255,0.06)'}`,
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          <div style={{ fontSize: '12px', color: '#16a34a', marginBottom: '4px' }}>Stable</div>
-          <div style={{ fontSize: '28px', fontWeight: '800', color: '#16a34a' }}>{stats.stable}</div>
+          <div style={{ fontSize: '12px', color: '#F97316', marginBottom: '4px' }}>Stable</div>
+          <div style={{ fontSize: '28px', fontWeight: '800', color: '#F97316' }}>{stats.stable}</div>
         </div>
       </div>
 
@@ -149,12 +149,12 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
         gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
         gap: '8px',
         padding: '20px',
-        backgroundColor: '#f9fafb',
+        backgroundColor: '#16365F',
         borderRadius: '12px',
         border: '1px solid #e5e7eb'
       }}>
         {filteredData.length === 0 ? (
-          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#9CA3AF' }}>
             No controls found for this drift status
           </div>
         ) : (
@@ -195,7 +195,7 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
                 <div style={{
                   fontSize: '11px',
                   fontWeight: '600',
-                  color: '#1f2937',
+                  color: '#0F2747',
                   marginBottom: '4px',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -221,7 +221,7 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
                     transform: 'translateX(-50%)',
                     marginTop: '8px',
                     padding: '8px 12px',
-                    backgroundColor: '#1f2937',
+                    backgroundColor: '#0F2747',
                     color: 'white',
                     borderRadius: '6px',
                     fontSize: '11px',
@@ -247,10 +247,10 @@ const ControlDriftHeatmap = ({ driftData = [], onControlClick = null }) => {
       <div style={{
         marginTop: '16px',
         padding: '12px',
-        backgroundColor: '#f9fafb',
+        backgroundColor: '#16365F',
         borderRadius: '8px',
         fontSize: '12px',
-        color: '#6b7280'
+        color: '#9CA3AF'
       }}>
         <strong>Drift Classification:</strong> Stable (0-30) → Emerging (31-50) → Material (51-75) → Critical (76-100)
       </div>

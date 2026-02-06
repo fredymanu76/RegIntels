@@ -34,7 +34,7 @@
 
 .kpi-card {
   background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -68,7 +68,7 @@
 }
 
 .kpi-value.kpi-high {
-  color: #ef4444;
+  color: #F97316;
 }
 
 .kpi-value.kpi-medium {
@@ -149,13 +149,13 @@
 }
 
 .severity-high {
-  background: #fecaca;
-  color: #b91c1c;
+  background: #16365F;
+  color: #F97316;
 }
 
 .severity-medium {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .severity-low {
@@ -175,7 +175,7 @@
 
 .status-open {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 .status-closed {

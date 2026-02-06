@@ -13,8 +13,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.875rem;
@@ -25,14 +25,14 @@
 }
 
 .back-button:hover {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   color: var(--color-accent);
   border-color: var(--color-accent);
 }
 
 .detail-header {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -76,8 +76,8 @@
 }
 
 .total-score-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -126,14 +126,14 @@
   font-size: 0.875rem;
   color: var(--color-text-muted);
   padding: 0.75rem;
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   border: 1px solid var(--color-border);
 }
 
 .score-breakdown {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -155,7 +155,7 @@
 
 .breakdown-item {
   padding: 1rem;
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   border: 1px solid var(--color-border);
 }
@@ -189,7 +189,7 @@
 
 .breakdown-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-secondary));
+  background: var(--reg-orange-500);
   border-radius: 6px;
   transition: width 0.3s ease;
 }
@@ -207,8 +207,8 @@
 }
 
 .stat-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -226,7 +226,7 @@
 
 .stat-card svg {
   color: var(--color-accent);
-  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.5));
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.5));
 }
 
 .stat-content {
@@ -247,8 +247,8 @@
 }
 
 .recommendations {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
@@ -277,7 +277,7 @@
 }
 
 .recommendation.urgent {
-  background: rgba(255, 71, 87, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-color: var(--color-danger);
 }
 
@@ -287,7 +287,7 @@
 }
 
 .recommendation.warning {
-  background: rgba(255, 184, 0, 0.1);
+  background: rgba(251, 146, 60, 0.1);
   border-color: var(--color-warning);
 }
 
@@ -297,7 +297,7 @@
 }
 
 .recommendation.info {
-  background: rgba(0, 230, 118, 0.1);
+  background: rgba(249, 115, 22, 0.1);
   border-color: var(--color-success);
 }
 

@@ -25,7 +25,7 @@ const REGULATORY_SOURCES_CONFIG = {
       'https://www.fca.org.uk/publications/finalised-guidance/rss'
     ],
     baseUrl: 'https://www.fca.org.uk',
-    color: '#003366'
+    color: '#F97316'
   },
   PRA: {
     name: 'Prudential Regulation Authority',
@@ -34,7 +34,7 @@ const REGULATORY_SOURCES_CONFIG = {
       'https://www.bankofengland.co.uk/prudential-regulation/rss'
     ],
     baseUrl: 'https://www.bankofengland.co.uk',
-    color: '#1a4480'
+    color: '#F97316'
   },
   CBI: {
     name: 'Central Bank of Ireland',
@@ -43,7 +43,7 @@ const REGULATORY_SOURCES_CONFIG = {
       'https://www.centralbank.ie/rss/news'
     ],
     baseUrl: 'https://www.centralbank.ie',
-    color: '#008542'
+    color: '#F97316'
   },
   ESMA: {
     name: 'European Securities and Markets Authority',
@@ -52,7 +52,7 @@ const REGULATORY_SOURCES_CONFIG = {
       'https://www.esma.europa.eu/rss.xml'
     ],
     baseUrl: 'https://www.esma.europa.eu',
-    color: '#003399'
+    color: '#F97316'
   }
 };
 

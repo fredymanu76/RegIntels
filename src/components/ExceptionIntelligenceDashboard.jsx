@@ -52,26 +52,26 @@ const ExceptionIntelligenceDashboard = ({ supabase }) => {
 
   const getMaterialityColor = (band) => {
     switch (band) {
-      case 'CRITICAL': return '#DC2626';
-      case 'HIGH': return '#F59E0B';
-      case 'MEDIUM': return '#FCD34D';
-      default: return '#10B981';
+      case 'CRITICAL': return '#F97316';
+      case 'HIGH': return '#F97316';
+      case 'MEDIUM': return '#FB923C';
+      default: return '#F97316';
     }
   };
 
   const getCoverageColor = (band) => {
     switch (band) {
-      case 'COMPLETE': return '#10B981';
-      case 'ADEQUATE': return '#3B82F6';
-      case 'PARTIAL': return '#F59E0B';
-      default: return '#DC2626';
+      case 'COMPLETE': return '#F97316';
+      case 'ADEQUATE': return '#F97316';
+      case 'PARTIAL': return '#F97316';
+      default: return '#F97316';
     }
   };
 
   const getTrustColor = (score) => {
-    if (score >= 75) return '#10B981';
-    if (score >= 50) return '#F59E0B';
-    return '#DC2626';
+    if (score >= 75) return '#F97316';
+    if (score >= 50) return '#F97316';
+    return '#F97316';
   };
 
   const downloadNarrative = (exception) => {
@@ -399,19 +399,19 @@ const ExceptionIntelligenceDashboard = ({ supabase }) => {
               <h4>Portfolio Insights</h4>
               <div className="legend-items">
                 <div className="legend-item">
-                  <span className="legend-color" style={{ background: '#DC2626' }}></span>
+                  <span className="legend-color" style={{ background: '#F97316' }}></span>
                   <span>Critical - Immediate board attention</span>
                 </div>
                 <div className="legend-item">
-                  <span className="legend-color" style={{ background: '#F59E0B' }}></span>
+                  <span className="legend-color" style={{ background: '#F97316' }}></span>
                   <span>High - Senior management action</span>
                 </div>
                 <div className="legend-item">
-                  <span className="legend-color" style={{ background: '#FCD34D' }}></span>
+                  <span className="legend-color" style={{ background: '#FB923C' }}></span>
                   <span>Medium - Management monitoring</span>
                 </div>
                 <div className="legend-item">
-                  <span className="legend-color" style={{ background: '#10B981' }}></span>
+                  <span className="legend-color" style={{ background: '#F97316' }}></span>
                   <span>Low - Operational tracking</span>
                 </div>
               </div>

@@ -28,8 +28,8 @@ const AttestationConfidenceWidget = ({
         return {
           label: 'High Confidence',
           shortLabel: 'High',
-          color: '#16a34a',
-          bg: '#dcfce7',
+          color: '#F97316',
+          bg: '#16365F',
           icon: Award,
           description: 'Strong attestation profile'
         };
@@ -37,8 +37,8 @@ const AttestationConfidenceWidget = ({
         return {
           label: 'Medium Confidence',
           shortLabel: 'Medium',
-          color: '#f59e0b',
-          bg: '#fef3c7',
+          color: '#F97316',
+          bg: '#16365F',
           icon: Shield,
           description: 'Acceptable with monitoring'
         };
@@ -47,8 +47,8 @@ const AttestationConfidenceWidget = ({
         return {
           label: 'Low Confidence',
           shortLabel: 'Low',
-          color: '#dc2626',
-          bg: '#fee2e2',
+          color: '#F97316',
+          bg: '#16365F',
           icon: AlertCircle,
           description: 'Requires attention'
         };

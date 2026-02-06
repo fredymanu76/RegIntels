@@ -138,10 +138,10 @@ const ExceptionsOverviewBoard = ({ tenantId, supabase }) => {
   };
 
   const getAgeBucketColor = (bucket) => {
-    if (bucket === '90+ days') return '#ef4444';
-    if (bucket === '61-90 days') return '#f59e0b';
-    if (bucket === '31-60 days') return '#eab308';
-    return '#10b981';
+    if (bucket === '90+ days') return '#F97316';
+    if (bucket === '61-90 days') return '#F97316';
+    if (bucket === '31-60 days') return '#F97316';
+    return '#F97316';
   };
 
   if (loading) {

@@ -27,31 +27,31 @@ const ImpactScoreCard = ({
     switch (riskBand) {
       case 'CRITICAL':
         return {
-          bg: '#fee2e2',
-          border: '#dc2626',
-          text: '#991b1b',
-          badge: '#dc2626'
+          bg: '#16365F',
+          border: '#F97316',
+          text: '#F97316',
+          badge: '#F97316'
         };
       case 'HIGH':
         return {
-          bg: '#fef3c7',
-          border: '#f59e0b',
-          text: '#92400e',
-          badge: '#f59e0b'
+          bg: '#16365F',
+          border: '#F97316',
+          text: '#F97316',
+          badge: '#F97316'
         };
       case 'MODERATE':
         return {
-          bg: '#dcfce7',
-          border: '#16a34a',
-          text: '#166534',
-          badge: '#16a34a'
+          bg: '#16365F',
+          border: '#F97316',
+          text: '#F97316',
+          badge: '#F97316'
         };
       default:
         return {
-          bg: '#f3f4f6',
-          border: '#9ca3af',
-          text: '#374151',
-          badge: '#9ca3af'
+          bg: '#0F2747',
+          border: '#9CA3AF',
+          text: '#16365F',
+          badge: '#9CA3AF'
         };
     }
   };

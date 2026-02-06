@@ -28,8 +28,8 @@ const ControlDriftBadge = ({
         return {
           label: 'Critical Drift',
           shortLabel: 'Critical',
-          color: '#dc2626',
-          bg: '#fee2e2',
+          color: '#F97316',
+          bg: '#16365F',
           icon: AlertCircle,
           pulse: true
         };
@@ -37,8 +37,8 @@ const ControlDriftBadge = ({
         return {
           label: 'Material Drift',
           shortLabel: 'Material',
-          color: '#ea580c',
-          bg: '#ffedd5',
+          color: '#F97316',
+          bg: '#16365F',
           icon: AlertTriangle,
           pulse: false
         };
@@ -46,8 +46,8 @@ const ControlDriftBadge = ({
         return {
           label: 'Emerging Drift',
           shortLabel: 'Emerging',
-          color: '#f59e0b',
-          bg: '#fef3c7',
+          color: '#F97316',
+          bg: '#16365F',
           icon: Clock,
           pulse: false
         };
@@ -56,8 +56,8 @@ const ControlDriftBadge = ({
         return {
           label: 'Stable',
           shortLabel: 'Stable',
-          color: '#16a34a',
-          bg: '#dcfce7',
+          color: '#F97316',
+          bg: '#16365F',
           icon: CheckCircle,
           pulse: false
         };

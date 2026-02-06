@@ -86,23 +86,23 @@ const Solution4Dashboard = ({ supabase }) => {
   // Get badge color for materiality band
   const getBandColor = (band) => {
     const colors = {
-      'CRITICAL': '#ef4444',
-      'HIGH': '#f97316',
-      'MEDIUM': '#eab308',
-      'LOW': '#22c55e'
+      'CRITICAL': '#F97316',
+      'HIGH': '#F97316',
+      'MEDIUM': '#F97316',
+      'LOW': '#F97316'
     };
-    return colors[band] || '#6b7280';
+    return colors[band] || '#9CA3AF';
   };
 
   // Get badge color for urgency level
   const getUrgencyColor = (level) => {
     const colors = {
-      'IMMEDIATE_ATTENTION': '#dc2626',
-      'ESCALATE': '#ea580c',
-      'MONITOR': '#facc15',
-      'TRACK': '#4ade80'
+      'IMMEDIATE_ATTENTION': '#F97316',
+      'ESCALATE': '#F97316',
+      'MONITOR': '#FB923C',
+      'TRACK': '#FB923C'
     };
-    return colors[level] || '#6b7280';
+    return colors[level] || '#9CA3AF';
   };
 
   if (loading) {

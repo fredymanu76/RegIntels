@@ -801,9 +801,9 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
 
           {resetEmailSent ? (
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <CheckCircle size={48} style={{ color: '#10b981', marginBottom: '1rem' }} />
+              <CheckCircle size={48} style={{ color: '#F97316', marginBottom: '1rem' }} />
               <p style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>Check your email</p>
-              <p style={{ color: '#64748B', marginBottom: '2rem' }}>
+              <p style={{ color: '#9CA3AF', marginBottom: '2rem' }}>
                 We've sent a password reset link to <strong>{email}</strong>
               </p>
               <button
@@ -820,7 +820,7 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
           ) : (
             <form onSubmit={handleForgotPassword}>
               {error && (
-                <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
+                <div className="error-message" style={{ color: '#F97316', marginBottom: '1rem' }}>
                   {error}
                 </div>
               )}
@@ -867,7 +867,7 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
 
         <form onSubmit={handleLogin}>
           {error && (
-            <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
+            <div className="error-message" style={{ color: '#F97316', marginBottom: '1rem' }}>
               {error}
             </div>
           )}
@@ -898,7 +898,7 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
             <button
               type="button"
               onClick={() => setShowForgotPassword(true)}
-              style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', fontSize: '0.9rem', textDecoration: 'underline' }}
+              style={{ background: 'none', border: 'none', color: '#F97316', cursor: 'pointer', fontSize: '0.9rem', textDecoration: 'underline' }}
             >
               Forgot password?
             </button>
@@ -909,7 +909,7 @@ function LoginPage({ onLoginSuccess, onStartOnboarding }) {
           </button>
         </form>
 
-        <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #E2E8F0', textAlign: 'center' }}>
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center' }}>
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '0.75rem' }}>
             New to REGINTELS?
           </p>
@@ -980,9 +980,9 @@ function PasswordResetPage() {
       <div className="login-container">
         <div className="login-card">
           <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-            <CheckCircle size={48} style={{ color: '#10b981', marginBottom: '1rem' }} />
+            <CheckCircle size={48} style={{ color: '#F97316', marginBottom: '1rem' }} />
             <h2>Password Reset Successful!</h2>
-            <p style={{ color: '#64748B', marginTop: '1rem' }}>
+            <p style={{ color: '#9CA3AF', marginTop: '1rem' }}>
               Your password has been updated. Redirecting to login...
             </p>
           </div>
@@ -999,7 +999,7 @@ function PasswordResetPage() {
 
         <form onSubmit={handlePasswordReset}>
           {error && (
-            <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
+            <div className="error-message" style={{ color: '#F97316', marginBottom: '1rem' }}>
               {error}
             </div>
           )}
@@ -1442,22 +1442,27 @@ export default function RegIntels() {
   // main render
   return (
     <div className="app">
-      {/* Connection Status Banner */}
+      {/* Connection Status Banner — Glass strip */}
       <div
         className={`status-banner ${
           supabase.useMockData ? 'warning' : 'success'
         }`}
       >
         <div className="status-content">
-          {supabase.useMockData ? (
-            <AlertCircle size={18} />
-          ) : (
-            <Database size={18} />
-          )}
+          <span
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: supabase.useMockData ? '#FACC15' : '#22C55E',
+              display: 'inline-block',
+              flexShrink: 0
+            }}
+          />
           <span>
             {supabase.useMockData
-              ? '⚠️ Using Mock Data - Click "Configure Database" to connect Supabase'
-              : '✓ Connected to Supabase'}
+              ? 'Using Mock Data — Click "Database Setup" to connect'
+              : 'Connected to Supabase'}
           </span>
         </div>
       </div>
@@ -1798,23 +1803,23 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
 
       {/* Statistics Dashboard */}
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+        <div className="stat-card" style={{ background: '#16365F', color: 'white', padding: '1rem', borderRadius: '12px' }}>
           <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.total}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Total Changes</div>
         </div>
-        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #dc2626, #991b1b)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+        <div className="stat-card" style={{ background: '#16365F', color: 'white', padding: '1rem', borderRadius: '12px' }}>
           <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.highPriority}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>High Priority</div>
         </div>
-        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+        <div className="stat-card" style={{ background: '#16365F', color: 'white', padding: '1rem', borderRadius: '12px' }}>
           <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.pending}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Pending Review</div>
         </div>
-        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+        <div className="stat-card" style={{ background: '#16365F', color: 'white', padding: '1rem', borderRadius: '12px' }}>
           <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.inReview}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>In Review</div>
         </div>
-        <div className="stat-card" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white', padding: '1rem', borderRadius: '12px' }}>
+        <div className="stat-card" style={{ background: '#16365F', color: 'white', padding: '1rem', borderRadius: '12px' }}>
           <div style={{ fontSize: '2rem', fontWeight: '700' }}>{stats.actioned}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>Actioned</div>
         </div>
@@ -1844,7 +1849,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
         <select
           value={filterSource}
           onChange={(e) => setFilterSource(e.target.value)}
-          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white' }}
+          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)', background: '#16365F' }}
         >
           <option value="all">All Sources ({stats.total})</option>
           <option value="FCA">FCA ({stats.bySource.FCA})</option>
@@ -1856,7 +1861,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0', background: 'white' }}
+          style={{ padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)', background: '#16365F' }}
         >
           <option value="all">All Statuses</option>
           <option value="pending">Pending</option>
@@ -1865,7 +1870,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
         </select>
 
         {lastScan && (
-          <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+          <span style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>
             Last scan: {new Date(lastScan).toLocaleTimeString()}
           </span>
         )}
@@ -1874,8 +1879,8 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
       {/* Scan Result Notification */}
       {scanResult && (
         <div style={{
-          background: scanResult.hasHighPriority ? '#fef2f2' : '#f0fdf4',
-          border: `1px solid ${scanResult.hasHighPriority ? '#fecaca' : '#bbf7d0'}`,
+          background: scanResult.hasHighPriority ? '#16365F' : '#16365F',
+          border: `1px solid ${scanResult.hasHighPriority ? '#16365F' : '#16365F'}`,
           borderRadius: '8px',
           padding: '1rem',
           marginBottom: '1.5rem',
@@ -1886,11 +1891,11 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
           <span style={{ fontSize: '1.25rem' }}>{scanResult.hasHighPriority ? '⚠️' : '✅'}</span>
           <div>
             <strong>Scan Complete</strong> - Found {scanResult.totalCount} regulatory updates from {scanResult.sourcesScanned} sources.
-            {scanResult.liveDataFound && <span style={{ marginLeft: '0.5rem', color: '#059669' }}>(Live data available)</span>}
+            {scanResult.liveDataFound && <span style={{ marginLeft: '0.5rem', color: '#F97316' }}>(Live data available)</span>}
           </div>
           <button
             onClick={() => setScanResult(null)}
-            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF' }}
           >✕</button>
         </div>
       )}
@@ -1898,16 +1903,16 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
       {/* Changes Grid */}
       <div className="card-grid">
         {filteredChanges.map(change => (
-          <div key={change.id} className="card" style={{ border: change.materiality === 'high' ? '2px solid #dc2626' : undefined }}>
+          <div key={change.id} className="card" style={{ border: change.materiality === 'high' ? '2px solid #F97316' : undefined }}>
             <div className="card-badges">
               <span className="source-badge" style={{
-                background: change.source === 'FCA' ? '#1d4ed8' :
-                           change.source === 'PRA' ? '#7c3aed' :
-                           change.source === 'CBI' ? '#059669' :
-                           change.source === 'ESMA' ? '#d97706' : '#64748b',
+                background: change.source === 'FCA' ? '#F97316' :
+                           change.source === 'PRA' ? '#F97316' :
+                           change.source === 'CBI' ? '#F97316' :
+                           change.source === 'ESMA' ? '#FB923C' : '#9CA3AF',
                 color: 'white', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600'
               }}>{change.source}</span>
-              <span className="date-badge" style={{ background: '#f1f5f9', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>
+              <span className="date-badge" style={{ background: '#0F2747', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem' }}>
                 {formatRelativeTime(change.published_at)}
               </span>
               <StatusBadge status={change.status} />
@@ -1922,7 +1927,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
                 <ImpactBadge impact={change.materiality || change.impact_rating} />
               )}
               {change.isLive && (
-                <span style={{ background: '#dcfce7', color: '#166534', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>LIVE</span>
+                <span style={{ background: '#16365F', color: '#F97316', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>LIVE</span>
               )}
             </div>
             <h3 className="card-title">{change.title}</h3>
@@ -1932,7 +1937,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
             {change.affected_regimes && change.affected_regimes.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginTop: '0.5rem' }}>
                 {change.affected_regimes.slice(0, 4).map((regime, idx) => (
-                  <span key={idx} style={{ background: '#e0e7ff', color: '#3730a3', padding: '0.125rem 0.375rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>
+                  <span key={idx} style={{ background: '#16365F', color: '#F97316', padding: '0.125rem 0.375rem', borderRadius: '4px', fontSize: '0.625rem', fontWeight: '600' }}>
                     {regime}
                   </span>
                 ))}
@@ -1940,12 +1945,12 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
             )}
 
             {/* Effective Date & Document Link */}
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', fontSize: '0.75rem', color: '#64748b', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', fontSize: '0.75rem', color: '#9CA3AF', flexWrap: 'wrap' }}>
               {change.effective_date && (
                 <span>📅 Effective: {new Date(change.effective_date).toLocaleDateString()}</span>
               )}
               {change.document_url && change.document_url !== '#' && (
-                <a href={change.document_url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
+                <a href={change.document_url} target="_blank" rel="noopener noreferrer" style={{ color: '#F97316' }}>
                   🔗 Source Document
                 </a>
               )}
@@ -1975,7 +1980,7 @@ function ChangeFeedPage({ tenantId, isReadOnly }) {
       </div>
 
       {filteredChanges.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#9CA3AF' }}>
           <p>No regulatory changes match your filters.</p>
         </div>
       )}
@@ -2181,11 +2186,11 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
   // Policy status badge color
   const getStatusColor = (status) => {
     const colors = {
-      approved: { bg: '#dcfce7', text: '#166534', border: '#86efac' },
-      under_review: { bg: '#fef3c7', text: '#92400e', border: '#fcd34d' },
-      draft: { bg: '#e0e7ff', text: '#3730a3', border: '#a5b4fc' },
-      pending_approval: { bg: '#dbeafe', text: '#1d4ed8', border: '#93c5fd' },
-      archived: { bg: '#f1f5f9', text: '#64748b', border: '#cbd5e1' }
+      approved: { bg: '#16365F', text: '#F97316', border: '#FB923C' },
+      under_review: { bg: '#16365F', text: '#F97316', border: '#FB923C' },
+      draft: { bg: '#16365F', text: '#F97316', border: '#FB923C' },
+      pending_approval: { bg: '#16365F', text: '#F97316', border: '#FB923C' },
+      archived: { bg: '#0F2747', text: '#9CA3AF', border: 'rgba(255,255,255,0.06)' }
     };
     return colors[status] || colors.draft;
   };
@@ -2203,12 +2208,12 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           onClick={() => setFilterStatus('all')}
           style={{
             padding: '16px',
-            background: filterStatus === 'all' ? '#1e293b' : 'white',
-            color: filterStatus === 'all' ? 'white' : '#1e293b',
+            background: filterStatus === 'all' ? '#16365F' : 'white',
+            color: filterStatus === 'all' ? 'white' : '#16365F',
             borderRadius: '12px',
             cursor: 'pointer',
             border: '2px solid',
-            borderColor: filterStatus === 'all' ? '#1e293b' : '#e2e8f0',
+            borderColor: filterStatus === 'all' ? '#16365F' : '#16365F',
             transition: 'all 0.2s'
           }}
         >
@@ -2219,11 +2224,11 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           onClick={() => setFilterStatus('approved')}
           style={{
             padding: '16px',
-            background: filterStatus === 'approved' ? '#166534' : '#dcfce7',
-            color: filterStatus === 'approved' ? 'white' : '#166534',
+            background: filterStatus === 'approved' ? '#F97316' : '#16365F',
+            color: filterStatus === 'approved' ? 'white' : '#F97316',
             borderRadius: '12px',
             cursor: 'pointer',
-            border: '2px solid #86efac',
+            border: '2px solid #FB923C',
             transition: 'all 0.2s'
           }}
         >
@@ -2234,11 +2239,11 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           onClick={() => setFilterStatus('under_review')}
           style={{
             padding: '16px',
-            background: filterStatus === 'under_review' ? '#92400e' : '#fef3c7',
-            color: filterStatus === 'under_review' ? 'white' : '#92400e',
+            background: filterStatus === 'under_review' ? '#F97316' : '#16365F',
+            color: filterStatus === 'under_review' ? 'white' : '#F97316',
             borderRadius: '12px',
             cursor: 'pointer',
-            border: '2px solid #fcd34d',
+            border: '2px solid #FB923C',
             transition: 'all 0.2s'
           }}
         >
@@ -2249,11 +2254,11 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           onClick={() => setFilterStatus('pending_approval')}
           style={{
             padding: '16px',
-            background: filterStatus === 'pending_approval' ? '#1d4ed8' : '#dbeafe',
-            color: filterStatus === 'pending_approval' ? 'white' : '#1d4ed8',
+            background: filterStatus === 'pending_approval' ? '#F97316' : '#16365F',
+            color: filterStatus === 'pending_approval' ? 'white' : '#F97316',
             borderRadius: '12px',
             cursor: 'pointer',
-            border: '2px solid #93c5fd',
+            border: '2px solid #FB923C',
             transition: 'all 0.2s'
           }}
         >
@@ -2264,11 +2269,11 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           onClick={() => setFilterStatus('draft')}
           style={{
             padding: '16px',
-            background: filterStatus === 'draft' ? '#3730a3' : '#e0e7ff',
-            color: filterStatus === 'draft' ? 'white' : '#3730a3',
+            background: filterStatus === 'draft' ? '#F97316' : '#16365F',
+            color: filterStatus === 'draft' ? 'white' : '#F97316',
             borderRadius: '12px',
             cursor: 'pointer',
-            border: '2px solid #a5b4fc',
+            border: '2px solid #FB923C',
             transition: 'all 0.2s'
           }}
         >
@@ -2331,7 +2336,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
               {policy.description && (
                 <p style={{
                   fontSize: '13px',
-                  color: '#64748b',
+                  color: '#9CA3AF',
                   marginBottom: '12px',
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
@@ -2349,8 +2354,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                     borderRadius: '4px',
                     fontSize: '11px',
                     fontWeight: '600',
-                    background: '#f1f5f9',
-                    color: '#475569'
+                    background: '#0F2747',
+                    color: '#E5E7EB'
                   }}>
                     {policy.regulator_regime}
                   </span>
@@ -2361,8 +2366,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                     borderRadius: '4px',
                     fontSize: '11px',
                     fontWeight: '600',
-                    background: '#eff6ff',
-                    color: '#1d4ed8'
+                    background: '#16365F',
+                    color: '#F97316'
                   }}>
                     {policy.category}
                   </span>
@@ -2376,23 +2381,23 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                 </div>
                 {policy.next_review_date && policy.status !== 'archived' && (
                   <div style={{
-                    color: new Date(policy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#dc2626' : '#64748b'
+                    color: new Date(policy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#F97316' : '#9CA3AF'
                   }}>
                     Next Review: {new Date(policy.next_review_date).toLocaleDateString()}
                   </div>
                 )}
                 {policy.status === 'pending_approval' && policy.pending_approver && (
-                  <div style={{ color: '#1d4ed8', fontWeight: '500' }}>
+                  <div style={{ color: '#F97316', fontWeight: '500' }}>
                     Awaiting approval from: {policy.pending_approver}
                   </div>
                 )}
                 {policy.status === 'under_review' && policy.reviewer && (
-                  <div style={{ color: '#92400e', fontWeight: '500' }}>
+                  <div style={{ color: '#F97316', fontWeight: '500' }}>
                     Reviewer: {policy.reviewer}
                   </div>
                 )}
                 {policy.status === 'archived' && policy.archive_reason && (
-                  <div style={{ color: '#64748b', fontStyle: 'italic', marginTop: '8px' }}>
+                  <div style={{ color: '#9CA3AF', fontStyle: 'italic', marginTop: '8px' }}>
                     {policy.archive_reason}
                   </div>
                 )}
@@ -2400,8 +2405,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
 
               {/* Linked Controls */}
               {policy.linked_controls && policy.linked_controls.length > 0 && (
-                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '6px' }}>Linked Controls:</div>
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '6px' }}>Linked Controls:</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                     {policy.linked_controls.map((ctrl, i) => (
                       <span key={i} style={{
@@ -2409,9 +2414,9 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                         borderRadius: '4px',
                         fontSize: '10px',
                         fontWeight: '600',
-                        background: '#f8fafc',
-                        color: '#475569',
-                        border: '1px solid #e2e8f0'
+                        background: '#16365F',
+                        color: '#E5E7EB',
+                        border: '1px solid rgba(255,255,255,0.06)'
                       }}>
                         {ctrl}
                       </span>
@@ -2425,7 +2430,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
       </div>
 
       {filteredPolicies.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#9CA3AF' }}>
           <FileText size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
           <p>No policies found with the selected filter.</p>
         </div>
@@ -2451,7 +2456,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
         >
           <div
             style={{
-              background: 'white',
+              background: '#16365F',
               borderRadius: '16px',
               width: '90%',
               maxWidth: '700px',
@@ -2463,8 +2468,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
           >
             <div style={{
               padding: '24px',
-              borderBottom: '1px solid #e2e8f0',
-              background: 'linear-gradient(135deg, #1e293b, #334155)',
+              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              background: '#16365F',
               color: 'white',
               borderRadius: '16px 16px 0 0'
             }}>
@@ -2515,8 +2520,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
               {/* Description */}
               {selectedPolicy.description && (
                 <div style={{ marginBottom: '24px' }}>
-                  <h4 style={{ margin: '0 0 8px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Description</h4>
-                  <p style={{ margin: 0, color: '#334155', lineHeight: 1.6 }}>{selectedPolicy.description}</p>
+                  <h4 style={{ margin: '0 0 8px 0', color: '#9CA3AF', fontSize: '12px', textTransform: 'uppercase' }}>Description</h4>
+                  <p style={{ margin: 0, color: '#16365F', lineHeight: 1.6 }}>{selectedPolicy.description}</p>
                 </div>
               )}
 
@@ -2527,23 +2532,23 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                 gap: '16px',
                 marginBottom: '24px'
               }}>
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Owner</div>
+                <div style={{ padding: '16px', background: '#16365F', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Owner</div>
                   <div style={{ fontWeight: '600' }}>{selectedPolicy.owner}</div>
                   {selectedPolicy.owner_email && (
-                    <div style={{ fontSize: '12px', color: '#64748b' }}>{selectedPolicy.owner_email}</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{selectedPolicy.owner_email}</div>
                   )}
                 </div>
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Regime</div>
+                <div style={{ padding: '16px', background: '#16365F', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Regime</div>
                   <div style={{ fontWeight: '600' }}>{selectedPolicy.regulator_regime}</div>
                 </div>
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Category</div>
+                <div style={{ padding: '16px', background: '#16365F', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Category</div>
                   <div style={{ fontWeight: '600' }}>{selectedPolicy.category}</div>
                 </div>
-                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Review Frequency</div>
+                <div style={{ padding: '16px', background: '#16365F', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Review Frequency</div>
                   <div style={{ fontWeight: '600' }}>{selectedPolicy.review_frequency || 'Not set'}</div>
                 </div>
               </div>
@@ -2555,23 +2560,23 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                 gap: '16px',
                 marginBottom: '24px',
                 padding: '16px',
-                background: '#f8fafc',
+                background: '#16365F',
                 borderRadius: '8px'
               }}>
                 <div>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Created</div>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Created</div>
                   <div style={{ fontWeight: '500' }}>{new Date(selectedPolicy.created_at).toLocaleDateString()}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Last Updated</div>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Last Updated</div>
                   <div style={{ fontWeight: '500' }}>{selectedPolicy.last_updated ? new Date(selectedPolicy.last_updated).toLocaleDateString() : 'N/A'}</div>
                 </div>
                 {selectedPolicy.next_review_date && (
                   <div>
-                    <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '4px' }}>Next Review</div>
+                    <div style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '4px' }}>Next Review</div>
                     <div style={{
                       fontWeight: '500',
-                      color: new Date(selectedPolicy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#dc2626' : 'inherit'
+                      color: new Date(selectedPolicy.next_review_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? '#F97316' : 'inherit'
                     }}>
                       {new Date(selectedPolicy.next_review_date).toLocaleDateString()}
                     </div>
@@ -2582,7 +2587,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
               {/* Linked Obligations */}
               {selectedPolicy.linked_obligations && selectedPolicy.linked_obligations.length > 0 && (
                 <div style={{ marginBottom: '24px' }}>
-                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Linked Obligations</h4>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#9CA3AF', fontSize: '12px', textTransform: 'uppercase' }}>Linked Obligations</h4>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {selectedPolicy.linked_obligations.map((ob, i) => (
                       <span key={i} style={{
@@ -2590,9 +2595,9 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                         borderRadius: '6px',
                         fontSize: '12px',
                         fontWeight: '500',
-                        background: '#eff6ff',
-                        color: '#1d4ed8',
-                        border: '1px solid #93c5fd'
+                        background: '#16365F',
+                        color: '#F97316',
+                        border: '1px solid #FB923C'
                       }}>
                         {ob}
                       </span>
@@ -2604,7 +2609,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
               {/* Linked Controls */}
               {selectedPolicy.linked_controls && selectedPolicy.linked_controls.length > 0 && (
                 <div style={{ marginBottom: '24px' }}>
-                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Linked Controls</h4>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#9CA3AF', fontSize: '12px', textTransform: 'uppercase' }}>Linked Controls</h4>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {selectedPolicy.linked_controls.map((ctrl, i) => (
                       <span key={i} style={{
@@ -2612,9 +2617,9 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                         borderRadius: '6px',
                         fontSize: '12px',
                         fontWeight: '600',
-                        background: '#f8fafc',
-                        color: '#475569',
-                        border: '1px solid #e2e8f0',
+                        background: '#16365F',
+                        color: '#E5E7EB',
+                        border: '1px solid rgba(255,255,255,0.06)',
                         fontFamily: 'monospace'
                       }}>
                         {ctrl}
@@ -2627,9 +2632,9 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
               {/* Approval History */}
               {selectedPolicy.approval_history && selectedPolicy.approval_history.length > 0 && (
                 <div>
-                  <h4 style={{ margin: '0 0 12px 0', color: '#64748b', fontSize: '12px', textTransform: 'uppercase' }}>Approval History</h4>
+                  <h4 style={{ margin: '0 0 12px 0', color: '#9CA3AF', fontSize: '12px', textTransform: 'uppercase' }}>Approval History</h4>
                   <div style={{
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid rgba(255,255,255,0.06)',
                     borderRadius: '8px',
                     overflow: 'hidden'
                   }}>
@@ -2638,8 +2643,8 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                         key={i}
                         style={{
                           padding: '12px 16px',
-                          background: i === 0 ? '#f0fdf4' : 'white',
-                          borderBottom: i < selectedPolicy.approval_history.length - 1 ? '1px solid #e2e8f0' : 'none',
+                          background: i === 0 ? '#16365F' : 'white',
+                          borderBottom: i < selectedPolicy.approval_history.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                           display: 'flex',
                           alignItems: 'flex-start',
                           gap: '12px'
@@ -2649,27 +2654,27 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                           width: '32px',
                           height: '32px',
                           borderRadius: '50%',
-                          background: i === 0 ? '#10b981' : '#e2e8f0',
+                          background: i === 0 ? '#F97316' : '#16365F',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: i === 0 ? 'white' : '#64748b',
+                          color: i === 0 ? 'white' : '#9CA3AF',
                           flexShrink: 0
                         }}>
                           <CheckCircle size={16} />
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: '600', color: '#1e293b' }}>Version {approval.version}</span>
-                            <span style={{ fontSize: '12px', color: '#64748b' }}>
+                            <span style={{ fontWeight: '600', color: '#16365F' }}>Version {approval.version}</span>
+                            <span style={{ fontSize: '12px', color: '#9CA3AF' }}>
                               {new Date(approval.approved_date).toLocaleDateString()}
                             </span>
                           </div>
-                          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '2px' }}>
+                          <div style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '2px' }}>
                             Approved by: {approval.approved_by}
                           </div>
                           {approval.notes && (
-                            <div style={{ fontSize: '13px', color: '#475569', marginTop: '8px', fontStyle: 'italic' }}>
+                            <div style={{ fontSize: '13px', color: '#E5E7EB', marginTop: '8px', fontStyle: 'italic' }}>
                               "{approval.notes}"
                             </div>
                           )}
@@ -2686,7 +2691,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                 gap: '12px',
                 marginTop: '24px',
                 paddingTop: '24px',
-                borderTop: '1px solid #e2e8f0'
+                borderTop: '1px solid rgba(255,255,255,0.06)'
               }}>
                 {selectedPolicy.document_url && (
                   <button
@@ -2705,7 +2710,7 @@ function PolicyLibraryPage({ tenantId, isReadOnly }) {
                 {selectedPolicy.status === 'pending_approval' && !isReadOnly && (
                   <button
                     className="btn-primary"
-                    style={{ background: '#10b981' }}
+                    style={{ background: '#F97316' }}
                   >
                     <CheckCircle size={16} />
                     Approve Policy
@@ -2930,7 +2935,7 @@ return (
     {exceptions?.slice(0, 2).map(ex => (
       <div key={ex.id} className="card">
         <div className="card-badges">
-          <AlertTriangle size={18} color={ex.severity === 'high' ? '#B91C1C' : '#B45309'} />
+          <AlertTriangle size={18} color={ex.severity === 'high' ? '#F97316' : '#F97316'} />
           <span className="source-type-badge">{ex.source_type}</span>
           <StatusBadge status={ex.status} />
         </div>
@@ -2981,7 +2986,7 @@ return (
     {exceptions?.map(ex => (
       <div key={ex.id} className="card">
         <div className="card-badges">
-          <AlertTriangle size={18} color={ex.severity === 'high' ? '#B91C1C' : '#B45309'} />
+          <AlertTriangle size={18} color={ex.severity === 'high' ? '#F97316' : '#F97316'} />
           <span className="source-type-badge">{ex.source_type}</span>
           <span className={`severity-badge ${ex.severity}`}>{ex.severity} severity</span>
           <StatusBadge status={ex.status} />
@@ -3139,7 +3144,7 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
       </button>
 
       {showAddUser && (
-        <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+        <div style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '1.5rem' }}>
           <h3>Invite New User</h3>
           <form onSubmit={handleAddUser}>
             <div style={{ marginBottom: '1rem' }}>
@@ -3149,7 +3154,7 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
                 value={newUser.email}
                 onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                 required
-                style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px' }}
               />
             </div>
             <div style={{ marginBottom: '1rem' }}>
@@ -3159,7 +3164,7 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
                 value={newUser.name}
                 onChange={(e) => setNewUser({...newUser, name: e.target.value})}
                 required
-                style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px' }}
               />
             </div>
             <div style={{ marginBottom: '1rem' }}>
@@ -3167,7 +3172,7 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
               <select
                 value={newUser.role}
                 onChange={(e) => setNewUser({...newUser, role: e.target.value})}
-                style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px' }}
               >
                 <option value="Admin">Admin</option>
                 <option value="Compliance">Compliance</option>
@@ -3182,10 +3187,10 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
         </div>
       )}
 
-      <div style={{ background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+      <div style={{ background: '#16365F', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: '#16365F' }}>
               <th style={{ padding: '1rem', textAlign: 'left' }}>Name</th>
               <th style={{ padding: '1rem', textAlign: 'left' }}>Email</th>
               <th style={{ padding: '1rem', textAlign: 'left' }}>Role</th>
@@ -3195,15 +3200,15 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.user_id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+              <tr key={user.user_id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                 <td style={{ padding: '1rem' }}>{user.name}</td>
                 <td style={{ padding: '1rem' }}>{user.email}</td>
                 <td style={{ padding: '1rem' }}>
                   <span style={{
                     padding: '0.25rem 0.75rem',
                     borderRadius: '12px',
-                    background: user.role === 'Admin' ? '#dbeafe' : '#e0e7ff',
-                    color: user.role === 'Admin' ? '#1e40af' : '#4338ca',
+                    background: user.role === 'Admin' ? '#16365F' : '#16365F',
+                    color: user.role === 'Admin' ? '#F97316' : '#F97316',
                     fontSize: '0.85rem'
                   }}>
                     {user.role}
@@ -3213,8 +3218,8 @@ function TenantUserManagementPage({ currentUser, tenantId }) {
                   <span style={{
                     padding: '0.25rem 0.75rem',
                     borderRadius: '12px',
-                    background: '#d1fae5',
-                    color: '#065f46',
+                    background: '#16365F',
+                    color: '#F97316',
                     fontSize: '0.85rem'
                   }}>
                     Active
@@ -3281,7 +3286,7 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
         <p>Manage your firm's information and preferences</p>
       </div>
 
-      <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+      <div style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h3 style={{ marginBottom: '1.5rem' }}>Firm Information</h3>
 
         <div style={{ display: 'grid', gap: '1rem' }}>
@@ -3291,7 +3296,7 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
               type="text"
               value={tenant?.name || ''}
               readOnly
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px', background: '#f8fafc' }}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', background: '#16365F' }}
             />
           </div>
 
@@ -3301,7 +3306,7 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
               type="text"
               value={tenant?.regime || ''}
               readOnly
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px', background: '#f8fafc' }}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', background: '#16365F' }}
             />
           </div>
 
@@ -3311,7 +3316,7 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
               type="text"
               value={tenant?.frn || ''}
               readOnly
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px', background: '#f8fafc' }}
+              style={{ width: '100%', padding: '0.5rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '4px', background: '#16365F' }}
             />
           </div>
 
@@ -3320,8 +3325,8 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
             <div style={{
               padding: '0.5rem',
               borderRadius: '4px',
-              background: tenant?.status === 'active' ? '#d1fae5' : '#fef3c7',
-              color: tenant?.status === 'active' ? '#065f46' : '#92400e',
+              background: tenant?.status === 'active' ? '#16365F' : '#16365F',
+              color: tenant?.status === 'active' ? '#F97316' : '#F97316',
               display: 'inline-block'
             }}>
               {tenant?.status?.toUpperCase()}
@@ -3329,8 +3334,8 @@ function TenantFirmSettingsPage({ currentUser, tenantId }) {
           </div>
         </div>
 
-        <div style={{ marginTop: '2rem', padding: '1rem', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
-          <p style={{ margin: 0, color: '#1e40af' }}>
+        <div style={{ marginTop: '2rem', padding: '1rem', background: '#16365F', borderRadius: '8px', border: '1px solid #16365F' }}>
+          <p style={{ margin: 0, color: '#F97316' }}>
             <strong>Note:</strong> To change firm details, please contact platform support.
           </p>
         </div>
@@ -3347,28 +3352,28 @@ function TenantSubscriptionPage({ currentUser, tenantId }) {
         <p>View and manage your subscription</p>
       </div>
 
-      <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '1.5rem' }}>
+      <div style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '1.5rem' }}>
         <h3 style={{ marginBottom: '1rem' }}>Current Plan</h3>
-        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#667eea', marginBottom: '0.5rem' }}>Enterprise</div>
-        <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Full access to all RegIntels solutions</p>
+        <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F97316', marginBottom: '0.5rem' }}>Enterprise</div>
+        <p style={{ color: '#9CA3AF', marginBottom: '1.5rem' }}>Full access to all RegIntels solutions</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Status</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#10b981' }}>Active</div>
+            <div style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Status</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#F97316' }}>Active</div>
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Users</div>
+            <div style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Users</div>
             <div style={{ fontSize: '1.1rem', fontWeight: '600' }}>Unlimited</div>
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: '0.9rem' }}>Solutions</div>
+            <div style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Solutions</div>
             <div style={{ fontSize: '1.1rem', fontWeight: '600' }}>All 5 Solutions</div>
           </div>
         </div>
       </div>
 
-      <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+      <div style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
         <h3 style={{ marginBottom: '1rem' }}>Included Features</h3>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {[
@@ -3381,8 +3386,8 @@ function TenantSubscriptionPage({ currentUser, tenantId }) {
             '24/7 Priority Support',
             'Dedicated Account Manager'
           ].map((feature, idx) => (
-            <li key={idx} style={{ padding: '0.75rem 0', borderBottom: idx < 7 ? '1px solid #e2e8f0' : 'none', display: 'flex', alignItems: 'center' }}>
-              <CheckCircle size={18} style={{ color: '#10b981', marginRight: '0.75rem' }} />
+            <li key={idx} style={{ padding: '0.75rem 0', borderBottom: idx < 7 ? '1px solid rgba(255,255,255,0.06)' : 'none', display: 'flex', alignItems: 'center' }}>
+              <CheckCircle size={18} style={{ color: '#F97316', marginRight: '0.75rem' }} />
               {feature}
             </li>
           ))}
@@ -3464,53 +3469,53 @@ function PlatformMetricsPage({ currentUser }) {
       </div>
 
       <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <div className="stat-card" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Total Tenants</span>
-            <Users size={20} style={{ color: '#667eea' }} />
+            <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Total Tenants</span>
+            <Users size={20} style={{ color: '#F97316' }} />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1e293b' }}>{metrics.totalTenants}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#16365F' }}>{metrics.totalTenants}</div>
         </div>
 
-        <div className="stat-card" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Active Tenants</span>
-            <CheckCircle size={20} style={{ color: '#10b981' }} />
+            <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Active Tenants</span>
+            <CheckCircle size={20} style={{ color: '#F97316' }} />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>{metrics.activeTenants}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F97316' }}>{metrics.activeTenants}</div>
         </div>
 
-        <div className="stat-card" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Pending Approval</span>
-            <Clock size={20} style={{ color: '#f59e0b' }} />
+            <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Pending Approval</span>
+            <Clock size={20} style={{ color: '#F97316' }} />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{metrics.pendingTenants}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F97316' }}>{metrics.pendingTenants}</div>
         </div>
 
-        <div className="stat-card" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Suspended</span>
-            <AlertCircle size={20} style={{ color: '#ef4444' }} />
+            <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Suspended</span>
+            <AlertCircle size={20} style={{ color: '#F97316' }} />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef4444' }}>{metrics.suspendedTenants}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F97316' }}>{metrics.suspendedTenants}</div>
         </div>
 
-        <div className="stat-card" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <div className="stat-card" style={{ background: '#16365F', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ color: '#64748b', fontSize: '0.9rem' }}>Total Users</span>
-            <Users size={20} style={{ color: '#8b5cf6' }} />
+            <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Total Users</span>
+            <Users size={20} style={{ color: '#F97316' }} />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#8b5cf6' }}>{metrics.totalUsers}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#F97316' }}>{metrics.totalUsers}</div>
         </div>
       </div>
 
-      <div style={{ background: '#fef3c7', border: '1px solid #fbbf24', padding: '1rem', borderRadius: '8px', marginTop: '2rem' }}>
+      <div style={{ background: '#16365F', border: '1px solid #FB923C', padding: '1rem', borderRadius: '8px', marginTop: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'start' }}>
-          <Shield size={20} style={{ color: '#92400e', marginRight: '0.75rem', flexShrink: 0, marginTop: '0.25rem' }} />
+          <Shield size={20} style={{ color: '#F97316', marginRight: '0.75rem', flexShrink: 0, marginTop: '0.25rem' }} />
           <div>
-            <div style={{ fontWeight: '600', color: '#92400e', marginBottom: '0.5rem' }}>Platform Owner View</div>
-            <p style={{ color: '#92400e', margin: 0, fontSize: '0.9rem' }}>
+            <div style={{ fontWeight: '600', color: '#F97316', marginBottom: '0.5rem' }}>Platform Owner View</div>
+            <p style={{ color: '#F97316', margin: 0, fontSize: '0.9rem' }}>
               You are viewing the platform administration dashboard. You can approve tenants, view metrics, but cannot access individual tenant data to maintain privacy.
             </p>
           </div>
@@ -3583,7 +3588,7 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
       <div style={{
         display: 'flex',
         gap: '0.5rem',
-        borderBottom: '2px solid #e2e8f0',
+        borderBottom: '2px solid rgba(255,255,255,0.06)',
         marginBottom: '2rem'
       }}>
         {tabs.map((tab) => {
@@ -3595,9 +3600,9 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
               style={{
                 padding: '0.75rem 1.5rem',
                 border: 'none',
-                background: activeTab === tab.id ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent',
-                color: activeTab === tab.id ? '#fff' : '#64748b',
-                borderBottom: activeTab === tab.id ? '2px solid #667eea' : '2px solid transparent',
+                background: activeTab === tab.id ? '#F97316' : 'transparent',
+                color: activeTab === tab.id ? '#fff' : '#9CA3AF',
+                borderBottom: activeTab === tab.id ? '2px solid #F97316' : '2px solid transparent',
                 cursor: 'pointer',
                 fontWeight: activeTab === tab.id ? '600' : '400',
                 display: 'flex',
@@ -3624,7 +3629,7 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
             marginBottom: '2rem'
           }}>
             <div style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: '#F97316',
               padding: '1.5rem',
               borderRadius: '12px',
               color: '#fff'
@@ -3637,7 +3642,7 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
             </div>
 
             <div style={{
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              background: '#F97316',
               padding: '1.5rem',
               borderRadius: '12px',
               color: '#fff'
@@ -3652,7 +3657,7 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
             </div>
 
             <div style={{
-              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+              background: '#FB923C',
               padding: '1.5rem',
               borderRadius: '12px',
               color: '#fff'
@@ -3669,28 +3674,28 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
 
           {/* Tenant Details */}
           <div style={{
-            background: '#f8fafc',
+            background: '#16365F',
             padding: '1.5rem',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0'
+            border: '1px solid rgba(255,255,255,0.06)'
           }}>
-            <h3 style={{ margin: '0 0 1rem 0', color: '#1e293b' }}>Tenant Details</h3>
+            <h3 style={{ margin: '0 0 1rem 0', color: '#16365F' }}>Tenant Details</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>Organization Name</div>
-                <div style={{ fontWeight: '600', color: '#1e293b' }}>{tenant.name}</div>
+                <div style={{ fontSize: '0.85rem', color: '#9CA3AF', marginBottom: '0.25rem' }}>Organization Name</div>
+                <div style={{ fontWeight: '600', color: '#16365F' }}>{tenant.name}</div>
               </div>
               <div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>Contact Email</div>
-                <div style={{ fontWeight: '600', color: '#1e293b' }}>{tenant.contact_email || '-'}</div>
+                <div style={{ fontSize: '0.85rem', color: '#9CA3AF', marginBottom: '0.25rem' }}>Contact Email</div>
+                <div style={{ fontWeight: '600', color: '#16365F' }}>{tenant.contact_email || '-'}</div>
               </div>
               <div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>Regime</div>
-                <div style={{ fontWeight: '600', color: '#1e293b' }}>{tenant.regime || '-'}</div>
+                <div style={{ fontSize: '0.85rem', color: '#9CA3AF', marginBottom: '0.25rem' }}>Regime</div>
+                <div style={{ fontWeight: '600', color: '#16365F' }}>{tenant.regime || '-'}</div>
               </div>
               <div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem' }}>FRN</div>
-                <div style={{ fontWeight: '600', color: '#1e293b' }}>{tenant.frn || '-'}</div>
+                <div style={{ fontSize: '0.85rem', color: '#9CA3AF', marginBottom: '0.25rem' }}>FRN</div>
+                <div style={{ fontWeight: '600', color: '#16365F' }}>{tenant.frn || '-'}</div>
               </div>
             </div>
           </div>
@@ -3700,17 +3705,17 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
       {/* Users Tab */}
       {activeTab === 'users' && (
         <div>
-          <h3 style={{ margin: '0 0 1rem 0', color: '#1e293b' }}>User List ({users.length})</h3>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#16365F' }}>User List ({users.length})</h3>
           {users.length === 0 ? (
             <div style={{
               textAlign: 'center',
               padding: '3rem',
-              background: '#f8fafc',
+              background: '#16365F',
               borderRadius: '12px',
-              border: '2px dashed #cbd5e1'
+              border: '2px dashed rgba(255,255,255,0.06)'
             }}>
-              <Users size={48} style={{ color: '#94a3b8', margin: '0 auto 1rem' }} />
-              <p style={{ color: '#64748b', margin: 0 }}>No users found for this tenant</p>
+              <Users size={48} style={{ color: '#9CA3AF', margin: '0 auto 1rem' }} />
+              <p style={{ color: '#9CA3AF', margin: 0 }}>No users found for this tenant</p>
             </div>
           ) : (
             <div className="table-container">
@@ -3742,8 +3747,8 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
       {/* Solutions Tab */}
       {activeTab === 'solutions' && (
         <div>
-          <h3 style={{ margin: '0 0 1rem 0', color: '#1e293b' }}>Solution Access Management</h3>
-          <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#16365F' }}>Solution Access Management</h3>
+          <p style={{ color: '#9CA3AF', marginBottom: '1.5rem' }}>
             Enable or disable access to specific solutions for this tenant
           </p>
           <div style={{ display: 'grid', gap: '1rem' }}>
@@ -3764,16 +3769,16 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '1.25rem',
-                    background: '#f8fafc',
+                    background: '#16365F',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
+                    border: '1px solid rgba(255,255,255,0.06)'
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: '600', color: '#1e293b', marginBottom: '0.25rem' }}>
+                    <div style={{ fontWeight: '600', color: '#16365F', marginBottom: '0.25rem' }}>
                       {solutionNames[solution]}
                     </div>
-                    <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#9CA3AF' }}>
                       {solutionAccess[solution] ? 'Enabled' : 'Disabled'}
                     </div>
                   </div>
@@ -3785,7 +3790,7 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
                       borderRadius: '6px',
                       cursor: 'pointer',
                       fontWeight: '600',
-                      background: solutionAccess[solution] ? '#10b981' : '#ef4444',
+                      background: solutionAccess[solution] ? '#F97316' : '#F97316',
                       color: '#fff',
                       transition: 'all 0.2s'
                     }}
@@ -3802,8 +3807,8 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
       {/* Subscription Tab */}
       {activeTab === 'subscription' && (
         <div>
-          <h3 style={{ margin: '0 0 1rem 0', color: '#1e293b' }}>Subscription Management</h3>
-          <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>
+          <h3 style={{ margin: '0 0 1rem 0', color: '#16365F' }}>Subscription Management</h3>
+          <p style={{ color: '#9CA3AF', marginBottom: '1.5rem' }}>
             Manage subscription plan and billing for this tenant
           </p>
 
@@ -3814,8 +3819,8 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
                 style={{
                   padding: '1.5rem',
                   borderRadius: '12px',
-                  border: subscriptionPlan === plan ? '3px solid #667eea' : '2px solid #e2e8f0',
-                  background: subscriptionPlan === plan ? 'linear-gradient(135deg, #f0f4ff 0%, #e8f0ff 100%)' : '#fff',
+                  border: subscriptionPlan === plan ? '3px solid #F97316' : '2px solid rgba(255,255,255,0.06)',
+                  background: subscriptionPlan === plan ? '#1E4A7A' : '#fff',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
@@ -3827,10 +3832,10 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
                   justifyContent: 'space-between',
                   marginBottom: '1rem'
                 }}>
-                  <h4 style={{ margin: 0, color: '#1e293b', textTransform: 'capitalize' }}>{plan}</h4>
-                  {subscriptionPlan === plan && <CheckCircle size={20} style={{ color: '#667eea' }} />}
+                  <h4 style={{ margin: 0, color: '#16365F', textTransform: 'capitalize' }}>{plan}</h4>
+                  {subscriptionPlan === plan && <CheckCircle size={20} style={{ color: '#F97316' }} />}
                 </div>
-                <div style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                <div style={{ fontSize: '0.9rem', color: '#9CA3AF' }}>
                   {plan === 'basic' && '1-5 users, 2 solutions'}
                   {plan === 'standard' && '6-20 users, 3 solutions'}
                   {plan === 'premium' && '21-50 users, 4 solutions'}
@@ -3843,21 +3848,21 @@ function TenantCockpitContent({ cockpitData, currentUser, onUpdate, setNotificat
           <div style={{
             marginTop: '2rem',
             padding: '1.5rem',
-            background: '#fef3c7',
-            border: '1px solid #fbbf24',
+            background: '#16365F',
+            border: '1px solid #FB923C',
             borderRadius: '8px'
           }}>
             <div style={{ display: 'flex', alignItems: 'start', gap: '0.75rem' }}>
-              <AlertCircle size={20} style={{ color: '#92400e', marginTop: '0.125rem' }} />
+              <AlertCircle size={20} style={{ color: '#F97316', marginTop: '0.125rem' }} />
               <div>
-                <div style={{ fontWeight: '600', color: '#92400e', marginBottom: '0.5rem' }}>
+                <div style={{ fontWeight: '600', color: '#F97316', marginBottom: '0.5rem' }}>
                   Subscription Actions
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginTop: '1rem' }}>
                   <button className="btn-secondary" disabled={saving}>
                     Reset Billing Cycle
                   </button>
-                  <button className="btn-secondary" style={{ background: '#ef4444', borderColor: '#ef4444', color: '#fff' }} disabled={saving}>
+                  <button className="btn-secondary" style={{ background: '#F97316', borderColor: '#F97316', color: '#fff' }} disabled={saving}>
                     Revoke Access
                   </button>
                 </div>
@@ -3996,9 +4001,9 @@ function TenantManagementPage({ currentUser }) {
           padding: '1rem',
           marginBottom: '1.5rem',
           borderRadius: '8px',
-          backgroundColor: notification.type === 'success' ? '#d1fae5' : '#fee2e2',
-          border: notification.type === 'success' ? '1px solid #10b981' : '1px solid #ef4444',
-          color: notification.type === 'success' ? '#065f46' : '#991b1b',
+          backgroundColor: notification.type === 'success' ? '#16365F' : '#16365F',
+          border: notification.type === 'success' ? '1px solid #F97316' : '1px solid #F97316',
+          color: notification.type === 'success' ? '#F97316' : '#F97316',
           display: 'flex',
           alignItems: 'center',
           gap: '0.75rem'
@@ -4024,7 +4029,7 @@ function TenantManagementPage({ currentUser }) {
           style={{
             width: '100%',
             padding: '0.875rem 1rem',
-            border: '2px solid #e2e8f0',
+            border: '2px solid rgba(255,255,255,0.06)',
             borderRadius: '8px',
             fontSize: '0.95rem',
             fontWeight: '500'
@@ -4036,7 +4041,7 @@ function TenantManagementPage({ currentUser }) {
       {loading && (
         <div style={{ textAlign: 'center', padding: '3rem' }}>
           <Loader className="spinner" size={32} />
-          <p style={{ marginTop: '1rem', color: '#64748b' }}>Loading tenants...</p>
+          <p style={{ marginTop: '1rem', color: '#9CA3AF' }}>Loading tenants...</p>
         </div>
       )}
 
@@ -4045,13 +4050,13 @@ function TenantManagementPage({ currentUser }) {
         <div style={{
           textAlign: 'center',
           padding: '4rem 2rem',
-          backgroundColor: '#f8fafc',
+          backgroundColor: '#16365F',
           borderRadius: '12px',
-          border: '2px dashed #cbd5e1'
+          border: '2px dashed rgba(255,255,255,0.06)'
         }}>
-          <Building size={48} style={{ color: '#94a3b8', margin: '0 auto 1rem' }} />
-          <h3 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>No tenants found</h3>
-          <p style={{ color: '#64748b', margin: 0 }}>
+          <Building size={48} style={{ color: '#9CA3AF', margin: '0 auto 1rem' }} />
+          <h3 style={{ margin: '0 0 0.5rem 0', color: '#16365F' }}>No tenants found</h3>
+          <p style={{ color: '#9CA3AF', margin: 0 }}>
             {searchTerm ? 'Try adjusting your search terms' : 'No active tenants on the platform yet'}
           </p>
         </div>
@@ -4110,8 +4115,8 @@ function TenantManagementPage({ currentUser }) {
                           gap: '0.5rem',
                           minWidth: '110px',
                           justifyContent: 'center',
-                          background: '#667eea',
-                          borderColor: '#667eea',
+                          background: '#F97316',
+                          borderColor: '#F97316',
                           padding: '0.5rem 1rem',
                           fontSize: '0.85rem'
                         }}
@@ -4131,9 +4136,9 @@ function TenantManagementPage({ currentUser }) {
                           gap: '0.5rem',
                           minWidth: '110px',
                           justifyContent: 'center',
-                          background: '#ef4444',
+                          background: '#F97316',
                           color: '#fff',
-                          borderColor: '#ef4444',
+                          borderColor: '#F97316',
                           padding: '0.5rem 1rem',
                           fontSize: '0.85rem'
                         }}
@@ -4154,13 +4159,13 @@ function TenantManagementPage({ currentUser }) {
       <div style={{
         marginTop: '1.5rem',
         padding: '1rem',
-        background: '#eff6ff',
-        border: '1px solid #3b82f6',
+        background: '#16365F',
+        border: '1px solid #F97316',
         borderRadius: '8px',
         display: 'flex',
         alignItems: 'center',
         gap: '0.5rem',
-        color: '#1e40af'
+        color: '#F97316'
       }}>
         <Building size={18} />
         <span style={{ fontWeight: '600' }}>
@@ -4202,18 +4207,18 @@ function TenantManagementPage({ currentUser }) {
             {/* Modal Header */}
             <div style={{
               padding: '1.5rem 2rem',
-              borderBottom: '2px solid #e2e8f0',
+              borderBottom: '2px solid rgba(255,255,255,0.06)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: '#F97316',
               borderRadius: '12px 12px 0 0'
             }}>
               <div>
                 <h2 style={{ margin: 0, color: '#fff', fontSize: '1.5rem' }}>
                   {selectedTenant?.name}
                 </h2>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#e0e7ff', fontSize: '0.9rem' }}>
+                <p style={{ margin: '0.25rem 0 0 0', color: '#16365F', fontSize: '0.9rem' }}>
                   Tenant Management Cockpit
                 </p>
               </div>
@@ -4245,7 +4250,7 @@ function TenantManagementPage({ currentUser }) {
               {cockpitLoading ? (
                 <div style={{ textAlign: 'center', padding: '3rem' }}>
                   <Loader className="spinner" size={32} />
-                  <p style={{ marginTop: '1rem', color: '#64748b' }}>Loading tenant details...</p>
+                  <p style={{ marginTop: '1rem', color: '#9CA3AF' }}>Loading tenant details...</p>
                 </div>
               ) : (
                 <TenantCockpitContent
@@ -4377,9 +4382,9 @@ function MarketingEmailsPage({ currentUser }) {
           padding: '1rem',
           marginBottom: '1.5rem',
           borderRadius: '8px',
-          backgroundColor: notification.type === 'success' ? '#d1fae5' : '#fee2e2',
-          border: notification.type === 'success' ? '1px solid #10b981' : '1px solid #ef4444',
-          color: notification.type === 'success' ? '#065f46' : '#991b1b',
+          backgroundColor: notification.type === 'success' ? '#16365F' : '#16365F',
+          border: notification.type === 'success' ? '1px solid #F97316' : '1px solid #F97316',
+          color: notification.type === 'success' ? '#F97316' : '#F97316',
           display: 'flex',
           alignItems: 'center',
           gap: '0.75rem'
@@ -4399,18 +4404,18 @@ function MarketingEmailsPage({ currentUser }) {
         {/* Tenant Selection */}
         <div>
           <div style={{
-            background: '#fff',
+            background: '#16365F',
             padding: '1.5rem',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid rgba(255,255,255,0.06)',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h3 style={{ margin: 0, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <h3 style={{ margin: 0, color: '#16365F', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Users size={20} />
                 Select Recipients
               </h3>
-              <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '600' }}>
+              <span style={{ fontSize: '0.85rem', color: '#9CA3AF', fontWeight: '600' }}>
                 {selectedTenants.length} / {tenants.length}
               </span>
             </div>
@@ -4436,8 +4441,8 @@ function MarketingEmailsPage({ currentUser }) {
                     style={{
                       padding: '0.875rem',
                       marginBottom: '0.5rem',
-                      background: selectedTenants.includes(tenant.id) ? 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)' : '#f8fafc',
-                      border: selectedTenants.includes(tenant.id) ? '2px solid #3b82f6' : '1px solid #e2e8f0',
+                      background: selectedTenants.includes(tenant.id) ? '#1E4A7A' : '#16365F',
+                      border: selectedTenants.includes(tenant.id) ? '2px solid #F97316' : '1px solid rgba(255,255,255,0.06)',
                       borderRadius: '6px',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
@@ -4453,10 +4458,10 @@ function MarketingEmailsPage({ currentUser }) {
                       style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                     />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '600', color: '#1e293b', fontSize: '0.9rem' }}>
+                      <div style={{ fontWeight: '600', color: '#16365F', fontSize: '0.9rem' }}>
                         {tenant.name}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>
                         {tenant.contact_email}
                       </div>
                     </div>
@@ -4470,13 +4475,13 @@ function MarketingEmailsPage({ currentUser }) {
         {/* Email Composer */}
         <div>
           <div style={{
-            background: '#fff',
+            background: '#16365F',
             padding: '2rem',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid rgba(255,255,255,0.06)',
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}>
-            <h3 style={{ margin: '0 0 1.5rem 0', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <h3 style={{ margin: '0 0 1.5rem 0', color: '#16365F', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Mail size={20} />
               Compose Email
             </h3>
@@ -4491,7 +4496,7 @@ function MarketingEmailsPage({ currentUser }) {
                 style={{
                   width: '100%',
                   padding: '0.875rem 1rem',
-                  border: '2px solid #e2e8f0',
+                  border: '2px solid rgba(255,255,255,0.06)',
                   borderRadius: '6px',
                   fontSize: '0.95rem',
                   fontWeight: '600'
@@ -4509,7 +4514,7 @@ function MarketingEmailsPage({ currentUser }) {
                 style={{
                   width: '100%',
                   padding: '0.875rem 1rem',
-                  border: '2px solid #e2e8f0',
+                  border: '2px solid rgba(255,255,255,0.06)',
                   borderRadius: '6px',
                   fontSize: '0.95rem',
                   fontFamily: 'inherit',
@@ -4519,15 +4524,15 @@ function MarketingEmailsPage({ currentUser }) {
             </div>
 
             <div style={{
-              background: '#fef3c7',
-              border: '1px solid #fbbf24',
+              background: '#16365F',
+              border: '1px solid #FB923C',
               padding: '1rem',
               borderRadius: '8px',
               marginBottom: '1.5rem'
             }}>
               <div style={{ display: 'flex', alignItems: 'start', gap: '0.75rem' }}>
-                <AlertCircle size={18} style={{ color: '#92400e', marginTop: '0.125rem' }} />
-                <div style={{ fontSize: '0.85rem', color: '#92400e' }}>
+                <AlertCircle size={18} style={{ color: '#F97316', marginTop: '0.125rem' }} />
+                <div style={{ fontSize: '0.85rem', color: '#F97316' }}>
                   <strong>Preview Recipients:</strong> {selectedTenants.length === 0 ? 'No tenants selected' : `${selectedTenants.length} tenant(s) will receive this email`}
                 </div>
               </div>
@@ -4698,9 +4703,9 @@ function MessagesPage({ currentUser }) {
           padding: '1rem',
           marginBottom: '1.5rem',
           borderRadius: '8px',
-          backgroundColor: notification.type === 'success' ? '#d1fae5' : '#fee2e2',
-          border: notification.type === 'success' ? '1px solid #10b981' : '1px solid #ef4444',
-          color: notification.type === 'success' ? '#065f46' : '#991b1b',
+          backgroundColor: notification.type === 'success' ? '#16365F' : '#16365F',
+          border: notification.type === 'success' ? '1px solid #F97316' : '1px solid #F97316',
+          color: notification.type === 'success' ? '#F97316' : '#F97316',
           display: 'flex',
           alignItems: 'center',
           gap: '0.75rem'
@@ -4719,9 +4724,9 @@ function MessagesPage({ currentUser }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem', height: '70vh' }}>
         {/* Message List */}
         <div style={{
-          background: '#fff',
+          background: '#16365F',
           borderRadius: '12px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid rgba(255,255,255,0.06)',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           overflow: 'hidden',
           display: 'flex',
@@ -4729,8 +4734,8 @@ function MessagesPage({ currentUser }) {
         }}>
           <div style={{
             padding: '1.25rem',
-            borderBottom: '2px solid #e2e8f0',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderBottom: '2px solid rgba(255,255,255,0.06)',
+            background: '#F97316',
             color: '#fff'
           }}>
             <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -4738,7 +4743,7 @@ function MessagesPage({ currentUser }) {
               Inbox
               {unreadCount > 0 && (
                 <span style={{
-                  background: '#ef4444',
+                  background: '#F97316',
                   color: '#fff',
                   padding: '0.25rem 0.625rem',
                   borderRadius: '12px',
@@ -4757,7 +4762,7 @@ function MessagesPage({ currentUser }) {
                 <Loader className="spinner" size={32} />
               </div>
             ) : messages.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+              <div style={{ textAlign: 'center', padding: '3rem', color: '#9CA3AF' }}>
                 <MessageSquare size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
                 <p>No messages</p>
               </div>
@@ -4768,34 +4773,34 @@ function MessagesPage({ currentUser }) {
                   onClick={() => handleSelectMessage(message)}
                   style={{
                     padding: '1rem',
-                    borderBottom: '1px solid #e2e8f0',
+                    borderBottom: '1px solid rgba(255,255,255,0.06)',
                     cursor: 'pointer',
                     background: selectedMessage?.id === message.id
-                      ? 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)'
+                      ? '#1E4A7A'
                       : message.status === 'unread'
-                      ? '#f8fafc'
+                      ? '#16365F'
                       : '#fff',
                     transition: 'all 0.2s',
-                    borderLeft: message.status === 'unread' ? '4px solid #3b82f6' : '4px solid transparent'
+                    borderLeft: message.status === 'unread' ? '4px solid #F97316' : '4px solid transparent'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <div style={{ fontWeight: message.status === 'unread' ? '700' : '600', color: '#1e293b', fontSize: '0.9rem' }}>
+                    <div style={{ fontWeight: message.status === 'unread' ? '700' : '600', color: '#16365F', fontSize: '0.9rem' }}>
                       {message.tenant_name}
                     </div>
                     {message.status === 'unread' && (
                       <div style={{
                         width: '8px',
                         height: '8px',
-                        background: '#3b82f6',
+                        background: '#F97316',
                         borderRadius: '50%'
                       }}></div>
                     )}
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.25rem', fontWeight: '600' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#9CA3AF', marginBottom: '0.25rem', fontWeight: '600' }}>
                     {message.subject}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>
                     {new Date(message.created_at).toLocaleDateString('en-GB')} at {new Date(message.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -4806,9 +4811,9 @@ function MessagesPage({ currentUser }) {
 
         {/* Message Detail & Reply */}
         <div style={{
-          background: '#fff',
+          background: '#16365F',
           borderRadius: '12px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid rgba(255,255,255,0.06)',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           display: 'flex',
           flexDirection: 'column',
@@ -4819,14 +4824,14 @@ function MessagesPage({ currentUser }) {
               {/* Message Header */}
               <div style={{
                 padding: '1.5rem',
-                borderBottom: '2px solid #e2e8f0',
-                background: '#f8fafc'
+                borderBottom: '2px solid rgba(255,255,255,0.06)',
+                background: '#16365F'
               }}>
-                <h3 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>{selectedMessage.subject}</h3>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', color: '#16365F' }}>{selectedMessage.subject}</h3>
+                <div style={{ fontSize: '0.85rem', color: '#9CA3AF' }}>
                   From: <strong>{selectedMessage.tenant_name}</strong> ({selectedMessage.tenant_email})
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.25rem' }}>
+                <div style={{ fontSize: '0.8rem', color: '#9CA3AF', marginTop: '0.25rem' }}>
                   {new Date(selectedMessage.created_at).toLocaleDateString('en-GB')} at {new Date(selectedMessage.created_at).toLocaleTimeString('en-GB')}
                 </div>
               </div>
@@ -4835,13 +4840,13 @@ function MessagesPage({ currentUser }) {
               <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
                 {/* Original Message */}
                 <div style={{
-                  background: '#f8fafc',
+                  background: '#16365F',
                   padding: '1.25rem',
                   borderRadius: '8px',
                   marginBottom: '1rem',
-                  borderLeft: '4px solid #3b82f6'
+                  borderLeft: '4px solid #F97316'
                 }}>
-                  <div style={{ fontSize: '0.95rem', color: '#1e293b', lineHeight: '1.6' }}>
+                  <div style={{ fontSize: '0.95rem', color: '#16365F', lineHeight: '1.6' }}>
                     {selectedMessage.message}
                   </div>
                 </div>
@@ -4851,17 +4856,17 @@ function MessagesPage({ currentUser }) {
                   <div
                     key={idx}
                     style={{
-                      background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
+                      background: '#1E4A7A',
                       padding: '1.25rem',
                       borderRadius: '8px',
                       marginBottom: '1rem',
-                      borderLeft: '4px solid #10b981'
+                      borderLeft: '4px solid #F97316'
                     }}
                   >
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: '600' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#9CA3AF', marginBottom: '0.5rem', fontWeight: '600' }}>
                       {reply.from} - {new Date(reply.created_at).toLocaleDateString('en-GB')} at {new Date(reply.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                     </div>
-                    <div style={{ fontSize: '0.95rem', color: '#1e293b', lineHeight: '1.6' }}>
+                    <div style={{ fontSize: '0.95rem', color: '#16365F', lineHeight: '1.6' }}>
                       {reply.message}
                     </div>
                   </div>
@@ -4869,7 +4874,7 @@ function MessagesPage({ currentUser }) {
               </div>
 
               {/* Reply Box */}
-              <div style={{ padding: '1.5rem', borderTop: '2px solid #e2e8f0', background: '#f8fafc' }}>
+              <div style={{ padding: '1.5rem', borderTop: '2px solid rgba(255,255,255,0.06)', background: '#16365F' }}>
                 <textarea
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
@@ -4878,7 +4883,7 @@ function MessagesPage({ currentUser }) {
                   style={{
                     width: '100%',
                     padding: '0.875rem 1rem',
-                    border: '2px solid #e2e8f0',
+                    border: '2px solid rgba(255,255,255,0.06)',
                     borderRadius: '6px',
                     fontSize: '0.95rem',
                     fontFamily: 'inherit',
@@ -4916,7 +4921,7 @@ function MessagesPage({ currentUser }) {
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
-              color: '#64748b',
+              color: '#9CA3AF',
               flexDirection: 'column',
               gap: '1rem'
             }}>
@@ -5107,9 +5112,9 @@ function TenantApprovalsPage({ currentUser }) {
           padding: '1rem',
           marginBottom: '1.5rem',
           borderRadius: '8px',
-          backgroundColor: notification.type === 'success' ? '#d1fae5' : '#fee2e2',
-          border: notification.type === 'success' ? '1px solid #10b981' : '1px solid #ef4444',
-          color: notification.type === 'success' ? '#065f46' : '#991b1b',
+          backgroundColor: notification.type === 'success' ? '#16365F' : '#16365F',
+          border: notification.type === 'success' ? '1px solid #F97316' : '1px solid #F97316',
+          color: notification.type === 'success' ? '#F97316' : '#F97316',
           display: 'flex',
           alignItems: 'center',
           gap: '0.75rem'
@@ -5129,7 +5134,7 @@ function TenantApprovalsPage({ currentUser }) {
       {loading && (
         <div style={{ textAlign: 'center', padding: '3rem' }}>
           <Loader className="spinner" size={32} />
-          <p style={{ marginTop: '1rem', color: '#64748b' }}>Loading pending tenants...</p>
+          <p style={{ marginTop: '1rem', color: '#9CA3AF' }}>Loading pending tenants...</p>
         </div>
       )}
 
@@ -5138,13 +5143,13 @@ function TenantApprovalsPage({ currentUser }) {
         <div style={{
           textAlign: 'center',
           padding: '4rem 2rem',
-          backgroundColor: '#f8fafc',
+          backgroundColor: '#16365F',
           borderRadius: '12px',
-          border: '2px dashed #cbd5e1'
+          border: '2px dashed rgba(255,255,255,0.06)'
         }}>
-          <CheckCircle size={48} style={{ color: '#10b981', margin: '0 auto 1rem' }} />
-          <h3 style={{ margin: '0 0 0.5rem 0', color: '#1e293b' }}>All caught up!</h3>
-          <p style={{ color: '#64748b', margin: 0 }}>No pending tenant approvals at this time.</p>
+          <CheckCircle size={48} style={{ color: '#F97316', margin: '0 auto 1rem' }} />
+          <h3 style={{ margin: '0 0 0.5rem 0', color: '#16365F' }}>All caught up!</h3>
+          <p style={{ color: '#9CA3AF', margin: 0 }}>No pending tenant approvals at this time.</p>
         </div>
       )}
 
@@ -5196,8 +5201,8 @@ function TenantApprovalsPage({ currentUser }) {
                           gap: '0.5rem',
                           minWidth: '110px',
                           justifyContent: 'center',
-                          background: '#10b981',
-                          borderColor: '#10b981'
+                          background: '#F97316',
+                          borderColor: '#F97316'
                         }}
                       >
                         {approving === tenant.id ? (
@@ -5225,9 +5230,9 @@ function TenantApprovalsPage({ currentUser }) {
                           gap: '0.5rem',
                           minWidth: '110px',
                           justifyContent: 'center',
-                          background: '#ef4444',
+                          background: '#F97316',
                           color: '#fff',
-                          borderColor: '#ef4444'
+                          borderColor: '#F97316'
                         }}
                       >
                         {rejecting === tenant.id ? (
@@ -5255,16 +5260,16 @@ function TenantApprovalsPage({ currentUser }) {
       <div style={{
         marginTop: '2rem',
         padding: '1.5rem',
-        backgroundColor: '#eff6ff',
-        border: '1px solid #3b82f6',
+        backgroundColor: '#16365F',
+        border: '1px solid #F97316',
         borderRadius: '8px',
-        borderLeft: '4px solid #3b82f6'
+        borderLeft: '4px solid #F97316'
       }}>
-        <h4 style={{ margin: '0 0 0.75rem 0', color: '#1e40af', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <h4 style={{ margin: '0 0 0.75rem 0', color: '#F97316', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <AlertCircle size={18} />
           Approval Process
         </h4>
-        <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#1e40af' }}>
+        <ul style={{ margin: 0, paddingLeft: '1.5rem', color: '#F97316' }}>
           <li>Approving a tenant will automatically activate their account</li>
           <li>A welcome email will be sent to the contact email address</li>
           <li>Users will gain immediate access to the RegIntels platform</li>
@@ -5305,18 +5310,18 @@ function TenantApprovalsPage({ currentUser }) {
             {/* Modal Header */}
             <div style={{
               padding: '1.5rem 2rem',
-              borderBottom: '2px solid #e2e8f0',
+              borderBottom: '2px solid rgba(255,255,255,0.06)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: '#F97316',
               borderRadius: '12px 12px 0 0'
             }}>
               <div>
                 <h2 style={{ margin: 0, color: '#fff', fontSize: '1.5rem' }}>
                   {selectedTenant?.name}
                 </h2>
-                <p style={{ margin: '0.25rem 0 0 0', color: '#e0e7ff', fontSize: '0.9rem' }}>
+                <p style={{ margin: '0.25rem 0 0 0', color: '#16365F', fontSize: '0.9rem' }}>
                   Tenant Management Cockpit
                 </p>
               </div>
@@ -5348,7 +5353,7 @@ function TenantApprovalsPage({ currentUser }) {
               {cockpitLoading ? (
                 <div style={{ textAlign: 'center', padding: '3rem' }}>
                   <Loader className="spinner" size={32} />
-                  <p style={{ marginTop: '1rem', color: '#64748b' }}>Loading tenant details...</p>
+                  <p style={{ marginTop: '1rem', color: '#9CA3AF' }}>Loading tenant details...</p>
                 </div>
               ) : (
                 <TenantCockpitContent
@@ -5478,7 +5483,7 @@ return (
         <div className="endpoint-header">
           <div>
             <div className="endpoint-status">
-              <CheckCircle size={20} color="#15803D" />
+              <CheckCircle size={20} color="#F97316" />
               <span className="endpoint-name">{ep.name}</span>
             </div>
             <div className="endpoint-url">{ep.url}</div>

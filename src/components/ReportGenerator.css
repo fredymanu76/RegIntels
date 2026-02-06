@@ -22,7 +22,7 @@
 
 .rg-title svg {
   color: var(--color-accent);
-  filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
 }
 
 .docs-badge {
@@ -30,7 +30,7 @@
   align-items: center;
   gap: 4px;
   padding: 4px 12px;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  background: var(--reg-orange-500);
   color: white;
   border-radius: 20px;
   font-size: 12px;
@@ -54,8 +54,8 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
@@ -122,8 +122,8 @@
 }
 
 .rg-content {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   min-height: 500px;
@@ -157,8 +157,8 @@
   border-radius: 12px;
   padding: 24px;
   transition: all 0.2s;
-  background: rgba(10, 15, 20, 0.5);
-  backdrop-filter: blur(10px);
+  background: rgba(15, 39, 71, 0.5);
+  backdrop-filter: none;
 }
 
 .report-template-card:hover {
@@ -259,8 +259,8 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
-  color: #000000;
+  background: var(--reg-orange-500);
+  color: #FFFFFF;
   border: none;
   border-radius: 8px;
   font-size: 14px;

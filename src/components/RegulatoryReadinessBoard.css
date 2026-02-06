@@ -33,8 +33,8 @@
 }
 
 .kpi-card {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -91,15 +91,15 @@
 
 .kpi-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
+  background: var(--reg-orange-500);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
 
 /* Data Section */
 .data-section {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
@@ -122,7 +122,7 @@
 }
 
 .status-card {
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 20px;
@@ -166,7 +166,7 @@
 
 .status-draft {
   background: var(--color-warning-light);
-  color: #92400e;
+  color: #F97316;
 }
 
 /* Testing Badges */
@@ -204,7 +204,7 @@
 }
 
 .data-table thead {
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
   border-bottom: 2px solid var(--color-border);
 }
 
@@ -227,7 +227,7 @@
 }
 
 .data-table tbody tr:hover {
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
 }
 
 .data-table tbody tr:last-child td {
@@ -262,7 +262,7 @@
 }
 
 .high-count {
-  color: #ef4444;
+  color: #F97316;
 }
 
 .medium-count {
@@ -281,8 +281,8 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   padding: 48px;
   border: 1px solid var(--color-border);

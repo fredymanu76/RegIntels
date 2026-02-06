@@ -22,7 +22,7 @@
 
 .nc-title svg {
   color: var(--color-accent);
-  filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
+  filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
 }
 
 .unread-badge {
@@ -73,8 +73,8 @@
 }
 
 .nc-content {
-  background: rgba(10, 15, 20, 0.7);
-  backdrop-filter: blur(20px);
+  background: rgba(15, 39, 71, 0.7);
+  backdrop-filter: none;
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
@@ -127,7 +127,7 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
-  background: rgba(10, 15, 20, 0.5);
+  background: rgba(15, 39, 71, 0.5);
   border-radius: 8px;
   border-left: 4px solid var(--color-text-muted);
   cursor: pointer;
@@ -136,11 +136,11 @@
 }
 
 .alert-item:hover {
-  background: rgba(0, 229, 255, 0.05);
+  background: rgba(249, 115, 22, 0.05);
 }
 
 .alert-item.unread {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(249, 115, 22, 0.1);
 }
 
 .alert-item.severity-critical {
@@ -148,7 +148,7 @@
 }
 
 .alert-item.severity-high {
-  border-left-color: #f97316;
+  border-left-color: #F97316;
 }
 
 .alert-item.severity-warning {
